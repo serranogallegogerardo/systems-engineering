@@ -1,0 +1,174 @@
+accion parcial es 
+| ambiente 
+|  millas= registro 
+|  | dni: N(8) 
+|  | millas: N(10)
+|  | fecha: registros
+|  | | año: N(4)
+|  | | mes: N(1..12)
+|  | | dia: N(1..31)
+|  | fin_reg
+|  fin_reg
+|  dni: N(8); op=('si', 'no'); mill:N(10) ; ori, dest: AN(3)
+|  destinos=registro 
+|  | ori:  N(1)
+|  | dest: N(1)
+|  | mill: N(10)
+|  | dur: N(2)
+|  fin_reg
+| a_m: archivo de millas indexado por dni 
+| a_d: archivo de destinos indexado por origen y destino 
+| r_m: millas
+| r_d: destinos 
+| cont, mm: N(2)
+|P R O C E S O 
+|abrir e/s(a_m); abrir e/(a_d)
+|
+|escribir("comenzar con el proceso de carga de pasajeros? si/no")
+|leer(op)
+|cont:=0
+|mientras (op='si') hacer 
+||esc("ingrese dni del pasajero"); leer(dni)
+|| r_m.dni:=dni
+|| leer(a_m, r_m)
+|| si existe entonces
+||  | esc("cargar millas al pasajero?"); leer(op)
+||  | si(op='si') entonces 
+||  |  | esc("ingrese millas a cargar"); leer(mill)
+||  |  | r_m.millas:=(r_m.millas + mill); 
+||  |  | escribir("ingrese fecha: dd/mm/aaaa")
+||  |  | leer(r_m.fecha.dia);leer(mm); r_m.fecha.mes:=mm
+||  |  | leer(r_m.fecha.año)
+||  |  | re-grabar(a_m, r_m)
+||  | fin_si
+||  | si(r_m.fecha.mes=mm) entonces
+||  |  | cont:=cont + 1
+||  | fin_si
+||  | esc("ingrese origen y destino del viaje") 
+||  | leer(ori, dest)
+||  | r_d.ori:=ori
+||  | r_d.dest:=dest
+||  | leer(a_d; r_d)
+||  | si existe entonces 
+||  |  |  si(r_m.millas >= r_d.millas)entonces 
+||  |  |    |  esc("puede realizar el viaje")
+||  |  |    |  r_m.millas:=r_m.millas - r_d.millas
+||  |  |   sino
+||  |  |    |  esc("no cuenta con la cantidad de millas necesarias, para realizar este viaje")  
+||  |  |    fin_si
+||  | sino
+||  |  | esc("error, recorrido inexistente")
+||  | fin_si
+||  sino
+||  | esc("error, dni inexistente en el sistema")
+||  fin_si
+||  esc("cargar siguiente pasajero? si/no")
+||  leer(op)
+| fin_mientras
+|cerrar(a_m); cerrar(a_d)
+| 
+fin_proceso  
+--------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
+ACCION 2 ES 
+| AMBIENTE 
+| viajes=registro
+|  | fecha:registro
+|  |  | año: N(4)
+|  |  | mes: N(1..12)
+|  |  | dia: N(1..31)
+|  | fin_reg
+|  | ori: N(1..10)
+|  | dest: N(1..10)
+|  | mill_comp: N(10)
+| fin_reg
+| v: arreglo (1..10) de AN 
+| a_v: archivo de viajes 
+| r_v: viajes
+| via: arreglo [1..5, 1..4, 1..11] de enteros 
+| men_mill, ori, may_ori, i, j, k, men_comp, ori_men, tri:enteros
+P R O C E S O 
+| abrir(a_v); leer(a_v, r_v)
+| para (i=1 a 5) hacer 
+|  | para (j=1 a 4) hacer 
+|  |  | para(k=1 a 11) hacer 
+|  |  |  |  via[i,j,k]:=0
+|  |  | fin_para 
+|  | fin_para 
+| fin_para 
+|  
+| mientras nfda (a_v) hacer
+| | segun (r_v.fecha.mes) hacer 
+| | |  <=4: j:=1
+| | |  <=8: j:=2
+| | |  <=12:j:=3
+| | fin_segun 
+| | segun (r_v.fecha.mes) hacer 
+| | | <=3: i:=1
+| | | <=6: i:=2
+| | | <=9: i:=3
+| | | <=12: i:=4
+| | fin_segun 
+| | via[i,j,r_v.ori]=(via[i,j,r_v.ori] + r_v.mill_comp)
+| | via[i,4,r_v.ori]=(via[i,4,r_v.ori] + r_v.mill_comp)
+| | via[i,j,11]=(via[i,j,11] + r_v.mill_comp)
+| | via[5,j,r_v.ori]=(via[5,j,r_v.ori] + r_v.mill_comp)
+| | leer(a_v, r_v)
+| fin_mientras 
+| cerrar(a_v, r_v)
+| may_ori:=0; men_mill:=0
+| para (j=1 a 3) hacer  
+| |  si(via[5,j,11]<men_mill)entonces 
+| |  |  men_mill:=via[5,j,11]; cuat:=j
+| |  fin_si
+| fin_para
+|
+| para (k=1 a 10) hacer 
+| |  si(via[5,4,k]>may_ori)entonces 
+| |  | may_ori:=via[5,4,k]; ori:=k
+| |  fin_si
+| fin_para
+|
+| para (j=1 a 4) hacer 
+| |  para (k=1 a 10) hacer 
+| |  |  si(via[4,j,k]<men_comp)entonces 
+| |  |  | men_comp:=via[4,j,k]; ori_men:=k; tri:=j;
+| |  |  fin_si
+| |  fin_para
+| fin_para
+|
+| esc("cuatrimestre con menor cantidad de millas compradas:", cuat)
+| esc("origen en el cual compraron la mayor cantidad de millas:", v[ori])
+| esc("trimeste y origen con la mayor cantidad de millas compradas:", tri , v[ori_men])
+fin_proceso   
+      
+      
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

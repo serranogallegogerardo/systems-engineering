@@ -1,0 +1,124 @@
+Ejercicio 2.2.11
+Se dispone de un archivo con datos de los alumnos de la U.T.N. con la siguiente información para cada alumno:
+
+Alumnos Ordenado por Sexo, Carrera, Nro_Legajo
+
+SexoCarreraNro_LegajoFecha_IngresoTotal_Materias_Aprobadas\
+
+Se desea un listado con el siguiente detalle por sexo, carrera y total general
+
+Total de alumnos que ingresaron en el año 2009 con más de 20 materias aprobadas.
+Total de alumnos que ingresaron en el año 2009 con menos de 20 materias aprobadas
+
+Accion 2.2.11 ES
+
+	Ambiente
+
+		tfecha = reg
+
+			dd:n(2)
+			mm:n(2)
+			yy:n(4)
+
+		fr
+		tAlumnos = reg
+
+			Sexo:('M','F')
+			Carrera:('ISI','IEM','IQ','LAR')
+			Nro_Legajo:N(5)
+			Fecha_Ingreso:tfecha
+			Total_Materias_Aprobadas:n(2)
+
+		fr
+
+		ARalum:archivo de tAlumnos Ordenado por Sexo, Carrera, Nro_Legajo
+		r:tAlumnos
+
+		res_sexo:('M','F')
+		res_carrera:('ISI','IEM','IQ','LAR')
+		NMtotaltotal,Mtotaltotal,Mgral,NMgral,Mcarr,NMcarr:entero// Alumnos con mas de 20 materias aprobadas > 20 y < 20
+		// TOTALES GRALES      // TOT SEX  // TOT CARR    
+
+		Subaccion c_sexo ES
+
+			c_carrera
+
+			esc("//////////////////////")
+			Esc("total del sexo >= 20:", Mgral)
+			Esc("total del sexo < 20", NMgral)
+			esc("//////////////////////")
+			Mtotaltotal:=Mtotaltotal+Mgral
+			NMtotaltotal:=NMtotaltotal+NMgral
+
+			Mgral:=0
+			NMgral:=0
+
+			res_sexo:=r.sexo
+
+		Fs 
+
+		Subaccion c_carrera ES
+
+			// ESTE ES EL NIVEL INF INMEDIATO A "SEXO"
+			Esc("Sexo:".res_sexo)
+			Esc("Carrera" ,res_carrera)
+			Esc("Cantidad de alumnos >= 20 aprobadas:", Mcarr)
+			Esc("Cantidad de alumnos < 20 aprobadas:", NMcarr)
+
+			Mgral:=Mgral+Mcarr
+			NMgral:=NMgral+NMcarr
+
+			Mcarr:=0
+			NMcarr:=0
+			res_carrera:=r.carrera
+
+		Fs
+
+	Proceso
+
+		//TRATAR ARCH
+
+		AbrirE/(ARalum)
+
+		Leer(ARalum,r)
+		//CONT A 0
+		Mgral:=0;NMgral:=0;
+		Mcarr:=0;NMcarr:=0;
+		NMtotaltotal:=0;Mtotaltotal:=0;
+		//TESTIGOS o RESGUARDOS
+		res_sexo:=r.sexo
+		res_carrera:=r.carrera
+
+		Mientras NFDA(ARalum) Hacer
+
+			Si res_sexo <> r.sexo Entonces
+				c_sexo
+			Sino 
+				Si res_carrera <> r.carrera Entonces 
+					c_carrera
+				Fsi 
+				
+			Fsi
+			
+			Si r.Fecha_Ingreso.yy = 2009 Entonces 
+				Si r.Total_Materias_Aprobadas => 20 Entonces 
+						Mcarr:=Mcarr+1// MAYOR A 20
+					Sino 
+						NMcarr:=NMcarr+1// NO MAYOR A 20
+					Fsi
+				Fsi
+			Fsi
+
+			Leer(ARalum)
+
+		Fm
+		// AL FINALIZAR LA E.R. Llamo al nivel sup inmediato
+		c_sexo
+
+		// IMPRIMO TOT GRALES
+		Esc('Total gral con 20 o mas: ', Mtotaltotal)
+		Esc('Total gral con menos de 20: ', NMtotaltotal) 
+
+		Cerrar(ARalum)
+
+FA

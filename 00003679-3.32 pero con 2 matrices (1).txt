@@ -1,0 +1,118 @@
+Acción Ej332 es
+Ambiente
+	RegEst = registro
+		fecha: registro
+			año:1970..2038
+			mes:1..12
+			dia:1..31
+		FR
+		patente:AN(7)
+		horadesde:N(2)
+		horashasta:N(2)
+		posta:1..100
+	FR
+	R:RegEst
+	estacionamientos:archivo de RegEst
+
+	A:arreglo [1..101,1..31] de entero
+	B:arreglo [1..100] de real
+	
+	i,j:entero
+	horas:entero
+	valorhora:entero
+	importe:N(10,2)
+	
+	valorhora1,valorhora2:entero
+	
+	importemax:N(10,2)
+	postamax:entero
+	
+	estacionamientosmax:entero
+	diamax:entero
+	
+	imax,jmax,celdamaxima:entero
+	
+Algoritmo
+	AbrirE/(estacionamientos)
+	Leer(estacionamientos,R)
+	Para i:=1 a 101 Hacer
+		Para j:=1 a 31 Hacer
+			A[i,j]:=0
+		FP
+	FP
+	Para i:=1 a 100 Hacer
+		B[i]:=0
+	FP
+	
+	Mientras NFDA(estacionamientos) Hacer
+		
+		i:=posta
+		j:=R.fecha.dia
+		
+		Si ((R.horadesde) Hacer
+			<=6:valorhora1:=9
+			<=13:valorhora1:=14
+			<=19:valorhora1:=12
+			<=23:valorhora1:=6
+		FS
+		Si ((R.horahasta) Hacer
+			<=6:valorhora2:=9
+			<=13:valorhora2:=14
+			<=19:valorhora2:=12
+			<=23:valorhora2:=6
+		FS
+		Si valorhora1>valorhora2
+		Entonces
+			valorhora:=valorhora1
+		contrario
+			valorhora:=valorhora2
+		FS
+		
+		horas:=R.horashasta-R.horadesde+1
+		
+		importe:=horas*valorhora
+		
+		A[i,j]:=A[i,j] + 1
+		B[i]:=B[i] + importe
+		A[101,j]:=A[101,j] + 1
+		
+		Leer(estacionamientos,R)
+	FM
+	
+	celdamaxima:=0
+	Para i:=1 a 100 Hacer
+		Para j:=1 a 31 Hacer
+			Si A[i,j]>=celdamaxima
+			Entonces
+				celdamaxima:=A[i,j]
+				imax:=i
+				jmax:=j
+		FP
+	FP
+	
+	Escribir('En posta ',imax,' el día ',jmax,' hubo la mayor cantidad de estacionamientos')
+	
+	importemax:=0
+	Para i:=1 a 100 Hacer
+		Si B[i]>=importemax
+		Entonces
+			importemax:=B[i]
+			postamax:=i
+		FS
+	FP
+	
+	Escribir('Posta más recaudadora fue la ',postamax)
+	
+	estacionamientosmax:=0
+	Para j:=1 a 31 Hacer
+		Si A[101,j]>=estacionamientosmax
+		Entonces
+			estacionamientosmax:=A[101,j]
+			diamax:=i
+		FS
+	FP
+	
+	Escribir('Día con más estacionamientos fue ',diamax)
+	
+	Cerrar(estacionamientos)
+FA

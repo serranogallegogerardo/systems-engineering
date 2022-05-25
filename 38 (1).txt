@@ -1,0 +1,25 @@
+Repita el ejercicio anterior pero suponiendo que se precisa localizar todos los nombres que comienzan con una letra dada
+
+accion 38 es
+    ambiente
+        //Usamos un búsqueda líneal para encontrar todos los nombres que comienzen con una letra dada
+        a:Arreglo [1..N][1..10] de caracteres
+    
+        subaccion buscar_nombres(a:Arreglo [1..N][1..10] de caracteres,
+                                    letra:caracter) es
+            ambiente
+                i:entero
+            algoritmo
+                para (i:= 1 a N) hacer
+                    si (a[i,1] = letra) entonces
+                        esc("Este nombre empieza con la letra ", a[i, 1], "y está en la posicion ", i)
+                    fin si
+                fin para
+        fin subaccion
+        let:caracter
+
+    algoritmo
+        esc("Ingrese una letra")
+        leer(let)
+        buscar_nombres(a, let)
+fin accion

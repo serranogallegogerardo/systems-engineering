@@ -1,0 +1,11 @@
+ Imprimir las cifras de un número n (siendo n >= 0) en orden inverso al original. Por ej.: el inverso de 254 es
+452.
+Procedimiento Inverso(n:entero) ES 
+    SI n < 10 ENTONCES 
+        Inverso:= n 
+        Esc("El inverso al numero es:", n)
+    SINO
+        Inverso:= Invers0(n DIV 10)
+        Esc("El inverso a numero, cifra por cifra es: ", Inverso(n MOD 10))
+    FSI 
+FP 

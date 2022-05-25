@@ -1,0 +1,85 @@
+Problema: La empresa de analisis informaticos llamada "STY Sistems" sufrio un hackeo por un grupo
+desconocido, por lo cual dejaron desordenado a los numeros/letras de tipos de clientes (su codigo)
+dañando la informacion almacenada en los .txt de los mismos y tambien se perdieron otra cantidad
+de datos..
+Los 80 clientes estaban ordenados como:
+	Cliente 1
+	Cliente 2
+	Cliente E
+	Cliente X
+	...
+	Cliente n
+luego del daño quedaron ordenados aleatoriamente
+
+Se solicita:
+
+	Contar la cantidad total de clientes tipo 1, X, E
+	Mostrar por pantalla con el siguiente formato la informacion solicitada:
+
+	/// /// /// /// /// /// /// 
+	/// Cant_Clientes 1,X,E /// 
+	///          XXX        ///
+	/// /// /// /// /// /// /// 
+
+Procedimiento ct_cli_cod(cant:entero):entero ES
+	
+	Proceso
+
+		ct:=0
+	
+		Para i:=1 hasta cant Hacer
+
+			Esc('Ingrese el codigo con el que finaliza el cliente 1,E,X,N,etc..')
+			Leer(cod)
+
+			Segun cod Hacer
+
+				'1': ct:=ct+1
+
+				'E': ct:=ct+1
+
+				'X': ct:=ct+1
+
+			fin segun
+
+		fin Para
+
+		ct_cli_cod:=ct
+
+Fin procedimiento
+
+Procedimiento Imprimir(ct:entero) ES
+
+	Esc('/// /// /// /// /// /// ///')
+	Esc('/// Cant_Clientes 1,X,E ///')
+	Esc('///         ',ct',        ///')
+	Esc('/// /// /// /// /// /// ///')
+
+Fin procedimiento
+
+Procedimiento Clientes1EX() ES
+
+	Ambiente
+		ct,cant,i:entero
+	Proceso
+
+		repetir
+			Esc('ingrese la cantidad de clientes total')
+			leer(cant)
+		hasta que (cant>0)
+		fin repetir
+
+		ct:=ct_cli_cod(cant)
+
+		Imprimir(ct)
+
+Fin Procedimiento
+
+/* En caso de querer invocar en un main se invocaria de la siguiente manera 
+Accion MAIN ES
+	Ambiente
+	Proceso
+		Cliente1EX()
+	Fin proceso
+Fin accion
+*/

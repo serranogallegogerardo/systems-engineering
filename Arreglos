@@ -1,0 +1,443 @@
+Arreglos
+Accion "3.1" es;
+	amb
+		A:Arreglo [1..100] de entero;
+		i,mayor,menor,acum,cont:Entero;
+		posma,posme: 1..100;
+
+	Proceso
+		Clsr;
+		Esc("Ingrese 100 numeros");
+		Para i:=1 a 100 hacer					//Ingreso 100 numeros
+			Leer(A[i]);
+		FP
+		cont:=0; acum:=0;						//Inicializo 
+		mayor:=LV; menor:=HV;					//Asigno para sus funciones
+		Para i:=1 a 100 hacer 
+			Si (A[i]<menor) ent 				//Si es menor se actualiza
+				menor:=A[i];posme:=i; 			//y guarda posicion
+			FS
+			Si (A[i]>mayor) ent 				//Si es mayor se actualiza
+				mayor:=A[i];posma:=i; 			//y guarda posicion
+			FS
+			Si (A[i] MOD 2)=0 ent 				//Si entre esos 100 numeros hay pares
+				cont:=cont+1; 	  				//cuento cuantos numeros pares hay
+				acum:=acum+A[i];  				//y acumulo esos valores
+			FS
+		FP
+		Esc("El mayor valor de los 100 numeros es:", mayor,"posicion:", posma);
+		Esc("El menor valor de los 100 numeros es:", menor,"posicion:", posme);
+		Esc("El acumulado de numeros pares es:", acum,"Cantidad:", cont);
+FA
+
+Accion "3.4" es;
+	amb
+		A:Arreglo [1..50] de enteros; //Arreglo Cargado
+		B:Arreglo [1..50] de enteros; //Arreglo Vacio
+		i,j,cant,pos,ub: Enteros;     //posicion,ubicacion
+
+	Proceso
+		Para j:=1 a 50 hacer  //Inicializo Arreglo, asignando a todas las casillas 0
+			B[j]:=0;
+		FP
+		cant:=0; pos:=0;
+		Para i:=1 a 50 hacer  //Recorro los 50 numeros
+			Si (A[i] MOD 3)<>0 ent //Si no son multiplos de 3
+				j:=1;			//posiciono en la 1er casilla
+				mientras (B[j]<>0) hacer //mientras no sea una vacia avanzo
+					j:=j+1;	
+				fm			//al encontrar una vacia recien agrego el valor
+				B[j]:=A[i]; //asi el resto no se ocupa y quedan en 0
+				pos:=j+1; ub:=j; //guardo la ultima posicion/ubicacion hasta donde
+			Sino 				 //se guardaron los que no cumplian la condicion
+				cant:=cant+1;
+			FS
+		FP
+		Para i:=1 a 50 hacer /vuelvo a recorrerlo
+			Si (A[i] MOD 3)=0 ent //Si es un multiplo de 3
+				mientras (B[pos]<>0) hacer //mientras no sea una vacia avanzo
+					pos:=pos+1;	
+				fm			//al encontrar una vacia recien agrego el valor
+				B[pos]:=A[i]; //asi ocupa el resto del arreglo dejando los multiplos
+							//al final
+			FS
+		FP
+		Para i:=1 a 50 hacer  //Reseteo Arreglo A
+			A[i]:=0;
+		FP
+		Para j:=ub a 50 hacer //avanzo desde donde estan los multiplos
+			i:=1;
+			mientras (A[i]<>0) hacer //mientras no sea una vacia avanzo
+					i:=i+1;	
+			fm			//al encontrar una vacia recien agrego el valor
+			A[i]:=B[j];
+		FP
+		//Lo que consigo al hacer todo esto es que, se recorra el primer arreglo, se
+		//extraigan los no multiplos, y al final de estos se guardo los que si lo son
+		//asi al final reseteo el 1er arreglo y desde donde empiezan los multiplos
+		//hasta el final de estos guardo todos en el 1er arreglo, de esta forma evito
+		//tener que emplear un 3er arreglo, ocupar espacio de mas y ser mas eficiente
+		Esc("Cantidad de numeros multiplo de 3:", cant);
+FA
+
+Accion "3.5" hacer
+	amb
+		A:arreglo [1..30] de N(5,2);
+		B:arreglo [1..30] de N(5,2);
+		C:arreglo [1..60] de N(5,2);
+	proceso
+		para i=1 a 60 hacer
+			si (i<60) ent
+				para j=1 a 30 hacer
+					si (A[j]<B[j]) ent
+						C[i]:=A[j];C[i+1]:=B[j]; //grabo el menor valor y el mas grande en el siguiente
+					sino
+						C[i]:=B[j];C[i+1]:=A[j];
+					fs
+				fp
+				i:=i+2; //me salteo la casilla par que ya grabe 
+			fs
+		fp
+FA
+
+Accion "3.6" es;
+	amb
+
+
+Accion "3.9" hacer
+	amb
+		Libro=Registro
+			NrL: N(10);
+			Tit: AN(40);
+			Aut: AN(40);
+			CaH: N(3);
+		FR
+		Pos:1..200;
+		mayor:entero
+		posma,i:1...200;
+
+	Proceso
+		mayor:=LV
+		Para i:=1 a 200 hacer
+			si (A[i].Aut="Nicklaus Wirth") ent
+				Esc(A[i].Tit);
+				Si (A[i].Tit="Algortimos + Estructuras de Datos=Programa") ent
+					Pos:=i;
+				FS
+				Si (A[i].CaH>=mayor) ent
+					posma:=i;
+					mayor:=A[i].CaH;
+				FS
+			FS
+		FP
+		Esc(Pos);
+		Esc(A[posma].Tit);
+FA
+
+Accion "3.21" es;
+	amb
+		A:arreglo[1..6,1..6] de N(2);
+		i,j,x,z:N(2)
+	proceso
+		para i=1 a 5 hacer
+			para j=1 a 5 hacer
+				x:=x+A[i,j];
+			fp
+			A[i,6]:=x;
+			z:=z+A[i,6];
+		fp
+		para j=1 a 5 hacer
+			para i=1 a 5 hacer
+				x:=x+A[i,j];
+			fp
+			A[6,j]:=x;
+			z:=z+A[i,6];
+		fp
+		A[6,6]:=z;
+FA
+
+Accion "3.22" es;
+	amb
+		A:Arreglo[1..5,1..5] de enteros
+		B:Arreglo[1..2,1..5] de enteros
+		i,j:entero
+		//Sumar las filas y el total de cada una en la 1er Fila B
+		//Sumar las columnas y el total de cada una en la 2da Fila B
+
+	Proceso
+		Para i:=1 a 2 hacer
+			Para j:=1 a 5 hacer
+				B[i,j]=0;
+			FP
+		FP
+		Para i:=1 a 5 hacer
+			Para j:=1 a 5 hacer
+				B[1,i]:=B[1,i]+A[i,j];
+				B[2,i]:=B[2,i]+A[i,j];
+			FP
+		FP
+FA
+
+hacer hasta el 23
+
+Accion "3.23" es;
+	amb
+		H:Arreglo[1..4,1..7,1..50] de Enteros
+		T:Arreglo[1..7,1..50] de Enteros
+		i,j,k,max,min:Entero
+		dma,dmi: 1..4
+
+	Proceso
+		//No inicializo la matriz T ya que no necesito acumular.
+		Para k=1 a 50 hacer
+			min:=HV; max:=LV;
+			Para j=1 a 7 hacer
+				Para i=1 a 4 hacer
+					Si (H[i,j,k]>max) ent
+						max:=H[i,j,k];
+						dma:=j;
+					FS
+					Si (H[i,j,k]<min) ent
+						min:=H[i,j,k];
+						dmi:=j;
+					FS
+					T[j,k]:=T[j,k]+H[i,j,k];
+				FP
+				T[j,k]:=T[j,k]/4;
+			FP
+			Esc("Temp Max del paciente:",max "En el Dia:",dma);
+			Esc("Temp Min del paciente:",min "En el Dia:",dmi);
+		FP
+FA
+
+Accion "3.24" es;
+	amb
+		Super=Registro
+			AyN: 	AN(30); //Apellido y Nombre
+			NC:		1..10; //Numero de Caja
+			IF:		Real(10,2); //Importe Facturado
+			HF:		8..20; //Horario Facturado
+		FR
+		Sup: Archivo de Super Ord por AyN; S:Super;
+		A:Arreglo [1..11,1..6] de Reales;
+		i,j:Entero;
+
+	Proceso
+		Abrir E/(Sup); Leer(Sup,S);
+		Para i:=1 a 11 hacer
+			Para j:=1 a 6 hacer
+				A[i,j]:=0;
+			FP
+		FP
+		Mientras NFDA(Sup) hacer
+			Segun S.HF hacer //Segun el Horario de Facturacion
+				S.HF<=10: j:=1;
+				S.HF<=12: j:=2;
+				S.HF<=16: j:=3;
+				S.HF<=18: j:=4;
+				S.HF<=20: j:=5;
+			FS
+			i:=S.NC //Posiciono en el Numero de Caja
+			A[i,j]:=A[i,j]+S.IF; //Acumulo el Importe en su respectica casilla
+			A[i,6]:=A[i,6]+S.IF; //Total por Caja
+			A[11,j]:=A[11,j]+S.IF; /Total por Horas
+			A[11,6]:A[11,6]+S.IF; //Total General
+			Leer(Sup,S);
+		FM
+		Cerrar(Sup)
+FA
+
+accion "3.25" es;
+	amb
+		Fecha=Registro
+			A:N(4)
+			M:1..12
+			D:1..31
+		FR
+		Compras=Registro
+			NFa:N(10)
+			Pro:("A","B","C")
+			Fe: Fecha;
+			NPl:1..4
+			Imp:N(10,2)
+		FR
+		Com:Archivo de Compras; C:Compras
+		i,j,k:entero
+		A:arreglo[1..5,1..4,1..13] de N(15,2); //Planta, Proveedor, Mes
+	Proceso 								   //1....4, 1.......3, 1..12
+		abrirE/(Com); leer(Com,C);
+
+		para i=1 a 4 hacer
+			para j=1 a 3 hacer
+				para k=1 a 12 hacer
+					A[i,j,k]:=0;
+				fp
+			fp
+		fp
+
+		mientras nfda(Com) hacer //primero volcar todo el contenido en el arreglo
+			segun (C.Pro) hacer
+				="A": j:=1;
+				="B": j:=2;
+				="C": j:=3;
+			fs
+			i:=C.Imp;
+			k:=C.Fe.M;
+			A[i,j,k]:=A[i,j,k]+C.Imp; //al no estar ordenado puede haber mas de 1 valor en la misma casilla
+			leer(Com,C);
+		fm
+		para i=1 a 4 hacer
+			para j=1 a 3 hacer
+				Y:=+A[i,j,k];
+				para k=1 a 12 hacer
+					Z:=Z+A[i,j,k];
+				fp
+				A[i,j,13]:=Z;
+				Z:=0;
+			fp
+			A[i,4,k]:=Y;
+			Y:=0;
+		fp
+fa
+
+accion "3.26" es;
+	amb
+		Fecha=Registro
+			A:N(4)
+			M:1..12
+			D:1..31
+		FR
+		Factura=Registro
+			NFa:N(12)
+			NUs:N(10)
+			Zon:("A","B","C","D")
+			Fe: Fecha;
+			Con:N(5,2)
+		FR
+		Fac:Archivo de Factura; F:Factura;
+
+		A:Arreglo[1..13,1..5] de N(10,2)
+		i,j:entero
+	proceso
+		AbrirE/(Fac); leer(Fac,F);
+		para i=1 a 13 hacer
+			para j=1 a 5 hacer
+				A[i,j]:=0;
+			fp
+		fp
+		Mientras NFDA(Fac) hacer
+			i:=F.Fe.M;
+			Segun (F.Zon) hacer
+				="A": A[i,1]:=A[i,1]+(F.Con*0,05);
+				  A[13,1]:=A[13,1]+A[i,1]; 
+				  A[i,5]:=A[i,5]+A[i,1];
+
+				="B": A[i,2]:=A[i,2]+(F.Con*0,07);
+				  A[13,2]:=A[13,2]+A[i,2];
+				  A[i,5]:=A[i,5]+A[i,2];
+
+				="C": A[i,3]:=A[i,3]+(F.Con*0,09);
+				  A[13,3]:=A[13,3]+A[i,3];
+				  A[i,5]:=A[i,5]+A[i,3];
+
+				="D": A[i,4]:=A[i,4]+(F.Con*0,13);
+				  A[13,4]:=A[13,4]+A[i,4];
+				  A[i,5]:=A[i,5]+A[i,4];
+			fs
+			leer(Fac,F);
+		fm
+fa
+
+accion "3.27" es;
+	amb
+		Cliente=registro 
+              Numero:N(6)
+              Zona:an(8)
+              Tipo_de_mercadería:an(6)
+              CantUnidades:n(7)
+              TotalGravado:N(5)
+              TotalexentoIVA:N(9)
+              ValorIVA: N(4)
+        FR
+        Cli:archivo de cliente; C:Cliente;
+        sum: entero
+        i,j: entero
+        total_de_unidades_vendidas,unidades_vendidas: entero
+        dia_min,lectura_min:entero
+        dia_max,lectura_max: entero
+        A:Arreglo[1..5,1..10] de N(3)
+
+	Proceso
+		Abrir E/(Cli)
+		total_de_unidades_vendidas:=0
+		total_gravado_por_zona:=0
+		total_extenso_por_zona:=0
+		valor_del_IVA_total:=0
+
+		Para i:= 1 a 5 hacer
+            Para j:= 1 a 10 hacer 
+                A[i,j]:=0
+            Fin_para
+        Fin_para
+
+       	Mientras NFDA(archivo) hacer
+            A[C.Tipo_de_mercadería,C.Zona]:=A[C.Tipo_de_mercadería,C.Zona] +1;
+            A[5,C.Zona]:=A[5,C.Zona]+1;
+            A[C.Tipo_de_mercadería,10]:=A[C.Tipo_de_mercadería,10]+1;
+            A[5,10]:=A[5,10]+1
+            Leer(Cli,C)
+
+            Para j:= 1 hasta 9 hacer
+            	suma=0
+                Para i:=1 hasta 4 hacer
+                    total_de_unidades_vendidas:=total_de_unidades_vendidas + C.unidades_vendidas       
+                Fin_para
+
+                total_gravado_por_zona:=total_gravado_por_zona + C.total_gravado
+                total_extenso_por_zona:= total_extenso_por_zona + C.total_extenso
+                valor_del_IVA_total:=C.ValorIVA
+
+                suma:=suma + zona[i,j]
+            Fin_Para
+                
+ Fin_Acción 
+-----------------------------------------------------------------------------------------------------------
+Acción EJERCCIO 3.28 ES
+Ambiente
+         T:arreglo(1...N,1...N) de terreno
+         Terreno= registro
+            Nro_terreno:n(8)
+            Zona: (A..F)
+            Ubicación: al(9)
+            Superficie:n(8)
+          FinTerreno
+           ValorTerreno:entero
+           CofIncre:real
+
+         Zona:arreglo(1..N,1...6) DE ZONA
+        
+
+     Proceso
+;
+     Escribir('Ingreseel valor del coeficiente de incremento')
+     Leer(CofIncre);
+
+      Abrir E/(Arch_Terreno)
+      Leer(Arch_Terreno,Reg)
+          
+          ValorTerreno:=0
+          Para j:= 1 a N  hacer
+                    Para i:= 1 a 6 hacer 
+                     zona[i,j]:=0
+                 Fin_para
+                 Fin_para
+
+                   Mientras NFDA(Arch_Terreno) hacer
+                   ValorTerreno:= Reg.Superficie* zona[i,j]*CofIncre
+
+                   T(i,j):=ValoTerreno
+
+                   zona[Reg.Nro_terreno,Reg.Zona]:=zona[Reg.Nro_terreno,Reg.Zona] +1;
+                   zona[N,Reg.Zona]:=zona[N,Reg.Zona]+1;
+                   Fin_Mientras
+FinAcción

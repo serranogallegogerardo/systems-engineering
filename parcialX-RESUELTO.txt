@@ -1,0 +1,125 @@
+parcialX
+
+Valor terreno= superficiemetro^2 + valormetro^2 + coeficiente de incremento
+ Maestro ordenado x nro de terreno
+ NroTerreno zona superficie valor
+ Un arreglo V que contiene los valores del M2 x zona
+ Mov ordenado por nro de terreno
+ NroTerreno zona superficie codmov
+ Se pide: alta,baja, modificación y tener en cuenta que solo los campos actualizables son zona y valor
+
+accion parcialx(V:arreglo [1..N] de entero) es
+
+    ambiente
+    
+        tmae = reg 
+        
+             NroTerreno 
+             zona 
+             superficie
+             valor
+        
+        fr 
+        
+        tmov = reg
+        
+            NroTerreno
+            zona
+            superficie
+            codmov
+        
+        fr
+
+        valorterreno,smc,vmc,ce:entero
+        armae,arsal:archivo de tmae ordenado por NroTerreno 
+        armov:archivo de tmov ordenado por NroTerreno 
+
+        rsal,rmae:tmae
+        rmov:tmov
+
+        
+        Subaccion LeerMAE Es 
+
+            Leer(arMAE,rMAE)
+
+            Si FDA(arMAE) Entonces
+                rMAE.NroTerreno:=HV
+            FSi
+
+        Fs
+
+        Subaccion LeerMOV Es 
+
+            Leer(arMOV,rMOV)
+
+            Si FDA(arMOV) Entonces
+                rMOV.NroTerreno:=HV
+            FSi
+
+        Fs
+
+    proceso
+    
+        abrirE/(armae)
+        abrirE/(armov)
+        abrirS/(arsal)
+
+        // lo hice gral, hagan como se les cante.
+        Esc('Ingrese el valor del m2')
+        Leer(vmc)    
+        Esc('ingrese el coeficiente de incremento')
+        leer(cc)
+
+        LeerMAE
+        LeerMOV
+        
+           Mientras rmae.NroTerreno <> HV o
+           rmov.NroTerreno <> HV hacer
+           
+            Si rmae.NroTerreno < rmov.NroTerreno Entonces
+                Escribir(arsal,rmae)
+                LeerMAE
+            Sino
+
+                Si rmae.NroTerreno = rmov.NroTerreno Entonces 
+                    
+                    Segun rmov.codmov Hacer
+                        'A':
+                            Esc('ERROR, NO SE PUEDE DAR DE ALTA UN TERRENO EXISTENTE')
+                        'C':
+                            rSAL.ZONA:=rMOV.ZONA
+                            rSAL.valor:=rMOV.superficie+vmc+ce
+                            Escribir(arSAL,rSAL)
+                    Fs
+
+                    LeerMAE
+                    LeerMOV                    
+
+                Sino
+                    // rmae > rmov
+                    
+                    Segun rmov.codmov Hacer
+                        'A':
+                            // hago la alta de un nuevo terreno
+                            rSAL.NroTerreno:=rmov.NroTerreno 
+                            rSAL.zona:=rmov.zona
+                            rSAL.superficie:=rmov.superficie 
+                            rsal.valor:=rmov.superficie+vmc+ce
+            
+                        'B':
+                            Esc('Error, no se puede dar de baja un terreno inexistente')
+                        'C':
+                            Esc('Error, no se puede modificar un terreno inexistente')
+                    Fs
+
+                    LeerMOV
+                    
+                Fsi
+                
+           fm
+        
+        Cerrar(arsal)
+        Cerrar(armov)
+        Cerrar(armae)
+
+fa

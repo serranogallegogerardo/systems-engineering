@@ -1,0 +1,39 @@
+Construir un algoritmo recursivo que permita determinar si los dígitos de un número n dado son todos
+pares.
+FUNCION Pares(n:entero):logico ES 
+    AMBIENTE 
+        h: entero
+    PROCESO
+    SI n = 0 ENTONCES 
+        1)Pares:= Verdadero
+    SINO
+        2)h:= n MOD 10
+        Si (h MOD2 = 0) ENTONCES 
+        3)    Pares:= Pares(n DIV 10)
+        SINO 
+            4)Pares:= falso 
+        FSI
+    FSI  
+FF 
+    //2 4 6 
+    2)h= 6. 
+    3)N= 24. 
+
+    2)h= 4. 
+    3)N= 2.
+
+    2)H= 4. 
+    3)N= 0. 
+
+    1)Verdadero
+
+    //3 4 6 
+    2)h= 6.
+    3)n= 34. 
+
+    2)h= 4. 
+    3)N= 3.
+
+    2)h= 3. 
+    4) falso.
+    

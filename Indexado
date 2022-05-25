@@ -1,0 +1,425 @@
+Indexado
+
+Accion "2.3.1.b" es;
+	Amb
+		Fecha=Registro
+			A:N(4)
+			M:1..12
+			D:1..31
+		FR
+		Facturas=Registro
+			NCli:	N(8);
+			NFac:	N(6);
+			Fe:		Fecha;
+			Imp:	Real(5,2);
+		FR
+		Clientes=Registro
+			NCli:	N(8);
+			Nom:	AN(30)
+			DNI:	N(8);
+			CUIT:	N(11);
+			Dom:	AN(30);
+		FR
+
+		Fac:Archivo de Facturas Ord por NCli y NFac;	F:Facturas;
+		Cli:Archivo de Clientes Index por NCli;			C:Clientes;
+
+		TotImp:Real(10,2);
+		Cant:N(3);
+		N: N(8);
+
+	Proceso
+		Abrir E/(Fac); Abrir E/(Cli); Leer(Fac,F);
+		Esc("NumCliente-Nombre-TotalImporte-CantidadFacturas")
+		Mientras (NFDA(Fac)) hacer
+			TotImp:=0; Cant:=0;
+			C.NClie:=F.NClie;
+			Leer(Cli,C);
+			Si EXISTE Ent
+				N:=F.NCli;
+				Mientras NFDA(Fac) y (F.NCli=N) hacer
+					TotImp:=TotImp+F.Imp;
+					Cant:=Cant+1;
+					Leer(Fac,F);
+				FM
+				Esc(N, C.Nom, TotImp, Cant);
+			Sino
+				Mientras NFDA(Fac) y (F.NCli<>N) hacer
+					Leer(Fac,F);
+				FM
+				Esc("Error, Cliente Inexistente");
+			FS
+		FM
+		Cerrar(Fac);
+		Cerrar(Cli);
+FA
+
+Accion "2.3.2" es;
+	Amb
+		Fecha=Registro
+			A:N(4)
+			M:1..12
+			D:1..31
+		FR
+		Empleados=Registro
+			NSu: N(5)
+			Cat: ("A","B","C")
+			NEm: AN(40)
+			CCu: AN(40)
+			Tec: Booleano
+		FR
+		Curso=Registro
+			CCu: AN(40)
+			Nom: AN(40)
+			Fe:	 Fecha
+			CHs: N(2)
+		FR
+
+		Emp:Archivo de Empleados Ord por NSu y Cat; E:Empleados;
+		Cur:Archivo Index por CCu; C:Curso;
+
+		Et,En,TE
+
+	Proceso
+		Abrir E/(Emp); Abrir E/(Cur); Leer(Emp,E);
+		TE:=0; Et:=0; En:=0;
+		Esc("|Sucursal|Categoria|Nombre Emp|Curso|");
+		Mientras NFDA(Emp) hacer
+			C.CCu:=E.CCu; Leer(Cur,C);
+			Si EXISTE ent
+				Esc(E.NSu, E.Cat, E.NEm, C.Nom);
+			FS
+			Si (E.Tec=True) ent
+				Et:=Et+1;
+			Sino
+				En:=En+1;
+			FS
+			TE:=TE+1;
+			Leer(Emp,E);
+		FM
+		Esc("Cantidad de Empleados Tecnicos: Et");
+		Esc("Cantidad de Empleados No Tecnicos: En");
+		Esc("Cantidad Total de Empleados: TE");
+		Cerrar(Emp);
+		Cerrar(Cur);
+FA
+
+Accion "2.3.3" es;
+	Amb
+		Fecha=Registro
+			A:N(4)
+			M:1..12
+			D:1..31
+		FR
+		Peaje=Registro
+			Pat:	AN(6)
+			Fe:		Fecha;
+			UltH:	N(4);
+			Cost:	Real(1,2);
+		FR
+		Pea:Archivo de Peaje Indexado por Pat y Fe; P:Peaje;
+
+	Proceso
+		Abrir E/S(Pea);
+		Esc("Bienvenido, Desea Cruzar? S/N"); Leer(Op);
+		Mientras (Op="S") hacer
+			Esc("Ingrese Patente"); Leer(Pa);
+			Esc("Ingrese Fecha DIA MES AÑO"); Leer(F.D);Leer(F.M);Leer(F.A);
+			P.Pat:=Pa; P.Fe:=F; Leer(Pea,P);
+			Si EXISTE Ent
+				Esc("No debe pagar");
+				P.UltH:=HoraActual;
+				ReGrabar(Pea,P); //Actualizar Hora de cruce
+			Sino
+				Esc("Ingrese su Categoria: 1,2,3,4");Leer(C);
+				Segun C hacer
+					=1: P.Cost:=1.2;
+					=1: P.Cost:=1.2;
+					=1: P.Cost:=1.2;
+					=1: P.Cost:=1.2;
+				FS
+				P.Pat:=Pa;
+				P.Fe:=F;
+				P.UltH:=HORA_ACTUAL;
+				Grabar(Pea,P);
+			FS
+		FM
+	Cerrar(Pea);
+FA
+
+Accion "2.3.4" es;
+	Amb
+		Fecha=Registro
+			A:N(4)
+			M:1..12
+			D:1..31
+		FR
+		Productos=Registro
+			CPr:	N(8)
+			Nom:	AN(40)
+			Sto:	N(5)
+			Pre:	Real(5,2)
+		FR
+		Ticket=Registro
+			NTi:	N(7)
+			Fe:		Fecha;
+			Cli:	AN(40)
+		FR
+		DetalleT=Registro
+			NTi:	N(7)
+			NLi:	N(8)
+			CPr:	N(8)
+			Can:	N(5)
+		FR
+
+		Pro:Archivo de Productos Index por CPr; P:Producto;
+		Tic:Archivo de Ticket Index por  NTi; T:Ticket;
+		DeT:Archivo de DetalleT Index por NTi; D:DetalleT;
+
+		SubT,TotG:Real(10,2);
+		R1,R2: ("SI","NO");
+
+	Proceso
+		Abrir E/(Pro); Abrir E/S(Tic); Abrir E/S(DeT);
+
+		Repetir          // CICLO QUE GENERA EL TICKET Y TITULOS 
+            Esc("Ingrese su nombre");
+            Leer(T.Cli);
+            T.NTi:= OBTENER_TICKET();
+            T.Fe:= FechaActual ();
+            Esc("EMPRESA: ", SUPER);
+            Esc("CUIT: ", CUIT);
+            Esc("FECHA: ", T.Fecha);
+            Esc("CLIENTE: ", T.Cli);
+            Re-Grabar(Tic, T);
+            D.NTi:= T.NTi;
+            D.NLi:= 0;
+            Total:= 0;
+            Repetir      // CICLO QUE GENERA LOS DETALLES DEL TICKET
+                D.NLi:= D.NLi + 1;
+                Esc("Ingrese el codigo del producto que desea comprar");
+                Leer(P.CPr, D.CPr);
+                Leer(Pro, P);
+                SubT:= 0;
+                Si EXISTE ent
+                    Esc("Ingrese la cantidad que desea comprar");
+                    Leer(D.Can);
+                    SubT:= D.Can * P.Pre;
+                    Esc("PRODUCTO | CANTIDAD | SUBTOTAL");
+                    Esc(D.NLi, " | ", P.Nom, " | ", D.Can, " | ", SubT);
+                Sino
+                    Esc("ERROR, el supermercado no posee ese codigo de producto ingresado");
+                    Esc("INTENTE DE NUEVO");
+                FS
+                TotG:= TotG + SubT;
+                P.Sto:= P.Sto - D.Can;
+                Re-Grabar(DeT, D);
+                Re-Grabar(Pro, P);
+                Esc("¿Desea hacer una nueva compra de otro producto?");
+                Leer(R1);
+            Hasta que (R1 = "NO")
+            Esc("TOTAL: ", TotG);
+            Esc("¿Desea generar un nuevo ticket?");
+            Leer(R2);
+        Hasta que (R2 = "NO");
+        Cerrar(Pro);
+        Cerrar(Tic);
+        Cerrar(DeT);
+FA
+
+Accion "2.3.5" es;
+	Amb
+		SUELDO=REGISTRO
+			DNI:	N(8)
+			PER:	N(6)
+			NRE:	N(15)
+			AYN:	AN(50)
+			EMP:	AN(50)
+		FR
+		RECIBO=REGISTRO
+			NRE:	N(15)
+			CON:	N(8)
+			TIPO:	(0..2)
+			MON:	N(15,2)
+		FR
+		PETICIONES=registro
+			DNI N(8)
+			CAN N(15,2)
+		FR
+		SALIDA=registro
+			DNI N(8)
+			CAN N(15,2)
+			PUDO ("si","no")
+			ERR 1..2
+		FR
+		SUE:ARCHIVO DE SUELDO INDEX POR DNI,PER Y NRE; SU:SUELDO;
+		REC:ARCHIVO DE RECIBO INDEX POR NRE; R:RECIBO;
+		PET:ARCHIVO DE PETICIONES ORDENADO POR DNI; P:PETICIONES
+		SAL:ARCHIVO DE SALIDA ORDENADO POR DNI; S:SALIDA
+
+		SUELDO: N(15,2)
+		RESDNI: N(8)
+		MONMAX: N(15,2)
+
+	PROCESO
+		ABRIR E/(SUE);ABRIR E/(REC);ABRIR E/(PET);ABRIR/S(SAL);
+
+		MIENTRAS NFDA(PET) HACER
+
+			S.DNI:=P.DNI
+			S.CAN:=P.CAN
+
+			SU.DNI:=P.DNI
+			LEER(SUE,SU)
+
+			RESDNI:=SU.DNI
+			SUELDO:=0
+			MIENTRAS RESDNI=SU.DNI HACER
+				
+				R.NRE:=SU.NRE
+				LEER(RECIBO,R)
+
+				SI R.Tipo=0 o R.Tipo=1 ENT
+					SUELDO:=SUELDO+R.Monto
+				FS	
+				LEER(SUE,SU)
+
+			finmientras
+
+			SUELDO:=SUELDO/12
+
+			SI SUELDO > 10000 ENT
+				ESC("el usuario esta habilitado para comprar dolares")
+				MONMAX:=SUELDO*0.30
+				ESC("Podra comprar dolares por un valor en pesos de hasta: ",MONMAX)
+				SI MONMAX >= P.CAN ENT
+					S.Pudo:="SI"
+					S.Error:="No hubo errores"
+				Sino
+					S.Pudo:="NO"
+					S.Error:="2"
+				FS
+			sino
+				ESC("El usuario no se encuentra habilitado para comprar dolares, el promedio de su sueldo durante los ultimos 12 meses no supera los 2 salarios minimos")
+				S.Pudo:="NO"
+				S.Error:="1"	
+			FS	
+			GRABAR(SAL,S)
+			LEER(PET,P)
+		FM
+	CERRAR(SAL);
+FA
+
+INDEXADO,ARREGLOS,ESTADISTICO;(MEZCLA NO ENTRA)
+
+Accion "2.3.6" hacer
+	Amb
+		AUTOS=REGISTRO
+			CLAVE=REGISTRO	
+				GRU:N(2)
+				CAT:1..50
+				ANF:N(4)
+				NPA:N(8)
+			FR
+			DNI:N(8)
+			AYN:AN(25)
+			DOM:AN(30)
+		FR
+		DEUDAS=REGISTRO
+			CLAVED=REGISTRO
+				NPA:N(8)
+				ADE:N(4)
+				TRI:N(1)
+			FR
+			IMP:N(5,2)
+		FR
+		CUOTAS=REGISTRO
+			CLAVEC=REGISTRO
+				GRU:N(2)
+				CAT:1..50
+				ANF:N(4)
+			FR
+			IMP:N(5,2)
+		FR
+		AUT:ARCHIVO DE AUTOS ORDENADO POR CLAVE; A:AUTOS;
+		DEU:ARCHIVO DE DEUDAS INDEX POR CLAVED; D:DEUDAS;
+		CUO:ARCHIVO DE CUOTAS INDEX POR CLAVEC; C:CUOTAS;
+
+		RESGRU:N(2); RESCAT:1..50; RESANF:N(4);
+
+		SUBACCION "CORTEAÑO" ES;
+			ESC("AÑO FABRICADO:", RESANF);
+			ESC("TOTAL DEUDAS:", TOTDAÑO);
+			ESC("TOTAL CUOTAS:", TOTCAÑO);
+			RESANF:=A.CLAVE.ANF;
+			TOTDCAT:=TOTDCAT+TOTDAÑO;
+			TOTCCAT:=TOTCCAT+TOTCAÑO;
+			TOTDAÑO:=0;
+			TOTCAÑO:=0;
+		FSA
+		SUBACCION "CORTECAT" ES;
+			ESC("CATEGORIA:", RESCAT);
+			ESC("TOTAL DEUDAS:", TOTDCAT);
+			ESC("TOTAL CUOTAS:", TOTCCAT);
+			RESCAT:=A.CLAVE.CAT;
+			TOTDGRU:=TOTDGRU+TOTDCAT;
+			TOTCGRU:=TOTCGRU+TOTCCAT;
+			TOTDCAT:=0;
+			TOTCCAT:=0;
+		FSASUBACCION "CORTEGRU" ES;
+			ESC("GRUPO:", RESGRU);
+			ESC("TOTAL DEUDAS:", TOTDGRU);
+			ESC("TOTAL CUOTAS:", TOTCGRU);
+			RESGRU:=A.CLAVE.GRU;
+			TOTDG:=TOTG+TOTDGRU;//TOTAL GENERAL DE DEUDAS
+			TOTCG:=TOTG+TOTCGRU;//TOTAL GENERAL DE CUOTAS
+			TOTDGRU:=0;
+			TOTCGRU:=0;
+		FSA
+	PROCESO
+		ABRIR E/(AUT); ABRIR E/(DEU); ABRIR E/(CUO); LEER(AUT,A);
+		ESC("|CLAVE|PATENTE|DNI|APE Y NOM|DOMIC|DEUDA|4TO TRIMES|");
+		RESANF:=A.CLAVE.ANF;
+		RESCAT:=A.CLAVE.CAT;
+		RESGRU:=A.CLAVE.GRU;
+		TOTDAÑO:=0;
+		TOTCAÑO:=0;
+		TOTDCAT:=0;
+		TOTCCAT:=0;
+		TOTDGRU:=0;
+		TOTCGRU:=0;
+		MIENTRAS NFDA(AUT) HACER
+			SI (RESANF<>A.CLAVE.ANF) ENT
+				ESC(RESGRU, RESCAT, RESANF, A.DNI, A.AYN, A.DOM);
+				CORTEAÑO;
+			SINO
+				SI (RESCAT:=A.CLAVE.CAT) ENT
+					ESC(RESCAT, RESANF, A.DNI, A.AYN, A.DOM);
+					CORTECAT;	
+				SINO
+					SI (RESGRU:=A.CLAVE.GRU) ENT
+						ESC(RESANF, A.DNI, A.AYN, A.DOM);
+						CORTEGRU;
+					FS
+				FS
+			FS
+			D.CLAVED.NPA:=A.CLAVE.NPA; LEER(DEU,D);
+			SI EXISTE ENT
+				MIENTRAS (D.CLAVED.NPA=A.CLAVE.NPA) HACER //PUEDE QUE HAYA MAS DE UNA DEUDA
+					TOTDAÑO:=TOTDAÑO+D.IMP; //TOTAL DEUDAS
+					LEER(DEU,D);
+				FM
+			C.CLAVEC.GRU:=A.CLAVE.GRU; 
+			C.CLAVEC.CAT:=A.CLAVE.CAT; 
+			C.CLAVEC.ANF:=A.CLAVE.ANF;
+			LEER(CUO,C);
+			SI EXISTE ENT
+				TOTCAÑO:=TOTCAÑO+C.IMP; //TOTAL CUOTAS
+			FS
+			LEER(AUT,A);
+		FM
+		ESC("TOTAL:", TOTDG, TOTTG);
+		CERRAR (AUT);
+		CERRAR (DEU);
+		CERRAR (CUO);
+FA

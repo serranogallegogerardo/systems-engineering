@@ -1,0 +1,141 @@
+ACCIÓN 2doParcial ES
+    AMBIENTE
+        MOV = REGISTRO //este si o si
+            producID: N(4)
+            cliente: N(4)
+            tipo: {"C", "D"}
+            cant: N(5)
+            precio: N(6)
+            total: N(6)
+            envio: {"suc" , "dom"}
+        Fin_Registro
+
+        MOVIMIENTOS_DIARIOS: Archivo de MOV ordenado por producID
+        m: MOV
+
+        PROD = REGISTRO
+            Clave = Registro
+                productoID: N(4)
+            Fin_Registro
+            nombre: AN(40)
+            desc: AN(70)
+            rubro: {"Limpieza", "Carnicería", "Verdulería", "Bazar", "Panadería"}
+        Fin_Registro
+
+        PRODUCTOS: Archivo de PROD indexado por productoID
+        p: PROD
+
+        A: Arreglo [1..2, 1..5] de REAL
+        i,j: entero
+
+
+        Rubro, Envío: Alfanumérico (20)
+        Rubro_Mayor, Envío_Mayor, Devoluciones, Superaron_envío: entero
+
+        FUNCIÓN DETERMINAR_ENVÍO_RUBRO (Envío_Mayor, Rubro_Mayor) ES
+            SI (Envío_Mayor = 1) ENTOCES
+                Envío:= "A DOMICILIO"
+            SINO
+                Envío:= "RETIRO POR SUCURSAL"
+            Fin_Si
+
+            SEGÚN (Rubro_Mayor) HACER
+                = 1: Rubro:= "LIMPIEZA"
+                = 2: Rubro:=  "CARNICERÍA" 
+                = 3:  Rubro:= "VERDULERÍA" 
+                = 4: Rubro:=  "BAZAR"
+                = 5: Rubro:= "PANADERÍA" 
+            Fin_Según
+        Fin_Función
+
+    PROCESO
+        ABRIR E/(MOVIMIENTOS_DIARIOS)
+        ABRIR E/(PRODUCTOS)
+
+        LEER(MOVIMIENTOS_DIARIOS,m)
+
+        Devoluciones:= 0
+        Mayor:= LV
+
+        //No hay que incializar la matriz pq se crea a medida que le voy cargando datos
+
+        MIENTRAS NFDA(MOVIMIENTOS_DIARIOS) HACER
+            PARA i:= 1 a 2 HACER
+                PARA j:= 1 a 5 HACER
+                    p.Clave:= m.producID //me fijo si existe el producto del archivo de MOV
+                    LEER(PRODUCTOS,p)
+                    SI (EXISTE) ENTONCES
+                        SI (m.tipo = "C") ENTONCES
+                            SEGÚN (p.rubro) HACER //Asigno a cada rubro una columna
+                                = "Limpieza": 
+                                    j:= 1
+                                    Según (m.envio) HACER // Asigno a cada tipo de envío una fila
+                                        = "suc": i:= 1
+                                        = "dom": i:= 2
+                                    Fin_Según
+                                    A[i,j]:= m.total + A[i,j] // Cargo la matriz con los datos de las venta y le sumo las ventas previas que podría tener
+                                = "Carnicería": 
+                                    j:= 2
+                                    Según (m.envio) HACER
+                                        = "suc": i:= 1
+                                        = "dom": i:= 2
+                                    Fin_Según
+                                    A[i,j]:= A[i,j] + m.total 
+                                = "Verdulería": 
+                                    j:= 3
+                                    Según (m.envio) HACER
+                                        = "suc": i:= 1
+                                        = "dom": i:= 2
+                                    Fin_Según
+                                    A[i,j]:= m.total + A[i,j]
+                                = "Bazar": 
+                                    j:= 4
+                                    Según (m.envio) HACER
+                                        = "suc": i:= 1
+                                        = "dom": i:= 2
+                                    Fin_Según
+                                    A[i,j]:= m.total + A[i,j]
+                                = "Panadería": 
+                                    j:= 5
+                                    Según (m.envio) HACER
+                                        = "suc": i:= 1
+                                        = "dom": i:= 2
+                                    Fin_Según
+                                    A[i,j]:= m.total + A[i,j]
+                            Fin_Según
+                        SINO
+                            Devoluciones:= Devoluciones + 1
+                        Fin_Si
+                    Fin_Si
+                    LEER(MOVIMIENTOS_DIARIOS,m)
+                Fin_Para
+            Fin_Para
+        Fin_Mientras
+        
+
+        PARA i:= 1 a 2 HACER //c) Busco que tipo de envió facturó más de $200000 
+            PARA j:= 1 a 5 HACER
+                SI (A[i,j] > 200000) ENTONCES
+                    Superaron_envío:= i
+                    SI (Superaron_envío = "1") ENTONCES
+                        ESC("El tipo de envío que superó los $200.000 fué RETIRO POR SUCURSAL")
+                    SINO
+                        ESC("El tipo de envío que superó los $200.000 fué A DOMICILIO")
+                    Fin_Si
+                SINO
+                    SI (A[i,j] > Mayor) ENTONCES // a) Busco en qué rubro y tipo de envío hubo mayor movimiento monetario $
+                        Mayor:= A[i,j]
+                        Rubro_Mayor:= j
+                        Envío_Mayor:= i
+                    Fin_Si
+                Fin_Si
+             Fin_Para
+        Fin_Para
+
+        DETERMINAR_ENVÍO_RUBRO (Envío_Mayor, Rubro_Mayor)
+        
+        ESC("El rubro", Rubro, " en el tipo de envío ", Envío, " tuvo el mayor movimiento monetario")
+        ESC("En total se produjeron ", Devoluciones, " devoluciones")
+        CERRAR(MOVIMIENTOS_DIARIOS)
+        CERRAR(PRODUCTOS)
+FIN_ACCIÓN

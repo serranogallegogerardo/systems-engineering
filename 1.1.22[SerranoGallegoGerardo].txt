@@ -1,0 +1,37 @@
+1.1.22
+
+Escriba un algoritmo que determine si un número es primo.
+
+/*Para hacer el ejercicio se necesita saber calcular los divisores y tambien lo que es un numero primo.
+
+Un número primo es aquel que solo es divisible entre 1 y él mismo.
+entonces solo tiene 2 divisores.*/
+
+Accion primo ES
+
+	Ambiente
+
+		n,i,ct_divs:entero
+
+	Proceso
+
+		Esc('Ingrese un numero')
+		leer(n)
+
+		ct_divs:=0
+
+		Para i:=1 hasta n hacer
+
+			Si (n MOD i == 0) Entonces // ES DIVISOR
+
+				ct_divs:=ct_divs+1
+
+			Fsi // SI NO ES DIVISOR NO ME INTERESA
+
+		fin para
+
+		Si ct_divs+1 = 2 Entonces // si tiene 2 divisores es primo
+			Esc('El numero ', n ,' es primo.')
+		Fsi
+
+FA

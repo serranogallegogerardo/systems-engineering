@@ -1,0 +1,86 @@
+# ZONA X TIPO_MERCADERIA, total general
+# cantidad, total gr, total ex, total iva
+
+Accion 27 es
+
+Ambiente
+	ventas = registro
+		nro: N(5)
+		cli: N(5)
+		zona: 1..9
+		tipo: 1..4
+		cantidad: N(3)
+		gravado: Real(4,2)
+		exento: Real(4,2)
+		iva: Real(4,2)
+	fin registro
+	arch: Archivo de ventas
+	reg: ventas
+	datos = registro
+		cantidad: N(3)
+		gravado: Real(4,2)
+		exento: Real(4,2)
+		iva: Real(4,2)
+	fin registro
+	M : arreglo [1..5,1..10] de datos
+	i, j : entero
+
+	Procedimiento Cero() es
+		para i:= 1 hasta 5 hacer
+			para j:= 1 hasta 10 hacer
+				M[i,j].cantidad := 0
+				M[i,j].gravado := 0
+				M[i,j].exento := 0
+				M[i,j].iva := 0
+			fin para
+		fin para
+	fin Procedimiento
+
+Proceso
+	Abrir E/ (arch)
+	Leer (arch,reg)
+	Cero()
+	Mientras NFDA(arch) hacer
+		i := reg.tipo
+		j := reg.zona
+
+		# EN EL MEDIO (ZONA X TIPO)
+		M[i,j].cantidad := M[i,j].cantidad + reg.cantidad
+		M[i,j].gravado := M[i,j].gravado + reg.gravado
+		M[i,j].exento := M[i,j].exento + reg.exento
+		M[i,j].iva := M[i,j].iva + reg.iva
+
+		# CARGA TOTAL POR ZONA
+		M[5,j].cantidad := M[5,j].cantidad + reg.cantidad
+		M[5,j].gravado := M[5,j].gravado + reg.gravado
+		M[5,j].exento := M[5,j].exento + reg.exento
+		M[5,j].iva := M[5,j].iva + reg.iva
+
+		# TOTAL GENERAL
+		M[5,10].cantidad := M[5,10].cantidad + reg.cantidad
+		M[5,10].gravado := M[5,10].gravado + reg.gravado
+		M[5,10].exento := M[5,10].exento + reg.exento
+		M[5,10].iva := M[5,10].iva + reg.iva
+
+		Leer(arch,reg)
+	Fin Mientras
+	CERRAR(arhc)
+
+	ESCRIBIR(" ZONA 1 - ZONA 2  - ZONA 3  - ZONA 4  - ZONA 5  - ZONA 6  - ZONA 7  - ZONA 8  - ZONA 9")
+	ESCRIBIR("c-e-g-i - c-e-g-i - c-e-g-i - c-e-g-i - c-e-g-i - c-e-g-i - c-e-g-i - c-e-g-i - c-e-g-i")
+
+	Para i:= 1 hasta 4 hacer
+		ESCRIBIR("TIPO ",i)
+		para j:=1 hasta 9 hacer
+			ESCRIBIR(M[i,j].cantidad,M[i,j].gravado,M[i,j].exento,M[i,j].iva)
+		fin para
+	fin para
+
+	ESCRIBIR('TOTAL x ZONA ')
+	para j:= 1 hasta 9 hacer
+		ESCRIBIR(M[5,j].cantidad,M[5,j].gravado,M[5,j].exento,M[5,j].iva)
+	fin para
+
+	ESCRIBIR('TOTAL GENERAL ES: ',M[5,10].cantidad,M[5,10].gravado,M[5,10].exento,M[5,10].iva
+
+FIN ACCION

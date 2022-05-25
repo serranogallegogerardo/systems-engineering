@@ -1,0 +1,17 @@
+Para convertir un número decimal a binario, simplemente debe dividirse sucesivas veces por dos (2) hasta
+quedarnos con el cociente cero (0). Todos los restos de las divisiones, tomados en orden inverso, forman el
+número binario objetivo. Escribir un procedimiento recursivo que, recibiendo como parámetro un número entero
+positivo, muestre en pantalla el mismo número codificado en binario.
+// 8
+procedimiento Binario(Num: entero) ES
+    AMBIENTE 
+        cociente: entero 
+    PROCESO
+        SI (num DIV 2 = 0) ENTONCES 
+            Esc(Num)
+        SINO
+            Binario(Num DIV 2);
+            Esc(num MOD 2);
+            // 1 0 0 0
+        FSI 
+F-P            

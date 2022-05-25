@@ -1,0 +1,13 @@
+Determine recursivamente si un número dado es par o impar, usando sólo la operación resta.
+
+Funcion PoI(m:entero):booleano ES //cuando sea true sera par, y cuando sea false sera impar
+    SI m=0 ENTONCES 
+        PoI:= true 
+    SINO 
+        SI m=1 ENTONCES 
+            PoI:= false 
+        SINO 
+            PoI:= PoI(n-2)
+        FSI 
+    FSI 
+FSUB

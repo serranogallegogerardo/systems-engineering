@@ -1,0 +1,42 @@
+1.1.13
+
+Escriba un algoritmo que acepte un número entero mayor a 100 y
+ menor a 1000 que representa una suma de dinero e indique cuantos 
+ billetes de cada denominación necesita, suponiendo que solo existen billetes de 100, 10 y 1 peso.
+
+Accion billete ES
+
+	Ambiente
+
+		n:entero
+		aux:entero
+		i:entero
+
+	Proceso
+
+		aux:=0
+
+		repetir
+
+			Esc('Ingrese un numero entero mayor a 100 y menor a 1000')
+			Leer(n)
+
+		hasta que (n>100 y n<1000) // 101 o 999
+
+		Para i:=1 hasta 2 Hacer
+
+			aux:=n MOD 10
+			n:=n DIV 10
+
+			Si i = 1 Entonces
+
+				Esc('Cantidad de billetes de 1 peso:', aux)
+
+			Fsi
+
+		Fin Para
+
+		Esc('Cantidad de billetes de 10 pesos:', aux)
+		Esc('Cantidad de billetes de 100 pesos:', n)
+
+FA

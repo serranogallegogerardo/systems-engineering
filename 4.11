@@ -1,0 +1,102 @@
+En una empresa de servicios motorizados que NO posee una cantidad fija de integrantes, pero siempre es mayor que 1 (uno). Los datos de las personas está almacenados en un archivo (DNI, Nombre, Antigüedad) ordenado por DNI. Realizar un algoritmo que permita generar una lista de asignación (usando una estructura de lista doblemente encadenada), ordenada al principio por antigüedad, y un proceso que realice dicha asignación, en cada solicitud, por turno según orden en la lista. Una vez asignado dicha persona se va al final de la lista para esperar su nueva asignación. Al final del día informar cuantas asignaciones tuvo cada integrante.
+
+PERSONAL
+
+Nro_Personal N(5)Nombre AN(50)Asignaciones N(5)Antigüedad N(2)
+
+ACCION 4.11 ES 
+AMBIENTE 
+    r_motorizados = REGISTRO 
+        DNI : N(8)
+        Nombre: AN(20)
+        Antiguedad: N(2)
+    FR 
+
+    motorizados: archivo de r_motorizados ordenado por DNI 
+    v: r_motorizados
+
+    PRIM,ULT,Q,P: puntero a nodo 
+    PERSONAL = REGISTRO 
+        Nombre AN(50)
+        Asignaciones N(5)
+        Antigüedad N(2)
+    FR
+    nodo = REGISTRO 
+        datos: PERSONAL 
+        prox,ant: puntero a nodo 
+    FR 
+    booleano:= boolean
+
+
+PROCESO 
+    Abrir(motorizados)
+    Leer(motorizados,v)
+    MIENTRAS NFDA(motorizados) HACER 
+        P:= PRIM
+        Nuevo(Q)
+        *Q.datos.Nombre:= v.Nombre
+        *Q.datos.asignaciones:= 0
+        *Q.datos.Antiguedad:= v.Antiguedad
+        SI PRIM = NILL ENTONCES 
+            *PRIM:= Q 
+            *Q.ant:= NILL
+            *Q.prox:= NILL
+            *ULT:= Q
+        SINO 
+            MIENTRAS P <> NILL Y *P.datos.Antiguedad>v.Antiguedad HACER 
+                P:= *P.prox 
+            FM 
+            SI P = PRIM ENTONCES 
+                *Q.prox:= P 
+                *Q.ant:= NILL
+                *P.ant:= Q 
+                PRIM:= Q 
+            SINO 
+                SI P = NILL ENTONCES 
+                    *Q.prox:= NILL 
+                    *Q.ant:= ULT
+                    ULT.prox:= Q 
+                    ULT:= Q 
+                SINO 
+                    *Q.prox:= P
+                    *Q.ant:= *P.ant
+                    *(*P.ant).prox:= Q 
+                    *P.ant:= Q
+                FSI
+            FSI 
+        FSI 
+        Leer(motorizados,v)
+    FM 
+
+    Esc("¿Quiere realizar una nueva asignacion? S/N")
+    Leer(booleano)
+    MIENTRAS booleano = 'S' HACER
+        P:= PRIM 
+        *P.datos.Asignaciones:= *P.datos.Asignaciones + 1
+
+        //saco del principio
+        (*P.prox)*.ant:= nill 
+        PRIM := *P.prox
+
+        //lo pongo al final 
+        *ULT.prox:= P 
+        *P.ant := ULT 
+        *P.prox := nill
+        ULT:= P 
+    
+        Esc(¿Quiere relizar otra asignacion? S/N)
+        Leer(boleano)
+    FM 
+
+    P:= PRIM 
+    MIENTRAS P <> NILL HACER 
+        Esc("las asignaciones totales del motorista ", *P.datos.Nombre, "son ", *P.datos.asignaciones)
+        P:=*P.prox
+    FM 
+    Cerrar(motorizados)
+
+                      
+
+
+
+    

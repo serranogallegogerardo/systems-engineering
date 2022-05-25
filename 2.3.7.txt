@@ -1,0 +1,200 @@
+
+Ejercicio 2.3.7
+Crear un algoritmo que imprima un reporte como el que se indica,
+incluyendo totales por Obra Social y Clínica de liquidaciones a médicos.
+Los archivos que intervienen son:
+
+LIQUIDACIONES Ordenado por O.S. y Clinica
+
+O.S.ClinicaNro_LegMesAnioBrutoDescuento_AFIPDescuento_DGR
+Neto = Bruto – (Desc_AFIP + Desc_DGR)
+
+OBRAS_SOCIALES Indexado por Cod_Os
+
+Cod_OSNombre
+CLÍNICAS Indexado por Cod_Cli
+
+Cod_CliNombre
+MÉDICOS Indexado por Nro_Leg
+Nro_LegApyNomEspecialidadDNI
+
+Accion 2.3.7 ES
+
+	Ambiente
+
+		tLIQUIDACIONES = reg 
+
+			OS
+			Clinica
+			Nro_Leg
+			Mes
+			Anio
+			Bruto
+			Descuento_AFIP
+			Descuento_DGR
+
+		fr
+
+		tOBRAS_SOCIALES = reg
+
+			Cod_OS
+			Nombre
+
+		fr
+
+		tCLINICAS = reg
+
+			Cod_Cli
+			Nombre
+
+		fr
+
+		tMEDICOS = reg
+
+			Nro_Leg
+			ApyNom
+			Especialidad
+			DNI
+
+		fr
+
+		arLIQ:archivo de tLIQUIDACIONES Ordenado por OS y Clinica
+		arOBR:archivo de tOBRAS_SOCIALES Indexado por Cod_Os
+		arCLI:archivo de tCLÍNICAS Indexado por Cod_Cli
+		arMED:archivo de tMÉDICOS Indexado por Nro_Leg
+
+		rLIQ:tLIQUIDACIONES
+		rOBR:tOBRAS_SOCIALES
+		rCLI:tCLINICAS
+		rMED:tMEDICOS
+
+		tot_clinica,tot_OS,neto:entero
+
+		Subaccion imprimir_OS(arOBR:archivo de tOBRAS_SOCIALES Indexado por Cod_Os,
+							rOBR:tOBRAS_SOCIALES,
+							arLIQ:archivo de tLIQUIDACIONES Ordenado por OS y Clinica,
+							rLIQ:tLIQUIDACIONES) ES
+
+			rOBR.Cod_OS:=rLIQ.OS
+			Leer(arOBR,rOBR)
+
+			Si Existe Entonces
+				Esc('Obra social:' rOBR.nombre)
+			Sino
+				Esc('Obra social:NO EXISTE')
+			Fsi
+
+		Fsi
+
+		Subaccion imprimir_titulos(arCLI:archivo de tCLÍNICAS Indexado por Cod_Cli
+							,rCLI:tCLINICAS
+							,arLIQ:archivo de tLIQUIDACIONES Ordenado por OS y Clinica
+							,rLIQ:tLIQUIDACIONES) ES
+
+			rCLI.Cod_Cli:=rLIQ.Clinica
+
+			Leer(arCLI,rCLI)
+
+			Si Existe ENTONCES
+				Esc('Clinica: ',rCLI.nombre)
+			Sino
+				Esc('Clinica: NO EXISTE')
+			Fsi
+
+			Esc('				MEDICOS			')
+			Esc('Nro_legajo 	Nombre 	 	Neto')
+
+		Fs
+
+		Subaccion corte_OS ES
+		
+			corte_clinica
+			Esc('Total Obra social:', tot_OS)
+			// AC NSI ( NO SE HACE PORQUE NO ME PIDEN NADA MAS )
+			//RES y CONT 0
+			tot_OS:=0
+			resOS:=rLIQ.OS
+
+		Fs
+
+		Subaccion corte_clinica ES
+
+			//NSI
+			//ESC
+			Esc('Total Clinica:', tot_clinica)
+			//ACUM
+			tot_OS = tot_OS + tot_clinica
+			//RES y cont 0
+
+			tot_clinica:=0
+
+			resClinica:=rLIQ.Clinica
+
+		Fs
+
+	Proceso
+
+		AbrirE/(arLIQ)
+		Leer(arLIQ,rLIQ)
+		AbrirE/S(arCLI);AbrirE/S(arOBR);AbrirE/S(arMED);
+
+		tot_clinica:=0
+		tot_OS:=0
+
+		resOS:=rLIQ.OS
+		resClinica:=rLIQ.Clinica
+
+		imprimir_OS(arOBR,rOBR,arLIQ,rLIQ) // Obra social:
+		imprimir_titulos(arCLI,rCLI,arLIQ,rLIQ) // Clinica y titulos restantes.
+
+
+		Mientras NFDA(arLIQ) Hacer
+
+			//tratar corte
+
+			Si resOS <> rLIQ.OS Entonces
+				corte_os
+				imprimir_OS // VIENE OTRA OBRA SOCIAL ENTONCES IMPRIMO NUEVAMENTE EL FORMATO
+				imprimir_titulos // LOS TITULOS DEBAJO DEL FORMATO
+			Sino
+
+				Si resClinica <> rLIQ.Clinica Entonces
+
+					corte_clinica
+
+				Fsi
+
+			Fsi
+
+			neto = rLIQ.Bruto – (rLIQ.Desc_AFIP + rLIQ.Desc_DGR)
+			tot_clinica:=tot_clinica+neto
+
+			//tratar index
+
+			rMED.Nro_Leg:=rLIQ.Nro_Leg // busco en nro
+
+			Leer(arMED,rMED)
+
+			Si Existe Entonces
+				
+				// ya tengo legajo rMED.Nro_Leg
+				// ya tengo el nombre rMED.ApyNom
+				// ya tengo el neto la var 'neto'
+				esc(rMED.Nro_Leg,' 	 	',rMED.ApyNom,' 	 	',neto)
+
+			Sino 
+				Esc('ERROR')
+			Fsi
+
+			Leer(arLIQ,rLIQ)
+
+		Fm
+
+		corte_OS
+
+		Cerrar(arLIQ)
+		Cerrar(arCLI);		Cerrar(arMED);		Cerrar(arOBR);
+
+FA
+
+//COD: 1H y !min

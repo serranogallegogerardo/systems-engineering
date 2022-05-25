@@ -1,0 +1,55 @@
+A un trabajador le pagan segun sus horas trabajadas. 
+Si la cantidad de horas trabajadas es mayor a 40 semanal.
+ la tarifa se incrementa en 50% para las horas extras.
+Calculcar el salario mensual del trabajador dadas las horas trabajadas
+por semana por precio y hora
+
+GERARDO SERRANO
+
+Accion trabajador ES
+
+	Ambiente
+		Variables
+		ht,he:entero // ht= horas trabajadas,he= horas extras
+		s,ph:real //salario,por hora
+		Constantes
+		mes = 4.34524
+
+	Proceso
+
+		esc('ingrese la cantidad de horas trabajadas')
+		leer(ht)
+		esc('ingrese el salario correspondiente 40 horas semanales trabajadas')
+		leer(s) // salario
+
+		Si ht > 40 Entonces
+
+			he:=ht-40
+			ph:=(s / ht)// por hora
+
+			Si he > 0 Entonces
+
+				s:=s+(he*((s / ht)*1.5)) 
+
+			Fsi
+			// s es salario de la semana
+
+			Esc('Salario')
+
+			Esc('Por mes:', (s*mes))
+			Esc('Por semana:', s)
+			Esc('Por hora comun:', ph)
+			Esc('Por hora extra:', (ph*1.5))
+
+		Sino
+
+			ph:=(s/ht)
+
+			Esc('Salario')
+			Esc('Por mes,' (s*mes))
+			Esc('Por semana:', s)
+			Esc('Por hora comun:', ph)
+
+		Fsi	
+
+FA

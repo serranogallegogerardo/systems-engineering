@@ -1,0 +1,34 @@
+program Hello;
+
+// Lista simplemente enlazada
+
+type
+lista = ^nodosimple;
+    nodosimple = record
+            dni: integer;
+            nombre: integer; 
+            materia: string[40];
+            legajo  : string[30];
+            sig : lista;
+    end;
+
+// lista doblemente enlazada
+type
+listad = ^nododob;
+    nododob = record
+            dni: integer;
+            nombre: integer; 
+            nrosocio: integer;
+            cantvideos : integer;
+            sig,ant : listad;
+    end;
+
+var 
+    prim,p:lista;// simple
+    prim1,p1:listad;// doble
+// Lista circular simplemente
+
+begin
+  writeln ('Hello World')
+end.
+

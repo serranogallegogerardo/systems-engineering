@@ -1,0 +1,112 @@
+Se dispone de un archivo secuencial de facturas de una empresa de energía eléctrica, correspondientes a un año, con el siguiente 
+formato:
+
+Nro_FacturaNro_UsuarioZonaFechaConsumo
+Se desea obtener un cuadro estadístico que informe los consumos y los importes totales facturados por mes discriminados por zona,
+con el siguiente formato:
+
+Zona A	Zona B	Zona C	Zona D	Total por mes
+Enero	...	...	...	...	...
+Febrero	...	...	...	...	...
+...	...	...	...	...	...
+Diciembre	...	...	...	...	...
+Total por zona	...	...	...	...	Total General
+
+La ciudad está dividida en 4 Zonas (A,B,C,D), la tarifa por Kw. que cobra la empresa en cada una de ellas es: Zona A: $ 0,05, 
+Zona B: $ 0,07, Zona C: $ 0,09 y Zona D: $ 0,13.
+
+accion 326 es
+    ambiente
+        DIMA = 13; DIMB = ('A','B','C','D');
+
+        fechar = registro
+            aa:N(4)
+            mm:1..12
+            dd:1..31
+        fin registro
+
+        factura = registro
+            nro_factura:N(5)
+            nro_usuario:N(5)
+            zona: DIMB
+            fecha:fecha
+            consumo:Real
+        fin registro
+
+        arch: Archivo de factura;
+        m:Arreglo [1..DIMA]['A'..'E'] de Real
+        a:Arreglo ['A','D'] de Real
+
+        subaccion cargar_totalizar(arch:Archivo de factura,
+                                    m:Arreglo [1..DIMA]['A','E'] de Real,
+                                    a:Arreglo ['A','D'] de real
+                                ) es
+            ambiente
+                x:entero; c:caracter;
+                reg:factura
+            algoritmo
+                leer(arch, reg)
+                mientras nfda(arch) hacer
+                    m[reg.fecha.mm, reg.zona]:= m[reg.fecha.mm, reg.zona] + (reg.consumo * a[reg.zona])
+                    m[13,reg.zona]:= m[13,reg.zona] + m[reg.fecha.mm, reg.zona]
+                    m[reg.fecha.mm, 'E']:= m[reg.fecha.mm, 'E'] + m[reg.fecha.zona, reg.zona]
+                    leer(arch, reg)
+                fin mientras
+
+                para(x:= 1 a 12) hacer
+                    m[13,'E']:= m[13,'E'] + m[x,'E']
+                fin para
+
+                para(c:= 'A' a 'D') hacer
+                    m[13,'E']:= m[13,'E'] + m[13,c]
+                fin para
+    fin subaccion
+
+    subaccion init_A(m:Arreglo [1..DIMA]['A'..'E'] de Real)
+        ambiente
+            c:caracter; x: entero
+        algoritmo
+            para (x:= 1 a DIMA) hacer
+                para(c:= 'A' a 'E') hacer
+                    m[x,c]:= 0
+                fin para
+            fin para
+    fin subaccion
+
+    subaccion init_B(a:Arreglo ['A'..'D'] de Real)
+        ambiente
+            c:caracter
+        ambiente
+            para (c:= 'A' a 'E') hacer
+                segun (c) hacer
+                    ='A':
+                        a[c]:= 0,05
+                    ='B':
+                        a[c]:= 0,07
+                    ='C':
+                        a[c]:= 0,09
+                    ='D':
+                        a[c]:= 0,13
+                fin segun
+            fin para
+    fin subaccion
+
+    subaccion mostrar_matriz(m:Arreglo [1..DIMA]['A','E'] de Real)
+        ambiente
+            x:entero; c:caracter;
+        algoritmo
+            esc("|        | Zona A | Zona B | Zona C | Zona D |")
+            para (x:= 1 a DIMA) hacer
+                esc("| ",x," | ")
+                para (c:= 'A' a 'E') hacer
+                    esc(m[x,c], " | ")
+                fin para
+            fin para
+    fin subaccion
+
+    algoritmo
+        abrir e/(arch);
+        init_A(m); init_B(a);
+        cargar_totalizar(arch, m, a)
+        mostrar_matriz(m)
+fin accion

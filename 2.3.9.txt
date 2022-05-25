@@ -1,0 +1,121 @@
+
+Accion 2.3.9 ES
+
+  Ambiente
+
+    tCLIENTES = reg
+      ID
+      Nombre
+      CUIT
+      Saldo
+    fr
+
+    tVENTAS = reg
+      Venta_Numero
+      Venta_Fecha
+      Factura_Numero
+      ProductoID
+      Cantidad_Vendida
+      ClienteID
+    fr
+    
+    tDETALLE_CLIENTES = reg
+      Nro_Operacion
+      Fecha_Operacion
+      ClienteID
+      Importe
+      Factura_Numero
+    fr
+
+    tPRODUCTO = reg
+      Producto_ID
+      Stock
+      Producto_Detalle
+      Costo_Unitario
+    fr
+
+    arCLI:archivo de tCLIENTES Indexado por ClienteID
+    arVEN:archivo de tVENTAS Ordenado por Venta_Numero
+    arPRO:archivo de tPRODUCTOS Indexado por Producto_ID
+    arDET:archivo de tDETALLE_CLIENTES indexado por Venta_Numero
+    rCLI:tCLIENTES
+    rVEN:tVENTAS
+    rPRO:tPRODUCTOS
+    rDET:tDETALLE_CLIENTES
+
+    Procedimiento tratarmuchasventas() ES
+        rPRO.ProductoID:=rVEN.ProductoID
+        Leer(arPRO,rPRO)
+
+        Si EXISTE Entonces // producto existe en la venta 
+          Si rPRO.stock >= rVEN.cant_vendida Entonces
+
+            rPRO.Stock:=rPRO.Stock-rVEN.Cantidad_Vendida
+            RE-GRABAR(arPRO,rPRO)
+
+            // manteca 5, pan 10, lapicera 20
+            rDET.importe:=(rVEN.Cantidad_vendida*rPRO.costo_unitario)  acumprodven:= acumprodven + rVEN.Cantidad_vendida        
+            
+          Sino 
+            Esc('La cantidad vendida supera el stock existente')
+          fin si
+        Sino // no existe el producto
+          Esc('Producto inexistente', rPRO.PRODUCTOID)
+        Fin si
+    fp
+
+  Proceso
+
+    ABRIRE/S(arCLI)
+    ABRIRE/(arVEN)
+    ABRIRE/S(arPRO)
+    ABRIR/S(arDET)
+    Leer(arVEN,rVEN)
+    acumprodven:=0
+
+      Mientras NFDA(arVEN) Hacer
+
+        rCLI.ID:=rVEN.ClienteID
+        Leer(arCLI,rCLI)
+
+        Si EXISTE Entonces
+
+          tratarmuchasventas()
+          //rDET Nro_OperacionFecha_OperacionClienteIDImporteFactura_Numero
+          rDET.Nro_Operacion:=rVEN.Venta_numero
+          rDET.Fecha_Operacion:=rVEN.Venta_fecha
+          rDET.ClienteID:=rCLI.ID
+          rDET.Factura_numero:=rVEN.Factura_Numero
+          GRABAR(arDET,rDET) // crea un nuevo registro que se almacena en el archivo
+          // detalle de clientes
+
+          //descuento el importe del saldo del cliente
+          rCLI.saldo:=rCLI.saldo-rDET.importe
+          RE-GRABAR(arCLI,rCLI)
+
+        Sino
+          Esc('Cliente inexistente',rCLI.ID)
+        Fin si
+
+        Leer(arVEN,rVEN)
+
+      Fin mientras
+
+    rCLI.ID:=0 // me paro en el primer cliente
+    Leer(arCLI,rCLI)
+
+    Mientras NFDA(arCLI) Hacer
+
+      Esc('ClienteID Cliente_Nombre Cliente_CUIT Cliente_Saldo')
+      Esc(rCLI.ID,' ',rCLI.Nombre,' ',rCLI.CUIT,' ',rCLI.Saldo)
+
+      Leer(arCLI,rCLI) 
+
+    Fin mientras
+
+    CERRAR(arCLI)
+    CERRAR(arVEN)
+    CERRAR(arPRO)
+    CERRAR(arDET)
+Fin accion
+

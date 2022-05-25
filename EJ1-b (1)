@@ -1,0 +1,109 @@
+ACCIÓN EJ1 ES
+    AMBIENTE
+        FECHA = REGISTRO
+            DÍA: N(2)
+            MES: N(2)
+            AÑO: N(2)
+        FIN_REGISTRO
+
+        MAE = REGISTRO
+            ID: N(4)
+            F: FECHA
+            precip: N(5)
+            estado: {"AC", "MA"}
+        FIN_REGISTRO
+
+        PRECIPITACIONES_ANUALES, SAL: Archivo de MAE ordenado por ID y F.
+        p,sa: MAE
+
+        MOV = REGISTRO
+            PluvID: N(4)
+            Fr: FECHA
+            hora: N(2,2)
+            est: {"AC", "MA"}
+            precipitaciones: N(5)
+        FIN_REGISTRO
+
+        MEDICIONES: Archivo de MOV ordenado por PluvID yy Fr.
+        m: MOV
+
+        INDX = REGISTRO
+            pid: N(4)
+            modelo: N(4)
+            desc: AN(40)
+            Depto: [1..25]
+        FIN_REGISTRO
+
+        PLUVIÓMETROS: Archivo de INDX indexado por pid.
+        i: INDX
+
+        DEPARTAMENTO: Arreglo [1..25] de Alfanumérico(30)
+        d: entero
+
+        SUBACCIÓN leer_mov ES
+            LEER(MEDICIONES,m)
+            SI FDA(MEDICIONES) ENTONCES
+                PluvID:= HV
+            FIN_SI
+        FIN_SUBACCIÓN
+
+        SUBACCIÓN leer_mae ES
+            LEER(PRECIPITACIONES_ANUALES,p)
+            SI FDA(PRECIPITACIONES_ANUALES) ENTONCES
+                ID:= HV
+            FIN_SI
+        FIN_SUBACCIÓN
+
+        mantenimiento: Entero
+        
+    PROCESO
+        ABRIR E/(PRECIPITACIONES_ANUALES)
+        ABRIR E/(MEDICIONES)
+        ABRIR S/(SAL)
+
+        leer_mae
+        leer_mov
+
+        mantenimiento:= 0
+
+        MIENTRAS (PluvID <> HV) y (ID <> HV) HACER
+            SI (m.est = "AC") ENTONCES
+                SI (ID < PluvID) ENTONCES
+                    SI (m.estado = "AC") ENTONCES
+                        sa:= m
+                        GRABAR(SAL,sa)
+                        leer_mov
+                    FIN_SI
+                SINO
+                    SI (ID = PluvID) ENTONCES
+                        MIENTRAS (ID = PluvID) HACER
+                            sa.ID:= m.PluvID
+                            sa.F:= m.Fr
+                            sa.precip:= m.precipitaciones
+                            sa.estado:= m.est
+                            GRABAR(SAL,sa)
+                            leer_mov
+                        FIN_MIENTRAS
+                    SINO
+                        leer_mov
+                    FIN_SI
+                FIN_SI
+            SINO
+                i:= PluvID
+                Leer(INDX,i)
+                SI (EXISTE) ENTONCES
+                    mantenimiento:= mantenimiento + 1
+                    PARA d:= 1 a 25 HACER 
+                        SI (i.depto = DEPARTAMENTO[d]) ENTONCES
+                            ESC("El pluviómetro", i.pid," del departamento ", DEPARTAMENTO[d], " se encuentra en mantenimiento")
+                        FIN_SI
+                    FIN_PARA           
+                FIN_SI
+                leer_mov
+            FIN_SI
+        FIN_MIENTRAS
+        ESC("La cantidad de pluviómetros en mantenimiento es de", mantenimiento)
+        CERRAR(PRECIPITACIONES_ANUALES)
+        CERRAR(MEDICIONES)
+        CERRAR(SAL)
+FIN_ACCIÓN

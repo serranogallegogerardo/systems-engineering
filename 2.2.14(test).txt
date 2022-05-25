@@ -1,0 +1,101 @@
+Ejercicio 2.2.14
+Dados el siguiente fichero con datos de un censo de la ciudad de Resistencia:
+
+CENSO Ordenado por Radio, Manzana, Nro_Vivienda
+
+RadioManzanaNro_ViviendaCondicion_ViviendaCantidad_Habitantes
+Condición puede ser : Muy Buena, Buena o Mala.
+ Obtener los siguientes totales de personas que habitan en viviendas cuya condición es muy buena: total en la ciudad y totales por Radio y Manzana).
+
+Accion 2.2.14 ES
+
+	Ambiente
+
+		tCENSO = reg
+
+			Radio:N(5)
+			Manzana:N(5)
+			Nro_Vivienda:N(5)
+			Condicion_Vivienda:('MuyBuena','Buena','Mala')
+			Cantidad_Habitantes:N(8)
+
+		fr
+
+		ar_cen:archivo de tCENSO Ordenado por Radio, Manzana, Nro_Vivienda
+		r:tCENSO
+
+		//acum
+		ac_people,ac_rad,totgral:entero
+
+		Subaccion corte_Radio ES
+
+			corte_Manzana
+			Esc("Radio:", res_radio)
+			Esc("Cantidad de habitantes en el mismo radio", ac_rad)
+
+			totgral:=ac_rad+totgral
+
+			ac_rad:=0
+
+			res_radio:=r.Radio
+
+		Fs
+
+		Subaccion corte_Manzana ES
+
+			// i'm on NII
+			//IMPRIM
+			Esc("Manzana:",res_Manzana)
+			Esc("Cantidad de Habitantes de la Manzana:", ac_people)
+
+			ac_rad:=ac_rad+ac_people
+
+			ac_people:=0
+
+			res_Manzana:=r.Manzana
+
+		Fs
+
+		
+
+	Proceso
+
+		AbrirE/(ar_cen)
+		Leer(ar_cen,r)
+
+		//acum
+		totgral:=9
+		ac_people:=0
+		ac_rad:=0
+		//res
+
+		res_radio:=r.Radio
+		res_Manzana:=r.Manzana
+
+			Mientras NFDA(ar_cen) Hacer
+
+				Si r.Condicion_Vivienda = 'Muy buena' Entonces
+
+					Si res_radio <> r.Radio Entonces
+						corte_Radio
+					Sino 
+						Si res_Manzana<>r.Manzana Entonces
+							corte_Manzana
+						Fsi
+					Fsi
+					
+					ac_people:=ac_people+r.Cantidad_Habitantes
+					
+				Fsi
+
+				Leer(ar_cen,r)
+
+			Fm
+
+			corte_Radio
+
+			Esc("La cantidad total de habitantes de la ciudad es de: ", totgral)
+
+		Cerrar(ar_cen)
+
+FA

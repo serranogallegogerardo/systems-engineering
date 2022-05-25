@@ -1,0 +1,29 @@
+Diseñar un algoritmo para mostrar por pantalla el k-ésimo elemento de una lista (siendo k una posición dada). Si la lista está vacía o si el valor de k esta fuera del rango del índice de la lista, invocar al procedimiento de ERROR. En cualquier otro caso, efectuar el procedimiento solicitado.
+
+ACCION 4.1 ES 
+AMBIENTE 
+    p,Prim: puntero a Nodo
+    Nodo = Registro
+        dato: N(9)
+        prox: puntero a Nodo
+    Fin-Reg
+    Pos: entero
+PROCESO
+    Esc("Ingrese la posicion")
+    Leer(Pos) 
+    SI Prim = Nill ENTONCES
+        Error()
+    FSI
+    SINO
+        p:= Prim
+        MIENTRAS p <> Nill y pos > 0 HACER
+            p:= p.prox
+            pos:= pos- 1
+        FM
+        SI p = Nill ENTONCES 
+            Error()
+        SINO
+            Esc("Su elemento es ", p.dato)
+    FSI 
+Fin_Accion
+    

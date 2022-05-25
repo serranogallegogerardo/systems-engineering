@@ -1,0 +1,94 @@
+BUSQUEDAS:
+
+/* MI CONCLUSION, CONVIENE MAS APRENDER LINEAL Y LINEAL CON CENTINELA Y LISTO.*/
+
+Busqueda lineal:
+/* es el codigo mas pelotudamente facil de acordarse,
+sin embargo, es el unico que admite multiples busquedas.
+se usa en arreglos chicos. 
+*/
+
+menor:=A[1]
+Para i:=2 hasta N hacer
+	Si A[i] < menor Entonces
+		menor:=A[i]
+	Fsi
+Fp
+Esc('El menor elemento es:',menor)
+
+////////////////////////////////////////////////
+
+Busqueda lineal con centinela:
+
+Leer(dato)
+x:=1
+Mientras x<N y dato<>A[x] Hacer
+	x:=x+1
+Fm
+Si dato = A[x] Entonces
+	esc('Elemento encontrado en ',x)
+Sino
+	Esc('Elemento no encontrado.')
+Fsi
+
+////////////////////////////////////////////////
+
+//////////////////////////////////////////////////
+
+Ordenamiento por intercambio:
+// El mas fachero, facil de leer y rapido.
+band:=falso
+Mientras band = falso Hacer
+	bandera:=verdadero
+	Para j:=1 hasta (N-1) Hacer
+		Si A[j] > A[j+1] Entonces
+			X:=A[j]
+			A[j]:=A[j+1]
+			A[j+1]:=x
+			band:=falso
+		Fsi
+	Fp
+Fm
+	
+Ordenamiento por insercion: 
+//El codigo mas corto para ordenar
+Para i:=2 hasta N hacer
+	x:=A[i]
+	j:=i-1
+	Mientras j>0 y x<A[j] hacer
+		A[j+1]:=A[j]
+		j:=j-1
+	fm
+	A[j+1]:=x
+Fp
+
+// hay un ordenamiento mas pero es horrible
+// el de seleccion
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// NO RECOMIENDO ESTA
+BUSQUEDA BINARIA:
+
+//recopilacion de datos
+Esc('Ingrese un numero')
+Leer(dato) 
+medio:=(izq+der) DIV 2
+//ciclo de busqueda
+Mientras (izq < der) y (dato <> A[medio]) hacer
+Si dato < A[medio] Entonces
+	Der:=medio-1
+Sino
+	izq:=medio+1
+Fsi
+medio:=(izq+der) DIV 2
+Fm
+// condicional se encontro?
+SI dato = A[medio] Entonces
+	Esc('Elemento encontrado')
+Sino
+	Esc('No esta el elemento.')
+Fsi
+
+busquedas:
+https://docs.google.com/presentation/d/e/2PACX-1vTHjXn5rIivTHD0fQOHuZ4Df92w78LT_Ps-6k-w5m8RPIJADaOWLXvaSVtkSIKTizvr4jwiOUs-2u0n/pub?start=false&loop=false&delayms=3000&slide=id.g93b0a73430_0_188

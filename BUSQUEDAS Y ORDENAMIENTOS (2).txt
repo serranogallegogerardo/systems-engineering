@@ -1,0 +1,626 @@
+BUSQUEDAS Y ORDENAMIENTOS
+
+Cuando usar c/u?
+Busqueda lineal: Multiples busquedas 
+Busqueda C.C.: arreglo Desordenado y ordenado,cortos, 1elemento
+Busqueda B.  : arreglo ordenado,largo,1elemento 
+
+
+//////////////////
+
+Arreglos
+Búsqueda
+Búsqueda lineal
+
+
+LEER(x) 
+PARA i:= 1 a N HACER
+  SI A[i] = x ENTONCES
+  Escribir ('El elemento', x, 'está en la posición', i)
+  FIN SI
+FIN PARA
+
+Búsqueda lineal con centinela¶
+
+
+LEER(x)
+i:=1
+
+MIENTRAS (i < N) y A[i] <> x HACER
+    i:=i+1
+FIN MIENTRAS
+
+SI A[i] = x ENTONCES 
+    ESCRIBIR ('El elemento', x, 'se encontró en la posición', i)
+SINO
+    ESCRIBIR ('No encontrado')
+FIN SI
+
+Búsqueda binaria o dicotómica
+
+
+LEER(x)
+iz:=1
+de:=N
+
+cen:=(iz+de) DIV 2
+
+MIENTRAS (iz < de) y (nom[cen] <> x) HACER
+    SI (nom[cen] > x) ENTONCES
+        de:=cen-1
+    SINO
+        iz:=cen+1
+    FIN SI
+    cen:=(iz+de) div 2;
+FIN MIENTRAS
+
+SI (nom[cen] = x) ENTONCES
+    ESCRIBIR ('El elemento buscado está en la posición ',cen)
+SINO
+    ESCRIBIR ('El elemento buscado no está en el arreglo');
+FIN SI
+
+Ordenamiento
+Inserción directa
+
+
+// Ordena de menor a mayor
+
+CARGAR_ARREGLO
+
+PARA i:= 2 a n HACER
+    x:=a[i]
+    j:=i-1
+    MIENTRAS (j > 0) y (x < a[j]) HACER
+        a[j+1]:=a[j]
+        j:=j-1
+    FIN MIENTRAS
+    a[j+1]:=x
+FIN PARA
+
+
+Seleccion directa
+
+
+//"<" Ordena de mayor a menor
+//">" Ordena de menor a mayor
+CARGAR_ARREGLO
+
+PARA i:= 1 a n-1 HACER
+    x:=a[i]
+    max:=i
+    PARA j:= i+1 a n HACER
+        SI (x > a[j]) ENTONCES // cambiar aca
+            max:=j
+            x:=a[j]
+        FIN SI
+    FIN PARA
+    a[max]:=a[i]
+    a[i]:=x
+FIN PARA
+
+
+Intercambio directo / Burbuja
+
+
+//"<" Ordena de mayor a menor
+//">" Ordena de menor a mayor
+CARGAR_ARREGLO
+
+Bandera:= Falso
+n = 5//tam del arreglo
+MIENTRAS No Bandera HACER // 1 6 1 2 5
+    Bandera:= Verdadero
+    PARA j:=1 a n-1 HACER
+        SI (a[j] > a[j+1]) ENTONCES // cambio el signo p/ modif
+            res:=a[j]
+            a[j]:=a[j+1]
+            a[j+1]:=res
+            Bandera:= Falso
+        FIN SI
+    FIN PARA
+FIN MIENTRAS
+
+
+///////////////////////////////////////////////////////////////
+
+
+Accion parcialtarea (servicios: arreglo [1..20] de AN) es
+ambiente
+    fecha = Registro
+        AA: N(4)
+        MM: 1..12
+        DD: 1..31
+    Fin_Registro
+
+    Opiniones = Registro
+        Usuario: N(7)
+        Fecha_Opinion: fecha
+        Fecha_Ult_Comp: fecha
+        Clacificacio: 1..5
+        Serv_clasificado: n(2)
+    Fin_Registro
+  
+    Arch_Opiniones: Archivo de Opiniones ordenado por Usuario, Fecha_Opinion
+    Reg_Opiniones: Opiniones
+    
+    Usuarios = registro
+        Usuario: N(7)
+        Apell_Nomb: AN(35)
+        Categoria: ('Silver', 'Gold')
+    Fin_registro
+
+  contador: arreglo [1..20] de entero
+  mayor: entero
+  respos: entero
+  i: entero
+
+    Arch_Usuarios: Archivo de Usuarios Indexado por Usuario 
+    Reg_Usuarios: Usuarios
+    
+  Procedimiento contar() ES
+    Mientras Reg_Usuarios.Usuario = Reg_Opiniones.Usuario Hacer
+      cont:= cont + 1
+      Si ((Reg_Opiniones.serv_calificado = 1) o (Reg_Opiniones.serv_calificado = 2))Entonces // le paso la posicion del servicio que debe contar
+        contador[reg_opiniones.serv_calificado]:= contador[reg_opiniones.serv_calificado] + 1
+      Fin si
+      Leer(Arch_Opiniones,Reg_Opiniones)
+    Fin mientras
+  fp
+
+  Proceso
+
+    //aperturas
+    AbrirE/S(Arch_Usuarios)
+    AbrirE/(Arch_Opiniones)
+    Leer(Arch_Opiniones,Reg_Opiniones)
+    
+    /*
+      Actualizar el archivo de usuarios a categoría “GOLD” a aquellos que hayan emitido más de 5 opiniones.
+    */
+
+    para i:=1 hasta 20 Hacer
+      contador[i]:=0
+    fp 
+    
+    //consultas de productos y compras realizadas.
+    Mientras NFDA(Arch_Opiniones) Hacer
+      cont:=0  
+      Reg_Usuarios.Usuario:=Reg_Opiniones.Usuario
+      Leer(Arch_Usuarios,Reg_Usuarios)
+
+      SI EXISTE ENTONCES // usuario EXISTE
+        //acceso mixto para saber si >5 opiniones 
+             
+        contar()
+
+        Si cont >= 5 Entonces  
+          Reg_Usuarios.categoria:= 'Gold'
+          RE-GRABAR(Arch_Usuarios,Reg_Usuarios)  
+        Fin si
+        
+
+      SINO// alta de nuevo usuario al sistema.
+        Esc('Usuario inexistente. Cargando en sistema...')
+        Esc('ingrese el apellido y nombre en ese orden todo junto')
+        leer (Reg_Opiniones.Apell_Nomb)
+
+        contar()
+
+        Si cont >= 5 Entonces  
+          Reg_Usuarios.categoria:= 'Gold'    
+        Sino
+          Reg_Opiniones.categoria:='Silver' 
+        Fin si
+
+        GRABAR(Arch_Usuarios,Reg_Usuarios)
+
+      FIN SI
+    
+      Leer(Arch_Opiniones,reg_Opiniones)
+
+    Fin mientras
+
+    //tenemos un arreglo desordenado Entonce se usa busqueda lineal
+    mayor:=LV // le paso el arreglo y busco el mayor
+    Para i:=1 hasta 20 Hacer
+      Si contador[i] > mayor Entonces
+        mayor:=contador[i]
+        respos:=i
+      Fin si
+    Fin para  
+
+    Esc('Servicio con mayor cantidad de calif. minimas: ')
+    Esc('Nombre:',contador[respos])
+    Esc('Cantidad:', mayor)
+    //cerrar
+    Cerrar(Arch_Usuarios)
+    Cerrar(Arch_Opiniones)
+
+Fin accion
+/*
+Los servicios son 20 y su descripción se encuentra cargada en un arreglo en el que la posición identifica el código de este.
+Se necesita:
+Informar el nombre del servicio con mayor cantidad de calificaciones mínimas (igual a 1 o 2)
+Actualizar el archivo de usuarios a categoría “GOLD” a aquellos que hayan emitido más de 5 opiniones.
+/*
+///////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.5
+Solucion:
+A[1..3] ; B[1..3] ; C[1..6]
+Entonces
+Para i:=1 hasta 3 hacer
+    C[i]:=A[i] 
+    C[i+3]:=B[i]
+Fin para
+aplico ordenamiento 
+y me queda el arreglo C[] ordenado
+/////////////////////
+Ejercicio 3.9¶
+Se posee un arreglo de 200 libros con el siguiente formato:
+
+NRO_LIBRO	TITULO	AUTOR	CANT_HOJAS
+ordenado por AUTOR y se presentan las siguientes premisas:
+
+Accion 3.9 ES
+
+	Ambiente
+
+		tlibros = reg
+			NRO_LIBRO	TITULO	AUTOR	CANT_HOJAS
+		fr
+
+		i,res:entero
+		a:arreglo de [1..200] tlibros ordenado por AUTOR
+	Proceso
+	Esc('Libros con autor nicklaus wirth:')
+	Para i:=1 hasta 200 Hacer
+
+		Si a[i].autor = 'Nicklaus wirth' Entonces
+			Esc(a[i].nro_libro)
+            Si a[i].cant_hojas > max Entonces
+                max:=a[i].cant_hojas
+                resmax:=i
+            fin si
+		Fin si
+		Si a[i].titulo = 'AED y estructuras de datos = programa' Entonces
+			res:=i
+		Fin si
+
+	fin para
+
+    esc('Posicion del libro AED y estructuras = programa:', res)
+    esc('Libro de mayor volumen de n.k.:
+    nrolibro:', a[resmax].nro_libro ,' titulo:', a[resmax].titulo)
+
+Fin accion
+
+
+Se necesita saber que libros se poseen de “Nicklaus Wirth”.
+Se necesita saber en qué posición se encuentra “Algoritmos + Estructuras de Datos=Programa”.
+Se necesita saber cual es el libro de “Nicklaus Wirth” de mayor volumen.
+
+//
+
+Ejercicio 3.10¶
+
+Se resuelve aplicando busqueda con centinela o busqueda binaria
+-> el mas eficiente es busqueda con centinela en este caso ya que el arreglo es de 50 elementos y la busqueda con centinela funciona mas rapido en arreglos pequeños y ordenados, aun que tambien sirve en desordenados.
+y no se usa la busqueda binaria en este caso porque es para arreglos largos
+
+//////////////////////////////////////////////////////////////////////
+
+3.11 
+Aplicar busqueda linea e imprimir
+
+/////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.14
+El mes que viene se realizará en Buenos Aires el desfile “Alta Moda 2018”, el cual reúne a los diseñadores más reconocidos del país. Para organizar las pasadas, se dispone de un arreglo por diseñador, con la siguiente información: nombre de el/la modelo y altura. La directora del evento necesita que se imprima cada lista ordenada de acuerdo a la altura de el/la modelo. Escribir un algoritmo que permita ingresar los datos de cada diseñador e imprimirlos de acuerdo a lo solicitado.
+
+mucho texto, le pedis al usuario los datos
+aplicas algoritmo de ordenamiento 
+luego busqueda lineal y imprimo todos aquellos menores a la altura ingresada
+de la modelo.
+
+//////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.15¶
+Se precisa ordenar un arreglo de enteros de menor a mayor, eliminando los números repetidos
+
+9 2 5 5 1 1
+aplico ordenamiento
+1 1 2 5 5 9 9
+despues
+para i:=1 hasta (arreglo.lenght)-1 hacer
+    Si a[i] = a[i+1] Entonces
+        a[i]:=0
+    Fin si
+fin para // la forma de eliminar seria poner a 0 
+0 1 2 0 5 0 9
+aplico ordenamiento nuevamente:
+0 0 0 1 2 5 9
+
+//////////////
+
+Ejercicio 3.19¶
+Escribir un algoritmo que emita cuál es y dónde está ubicado el mayor elemento de cada fila de una matriz, e imprima un mensaje si todos los mayores se encuentran en la misma columna.
+
+Accion 3.19 ES
+
+	Ambiente
+
+		a: arreglo [1..3,1..3] de entero
+		i,j,mayor:entero
+
+	Proceso
+		mayor:=LV
+		band:=V
+		Para i:=1 hasta 3 hacer
+
+			Para j:=1 hasta 3 hacer
+
+				Si a[i,j] > mayor Entonces
+					mayor:=a[i,j]
+
+					Si i = 1 Entonces
+						rescol:=j
+					Sino
+						Si rescol <> j Entonces
+							band:=F
+						Fin si
+					Fin si
+
+				Fin si
+
+			Fin para
+
+			Esc('Mayor',mayor)
+			Esc('Fila:',i)
+			mayor:=LV
+
+		Fin para  
+
+Fin accion
+
+/////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.22
+Dada una matriz cuadrada de 5 x 5 de números, sumar filas y columnas y guardar en una matriz de 2 x 5, de modo que la fila 1 contenga la suma de cada fila y la fila 2, la suma de cada columna)
+
+Accion 3.22 ES
+
+	Ambiente
+
+		
+
+	Proceso
+
+
+
+Fin accion
+
+/////////////////////////////////////////////////////////////////////////////////
+
+
+Ejercicio 3.16
+Una empresa que comercializa una cierta cantidad de artículos diferentes desea confeccionar un ranking de ventas de los mismos, a partir de una secuencia ordenada por articulo que contiene:
+
+NRO_ARTICULO    TIPO    CANT_VENDIDA
+Escribir un algoritmo que emita el ranking deseado en orden decreciente por cantidad.
+
+Accion 3.16(a:arreglo [1..250] de tdato) ES
+
+    Ambiente
+
+        tdato = reg
+            NRO_ARTICULO    TIPO    CANT_VENDIDA
+        fr
+
+        i,j,x,max,n:entero
+
+        Procedimiento ord_seleccion ES
+            PARA i:= 1 a n-1 HACER
+                x:=a[i]
+                max:=i
+                PARA j:= i+1 a n HACER //BL: compara con el resto del arreglo
+                    SI (x < a[j]) ENTONCES // cambiar aca si quiero mayor menor
+                        max:=j
+                        x:=a[j]
+                    FIN SI
+                FIN PARA
+                a[max]:=a[i]
+                a[i]:=x
+            FIN PARA
+        fp // ordena de mayor a menor
+          
+    Proceso
+        n:=250
+        // el arreglo viene cargado pero desordenado
+        ord_SELECCION()
+        Para i:=1 hasta 250 Hacer
+            Esc('Nro articulo / Tipo / Cant_Vendida')
+            Esc(a[i].NroArticulo,' ',a[i].tipo,' ',a[i].Cant_Vendida)
+        fp
+
+Fin accion
+
+//////////////////////////////////////////////////////////////////////////
+
+3.17 
+se resuelve con un ordenamiento de mayor a menor y listo.
+
+/////////////////////////////////////////////////////////////////////////
+
+3.18
+pretest y ordenamiento antes de iterar nuevamente
+
+////////////////////////////////////////////////////////////
+
+Ejercicio 3.19
+Escribir un algoritmo que emita cuál es y dónde está ubicado el mayor elemento de cada fila de una matriz, e imprima un mensaje si todos los mayores se encuentran en la misma columna.
+
+Accion 3.19(A:arreglo [1..5,1..5] de entero) ES
+
+    Ambiente
+
+        i,j,resj,band:entero
+
+    Proceso
+
+        /*   j
+        i    5 1 2 2 2 
+             7 1 5 2 2
+             9 2 3 1 5
+             6 1 1 1 1
+             4 2 2 2 2
+        */
+        band:=verdadero
+        Para i:=1 hasta 5 hacer
+            max:=LV
+            Para j:=1 hasta 5 hacer
+                Si a[j] > max Entonces
+                    max:=a[j]
+
+                    Si i <> 1 Entonces
+                        Si j <> resj Entonces
+                            band:=falso
+                        Fin si
+                    Sino
+                        resj:=j
+                    Fin si
+                    
+                Fin si
+            fin para
+        fin para
+
+        si band = verdadero entonces
+            Esc('todos en la misma columna son los mayores')
+        sino
+            Esc('no estan en la misma.')
+        fin si
+
+Fin accion
+
+/////////////////////////////////////////////////////////////////
+
+Ejercicio 3.21
+Dada una matriz de 6 x 6 de enteros, cuya última fila y columna contienen ceros, calcular la suma de cada fila y guardar en la última celda de la misma; y la suma de cada columna y guardar en la última celda de la misma. Calcular también el total general y guardar en la posición (6,6).
+
+
+Accion 3.21(a:arreglo [1..6,1..6] de entero) ES
+
+    Ambiente
+
+        i,j:entero    
+
+    Proceso
+
+        /*
+
+            5 1 2 5 2 0
+            1 1 2 5 2 0
+            2 1 2 5 2 0
+            3 1 2 5 2 0
+            4 1 2 5 2 0
+            0 0 0 0 0 0
+
+            //0:=0+a[i,j]
+            // o mejor dicho:
+            a[i,6]:=a[i,6]+a[i,j]
+
+            5 1 2 5 2 /15
+            1 1 2 5 2 /11
+            2 1 2 5 2 /12
+            3 1 2 5 2 /13
+            4 1 2 5 2 /14
+            0 0 0 0 0 0
+
+            //ahora sumo las columnas
+            // a[1,1]+a[2,1]+a[3,1]+a[4,1]+a[5,1] 
+            // sumar de esa forma seria incorrecto y lento entonces
+            // se pone el valor que fluctua y el fijo
+            // que es fila 6 columna i?
+            // fila 6 columna 1 -> acumulara todo el primero
+            // cambiara de columna para acumular toda la segunda
+            // cambiara de columna y asi...
+            a[6,i]:=a[6,i]+a[j,i]
+            // a[j,i] -> recorre columnaxfila 5>1>2>3>4
+            ENTONCES ->
+            
+            5  1 2  5  2  /15
+            1  1 2  5  2  /11
+            2  1 2  5  2  /12
+            3  1 2  5  2  /13
+            4  1 2  5  2  /14
+            /  / /  /  /
+            15 5 10 25 10  0
+
+            a[j,i] es
+            5     +   1   +   2   +   3   +   4   =  15
+            a[1,1] + [2,1] + [3,1] + [4,1] + [5,1] = [6,1]
+            
+            ######## y por ultimo ########
+            en la posicion a[6,6] necesitamos guardar todo lo del recorrido
+            entonces :
+            a[6,6]:=a[6,6]+a[i,j]            
+        */
+
+        // en este caso no se pone a 0 el acumulador, ya viene cargado
+        Para i:=1 hasta 5 hacer
+            Para j:=1 hasta 5 hacer
+                a[i,6]:=a[i,6]+a[i,j]
+                a[6,i]:=a[6,i]+a[j,i]
+                //opcion 1:a[6,6]:=a[6,6]+a[i,j]
+            fin para
+            //opcion 2:a[6,6]:=a[6,6]+a[i,6]+a[6,i]
+        fin para
+ 
+Fin accion
+
+// tengo una duda sobre estadisticos que opcion conviene mas? se puede hacer?
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+///////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.22
+Dada una matriz cuadrada de 5 x 5 de números, sumar filas y columnas y guardar en una matriz de 2 x 5, de modo que la fila 1 contenga la suma de cada fila y la fila 2, la suma de cada columna)
+
+Accion 3.22(a:arreglo [1..5] de entero) ES
+
+    Ambiente
+
+        i,j:entero
+        b:arreglo [1..2,1..5] de entero
+
+    Proceso
+
+    PARA i := 1 HASTA 2 HACER
+     PARA j := 1 HASTA 5 HACER
+        salida[i, j] := 0
+        FIN_PARA
+    FIN_PARA
+
+    /* i recorre las filas y j recorre las columnas del arr de entrada! No son las del salida */
+    PARA i := 1 HASTA 5 HACER
+        PARA j := 1 HASTA 5 HACER
+            salida[1,i] := salida[1,i] + arr[i,j]
+            salida[2,i] := salida[2,i] + arr[j,i]
+        FIN_PARA
+    FIN_PARA
+Fin accion
+
+//////////////////////////////////////////////////////////////////////
+
+3.23
+
+Accion 3.23 ES
+
+    Ambiente
+
+    Proceso
+
+Fin accion
+
+//resolver .27 de 4 formas diferentes

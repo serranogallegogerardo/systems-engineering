@@ -1,0 +1,2022 @@
+Ejercicios de arreglos
+//// recomendable: aprender ordenamiento y busqueda antes de ponerse a hacer arreglos.
+Ejercicio 3.1
+Para cada una de las consignas siguientes, genere un algoritmo que permita solucionarla
+ (3 algoritmos) usando un arreglo de 100 números enteros:
+
+Almacenar 100 números.
+Localizar el número de mayor valor y el de menor valor, informar sus valores y sus posiciones.
+Contar y sumar todos los números pares.
+
+Accion 3.1 ES
+
+	Ambiente
+
+		array:arreglo de [1..100] de entero
+		i,max,min:entero
+		res_posmin,res_posmax:entero
+		ct_par:entero
+		ac_par:entero
+		
+	Proceso
+
+		ac_par:=0
+		ct_par:=0
+		max:=LV
+		min:=HV
+
+		Para i:=1 hasta 100 Hacer
+
+			// LOCALIZAR EL MAS CHICO Y EL MAS GRANDE y SUS POSICIONES
+			Si array[i] > max Entonces
+				max:=array[i]
+				res_posmax:=i
+			Fsi
+			Si array[i] < min Entonces
+				min:=array[i]
+				res_posmin
+			Fsi
+
+			// CUENTO LOS PARES Y SUMO LOS MISMOS
+			Si array[i] % 2 = 0 Entonces
+				ct_par:=ct_par+1
+				ac_par:=ac_par+array[i]
+			Fsi
+
+		Fp
+
+		Esc('el número de mayor valor ',max,' y el de menor valor', min)
+		Esc('Posicion del max:', res_posmax,'; Posicion del min':, res_posmin)
+		Esc('Cantidad de pares: ',ct_par,' y suma de todos los números pares:', ac_par)
+
+FA
+
+//COD: 25M
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.4¶
+Considerando un arreglo de 50 números enteros, confeccione un algoritmo para resolver las siguientes consignas:
+
+Modificar el arreglo dado, de modo que todos sus elementos sean múltiplos de 3.
+Crear otro arreglo que contenga los números que no cumplieron la condición.
+Informar cuántos números cumplieron la condición.
+
+Accion 3.4 ES
+
+	Ambiente
+
+		array:arreglo de [1..50] de entero
+		sal:arreglo de [1..50] de entero
+		i,ct,j:entero
+
+	Proceso
+
+		ct:=0
+		
+		Para j:=1 hasta 50 hacer
+			sal[j]:=0
+		Fp
+		j:=1
+		Para i:=1 hasta 50 Hacer
+			Si array[i] % 3 = 0 Entonces
+				ct:=ct+1
+				//multiplo de 3
+			Sino
+				//cargo al otro arreglo
+				sal[j]:=array[i]
+				j:=j+1
+				array[i]:=0
+			Fsi
+		Fp
+
+		Esc('La condicion la cumplieron :', ct)
+
+FA
+
+//COD: 16M TIEMPO Q LLEVO
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.5
+Dados 2 vectores:
+
+A: arreglo [1 .. 30] de reales B: arreglo [1 .. 30] de reales
+
+Ambos ordenados de forma creciente, escribir un algoritmo que realice 
+la mezcla de ambos para obtener otro vector tambien ordenado de forma creciente
+
+C: arreglo [1 .. 60] de reales
+
+Accion 3.5 ES
+
+	Ambiente
+		A: arreglo [1 .. 3] de reales 
+		B: arreglo [1 .. 3] de reales
+		C: arreglo [1 .. 6] de reales
+		i,j:entero
+	Proceso
+
+		//cargar arreglo
+
+		Para i:=1 hasta 3 hacer
+			C[i]:=A[i]
+			C[i+30]:=B[i]
+		fp
+
+		//ordeno el arreglo
+
+		Para i:= 2 a 6 hacer
+			x:= C[i]
+			j:=i-1
+				Mientras ((j > 0) y (x < C[j])) hacer
+					C[j+1]:= C[j]
+					j:=j-1
+				Fin Mientras
+			C[j+1]:=x
+		Fin para
+
+		// practicando el metodo de insercion
+		
+		// 1_ N: LARGO DEL ARREGLO A ORDENAR
+		// 2_ i:=2 hasta n
+		// 3_ resguardopos2 y // j vale 1 menos que i
+		// 4_   Mientras j>0 y resguardopos2 < valorpos1 Entonces
+		// 	4.1	array[j+1]:=array[j]
+		// 	4.2	j:=j-1
+		//  fm
+		// 5_array[j+1]:=resguardo	
+
+FA
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.6
+Escribir un algoritmo que permita cargar un arreglo de N nombres, 
+considerando que cada nombre debe tener entre 1 y 10 caracteres.
+
+Accion 3.6 ES
+
+	Ambiente
+
+		A:arreglo de [1..N] de AN(10)
+		i:entero
+		nombre:AN(10)
+
+	Proceso
+
+		Esc('Ingrese nombre')
+		Para i:=1 hasta N Hacer // nueva palabra
+			Leer(nombre)
+			A[i]:=nombre
+		Fp
+
+FA
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.7
+Escribir un algoritmo que permita localizar un nombre en un arreglo de N nombres,
+ordenados alfabéticamente. 
+Cada nombre puede tener, como máximo, 10 caracteres. 
+
+Escriba por lo menos dos algoritmos que permitan solucionar el problema;
+especifique cuál de las formas considera más eficiente y por qué.
+
+Accion 3.7(A:arreglo de [1..N] de AN(10),nombre:AN(10)) ES
+
+	Ambiente
+
+		i,j,x:entero
+		nombre,nombreOP:AN(10)
+
+	Proceso	
+
+		// BLC Busqueda lineal con centinela, considero que es mejor.
+		esc('Ingrese el nombre') // el mas fast
+		leer(nombre)
+
+		x:=1
+		Mientras x < 6 y nombre <> A[x] Hacer
+			x:=x+1
+		Fm // lleva solo 5 lineas de codigo el BLC
+		//tratar nombre
+		Si A[x] = nombre Entonces
+			Esc('dato encontrado:',nombre)
+		Sino
+			Esc('dato no encontrado')
+		Esc
+
+		//Busqueda lineal
+		esc('Ingrese el nombre') // el mas fast
+		leer(nombre)
+
+		Esc('ingrese el nombre de la otra persona')
+		leer(nombreOP)
+
+		Para i:=1 hasta N hacer
+			Si nombre = A[i] Entonces
+				Esc('se encontro el nombre en la posicion', i)
+			Fsi
+			Si nombreOP = A[i] Entonces
+				Esc('se encontro el nombre de la otra persona en la posicion', i)
+			Fsi
+		fp
+
+		Si i <> N+1 Entonces
+			Esc('No se encontro el nombre')
+		Fsi
+
+FA
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.8
+Repita el ejercicio anterior, pero suponiendo que se precisa localizar
+todos los nombres que comienzan con una letra dada.
+
+Accion 3.8(A:arreglo de [1..N] de tiporegNOMBRE) ES
+
+	Ambiente
+
+		tiporegNOMBRE = reg 
+
+			letra:AN(1)
+			nombre:AN(10)
+
+		fr
+
+		letra:AN
+
+	Proceso
+		// SE DEBE USAR UNA B.L. SIOSI porque sino esta mal
+		// ya que esta es la unica que imprime multiples
+		Esc('Ingrese una letra')
+		Leer(letra)
+		Esc('LETRA:',letra)
+		Esc('Nombres:')
+		Para i:=1 hasta N hacer
+			Si letra = A[i].letra Entonces
+				esc(A[i].nombre)
+			Fsi
+		Fp
+FA
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.9
+Se posee un arreglo de 200 libros con el siguiente formato:
+
+NRO_LIBRO	TITULO	AUTOR	CANT_HOJAS
+ordenado por AUTOR y se presentan las siguientes premisas:
+
+Se necesita saber que libros se poseen de “Nicklaus Wirth”.
+Se necesita saber en qué posición se encuentra “Algoritmos + Estrutucras de Datos=Programa”.
+Se necesita saber cual es el libro de “Nicklaus Wirth” de mayor volumen.	
+
+Accion 3.9 () ES
+
+	Ambiente
+
+		tipolibros = reg 
+			Nro_Libro: N(8);
+			Titulo: AN (50);
+			Autor: AN(50);
+			Cant_Hojas: entero;
+		fr
+
+		A:arreglo de [1..200] de tipolibros
+
+		max,posAED:=entero
+		restitulo:AN
+		band:logico
+
+	Proceso
+
+		band:=F
+		max:=LV
+		PosAED:=0
+
+		Esc('Libros de Nicklaus Wirth')
+		Esc('NRO_LIBRO	TITULO	AUTOR	CANT_HOJAS')
+		Para i:=1 hasta 200 Hacer // busqueda lineal, para datos multiples
+			Si A[i].AUTOR = 'Nicklaus Wirth' Entonces
+				band:=V // bandera de el libro de nicklaus
+				Escribir(A[i].NRO_LIBRO,'  ',A[i].TITULO,'  ',A[i].AUTOR,'  ',A[i].CANT_HOJAS)
+				Si A[i].CANT_HOJAS > max Entonces
+					max:=A[i].CANT_HOJAS // libro de mayor vol
+					restitulo:=A[i].TITULO
+				Fsi
+			Si A[i].AUTOR = 'Algoritmos + Estrutucras de Datos=Programa' Entonces
+				posAED:=i
+			Fsi
+			Fsi
+		Fp
+
+		Si ct_NW = 0 Entonces
+			Esc(' No se encontraron libros de nicklaus wirth')
+		Sino
+			Esc('el libro de “Nicklaus Wirth” de mayor volumen es: "',restitulo,'"')
+		Fsi
+
+		Si posAED = 0 Entonces
+			Esc('No se encontro el libro de “Algoritmos + Estrutucras de Datos=Programa”')
+		Sino 
+			Esc('La posición se encuentra “Algoritmos + Estrutucras de Datos=Programa” es:',posAED)
+		Fsi
+		
+
+FA
+
+// COD: 18m 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.10
+Dado un arreglo de 50 elementos, cada uno de los cuales tiene los siguientes datos: 
+Código de localidad y Lluvia caída en un año. 
+
+Escribir un algoritmo que permita saber dada una localidad,
+cuanto llovió en el año.
+Aplicar el método más adecuado considerando que el 
+arreglo esta ordenado por Código de localidad.
+
+Accion 3.10 ES
+
+	Ambiente
+
+		lluv = reg
+
+			codloc:AN
+			cantlluvia:N
+
+		fr
+
+		A:arreglo de [1..50] de lluv 
+
+		loc:AN
+
+		x:entero
+
+	Proceso
+
+		Esc('Ingrese la localidad')
+		Leer(loc)
+
+		//BLC
+		x:=1
+		Mientras x<50 y A[x]<>loc Hacer // 50 es el largo del arreglo
+			x:=x+1
+		Fm 
+		//tratar loc
+		Si loc = A[x] Entonces
+			Esc('La cantidad de que llovio en un year en la localidad de ',loc,' fue de :',A[x].cantlluvia)
+		Sino
+			Esc('No se encontro la localidad.')
+		Fsi
+
+FA
+
+// es la segunda vez que hago la guia, si recien empezas no te desanimes, te va salir facil despues
+// recomendable: aprender ordenamiento y busqueda antes de ponerse a hacer arreglos.
+// COD: 6m
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.11
+Dado un arreglo de 100 elementos, que contiene la siguiente información sobre videos:
+Título de la película, Nombre del Director, 
+Categoría de película, Cantidad de personas que la vieron,
+Alquilado (si/no); y está ordenado por el Título de la película,
+
+diseñe un algoritmo que, ingresando una categoría,
+ liste todas las películas que pertenecen a dicha categoría.
+
+Accion 3.11 ES
+
+	Ambiente
+
+		videos = reg
+
+			Titulo
+			Director
+			categoría
+			cantvistas
+			Alquilado:AN(2)
+
+		fr
+
+		A:arreglo de [1..100] de videos ordenado por titulo
+		i:entero
+		rescat:AN
+		b:=logico
+
+	Proceso
+
+		b:=F
+
+		Esc('Ingrese una categoría')
+		Leer(rescat)
+
+		Esc('TITULO   DIRECTOR   CANTIDA_DE_VISTAS   ALQUILADO')
+
+		Para i:=1 hasta 100 Hacer 
+
+			Si A[i].categoría = rescat Entonces
+				Esc(A[i].titulo,'   ',A[i].DIRECTOR,'   ',A[i].cantvistas,'   ',A[i].Alquilado)
+				b:=V
+			Fsi
+
+		fp
+
+		Si b <> V Entonces
+			Esc('No se encontraron videos de esta categoría')
+		Fsi
+
+FA
+
+//COD: 10m
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.12
+A partir del arreglo de videos descrito en el ejercicio anterior, 
+
+diseñe un algoritmo que permita atender un pedido de alquiler, 
+para lo cual debe verificar si es posible o no y, 
+cuando corresponda, actualizar la cantidad de personas que vieron dicha película.
+
+Accion 3.12 ES
+
+	Ambiente
+
+		videos = reg
+
+			Titulo
+			Director
+			categoría
+			cantvistas
+			Alquilado:AN(2)
+
+		fr
+
+		A:arreglo de [1..100] de videos ordenado por titulo
+		restit:AN
+
+	Proceso
+
+		Esc('Ingrese el titulo de la pelicula que desea alquilar')
+		leer(restit)
+
+		x:=1
+		Mientras x<100 y A[x].titulo <> restit Hacer
+			x:=x+1
+		Fm
+		Si A[x].titulo = restit Entonces 
+			Si A[x].Alquilado = 'SI' Entonces // ya fue alquilado por otra persona
+				Esc('Lo sentimos, el titulo ya fue alquilado por otra perosna')
+			Sino // nuevo alquiler
+				A[x].cantvistas:=A[x].cantvistas+1
+				A[x].Alquilado:='SI'
+				Esc('Usted a alquilado el video titulado: ',A[x].titulo)
+			Fsi
+		Sino
+			Esc('El titulo de la pelicula no se encontro.')
+		Fsi
+
+FA
+
+// COD: 5m 30s
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.13
+Se precisa ordenar un arreglo de N alumnos de mayor a menor,
+de acuerdo a la cantidad de materias aprobadas. 
+Cada elemento del arreglo contiene Nro. de Legajo y Cantidad de materias aprobadas.
+
+Escriba por lo menos dos algoritmos que permitan solucionar el problema;
+especifique cuál de las formas considera más eficiente y por qué.
+
+/*
+Pasos para el metodo de ordenamiento por intercambio:
+		1_	band F,PRE,V
+		2_	para 1 hasta la anteultima pos
+		3_	Si posact > possig 
+		4_	resguardo la posicion actual
+		5_	intercambio valores
+		1_	BAND F
+*/
+
+Accion 3.13 ES
+
+	Ambiente
+
+		treg = reg
+
+			legajo:N
+			cma:N // cant materias aprobadas
+
+		fr
+
+		A:arreglo de [1..N] treg
+		i,x,j:entero
+
+	Proceso
+
+		//metodo de intercambio:
+		band:=F
+		Mientras band = f hacer // este es mejor porque el otro puede buguearse
+			band:=V
+				Para i:=1 hasta N-1 Hacer
+					Si A[i]<A[i+1] Entonces // mayor a menor
+						x:=A[i]
+						A[i]:=A[i+1]
+						A[i+1]:=x
+						band:=F
+					Fsi
+				fp
+		Fm
+
+		// este supone que el primer elemento siempre esta ordenado, en este caso tendria que ser el mayor
+		//metodo de insercion de mayor a menor
+		Para i:=2 hasta N hacer
+			x:=A[i]
+			j:=i-1 
+			Mientras j>0 y x>A[j] hacer 
+				A[j+1]:=A[j]
+				j:=j-1
+			Fm
+			A[j+1]:=x
+		Fp
+
+FA
+
+// Este me costo un monton, porque no sabia que invertir los signos ordenaba de mayor a menor
+// es un algoritmo megasimple, si ya sabes 2 de estos: insercion,seleccion o intercambio
+// pd: SIOSI MEGA RECONTRASIOSI hacer prueba de escritorio en excel 
+// VARIABLE/VALOR y ahi vas cambiando cada cosa
+//        x/40
+//        i/2
+//        j/1
+//etcetera..
+// sin prueba de escritorio no se puede aprender!!! y aprobar dificilmente.
+//pd2: no memorizar los metodos, entenderlos y que salgan de forma natural.
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.14
+El mes que viene se realizará en Buenos Aires el desfile “Alta Moda 2018”,
+ el cual reúne a los diseñadores más reconocidos del país. 
+
+Para organizar las pasadas, se dispone de un arreglo por diseñador,
+con la siguiente información: 
+nombre de el/la modelo y altura. 
+
+La directora del evento necesita que se imprima cada lista ordenada 
+de acuerdo a la altura de la modelo.        
+
+Escribir un algoritmo que permita ingresar los datos
+ de cada diseñador e imprimirlos de acuerdo a lo solicitado.
+
+ Accion 3.14(A:arreglo de [1..N] de modelos) ES
+
+ 	Ambiente
+
+ 		modelos = reg
+
+ 			diseñador
+ 			nombremodelo
+ 			alturamodelo            
+
+ 		fr
+ 		
+ 		i,x:entero
+
+ 		dsn,nommod,altmod:AN // hubiese usado un reg aux pero me dio pereza
+ 		band:logico
+
+ 	Proceso // ejemplo para N=3
+
+ 		//pido los datos p/comparar e imprimir
+ 		Esc('Imprimir top listado modelos mas altas del diseñador:')
+ 		Esc('Ingrese el nombre del diseñador')
+ 		leer(dsn)
+ 		Esc('Ingrese la altura de la modelo mas alta')
+ 		leer(altmod)
+
+ 		// ordeno el arreglo por las dudas
+ 		band:=f
+ 		Mientras no band hacer
+ 			band:=v 
+ 			Para i:=1 hasta 2 Hacer
+ 				Si A[i] < A[i+1] Entonces
+ 					x:=A[i]
+ 					A[i]:=A[i+1]
+ 					A[i+1]:=x
+ 					band:=F
+ 				Fsi
+ 			Fp 
+ 		Fm // ordenado de mayor a menor altura
+
+ 		Esc('Diseñador:', dsn)
+ 		Esc('MODELO / ALTURA')
+ 		Para i:=1 hasta 3 hacer
+
+ 			Si dsn = A[i].diseñador y nommod = A[i].alturamodelo Entonces
+ 				Esc(A[i].nombremodelo,' / ',A[i].alturamodelo)
+ 				band:=V
+ 			Fsi
+
+ 		FP
+
+ 		Si band <> V Entonces
+ 			Esc('ERROR, diseñador o altura erronea')
+ 		Fsi
+
+FA
+
+// COD: 31m
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.15
+Se precisa ordenar un arreglo de enteros de menor a mayor, eliminando los números repetidos
+
+Accion 3.15 ES 
+
+	Ambiente
+
+		A:arreglo de [1..N] de entero 
+		band:logico
+		i:entero
+		x:entero
+
+	Proceso
+
+		Para i:=1 hasta N hacer // cargar arreglo
+			leer(A[i])
+		fp
+
+		band:=F 
+		Mientras NO band Hacer
+			band:=V 
+				Para i:=1 hasta N-1 Hacer
+					Si A[i] = A[i+1] Entonces
+						A[i]:=0
+					Fsi
+					Si A[i]>A[i+1] Entonces
+						x:=A[i]
+						A[i]:=A[i+1]
+						A[i+1]:=x
+						band:=f
+					Fsi
+				Fp 
+		Fm
+		// ya esta ord de mayor a menor ahora y ya saca los repetidos poniendolos en 0
+
+// COD: 10m
+// DESK TEST: FUNCIONA
+
+// EJ: 7 2 3 3 4 1 1
+// OUTPUT: 0 0 1 2 3 4 7
+
+FA
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.16¶
+Una empresa que comercializa una cierta cantidad de artículos 
+diferentes desea confeccionar un ranking de ventas de los mismos, 
+a partir de una secuencia ordenada por articulo que contiene:
+
+NRO_ARTICULO	TIPO	CANT_VENDIDA
+Escribir un algoritmo que emita el ranking deseado en orden decreciente por cantidad.
+
+Accion 3.16 ES
+
+	Ambiente
+
+		tventas = reg
+
+			NRO_ARTICULO	
+			TIPO	
+			CANT_VENDIDA
+
+		fr
+
+		A:arreglo de [1..N] de tventas
+		x:tventas
+
+		band:logico
+		i:entero
+
+	Proceso
+
+		band:=F
+		Mientras NO BAND Hacer
+			band:=V
+			Para i:=1 hasta N-1 Hacer
+				Si A[i].CANT_VENDIDA<A[i+1].CANT_VENDIDA Entonces // invierto el signo
+
+					x:=A[i].NRO_ARTICULO // resguardo
+					x:=A[i].TIPO 
+					x:=A[i].CANT_VENDIDA
+
+					A[i]:=A[i+1]
+
+					A[i+1]:=x.NRO_ARTICULO // le paso el resguardo
+					A[i+1]:=x.TIPO 
+					A[i+1]:=x.CANT_VENDIDA
+
+					band:=F
+				Fsi
+			Fp
+		Fm
+
+		Esc('NRO_ARTICULO///TIPO///CANT_VENDIDA')
+		Para i:=1 hasta N hacer
+			Esc(A[i].NRO_ARTICULO,'///',A[i].TIPO,'///',A[i].CANT_VENDIDA)
+		Fp
+
+// COD : 5m 30s
+// creo que anda.
+
+FA
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.17
+Se precisa generar una secuencia con los datos de los 10 videos más vistos de una categoría,
+ a partir de una secuencia de entrada de 200 registros 
+ que contiene el Título de la película, Nombre del Director,
+  Categoría de película, Cantidad de personas que la vieron 
+  y que está ordenada por el Título de la película.
+
+Accion 3.17(A:arreglo de [1..200] de tiporeg ordenado por TDP) ES
+
+	Ambiente
+
+		tiporeg = reg
+
+			TDP
+			director
+  			cat:AN
+  			CANTIDAD_DE_VISTAS
+
+		fr
+
+		x:tiporeg 
+		cat:AN
+
+		i,res:entero
+
+	Proceso
+
+	/*
+	Se precisa generar una secuencia con los datos
+	 de los 10 videos más vistos de una categoría
+	*/
+
+		//ordeno x categoria
+		band:=f
+		Mientras NO BAND hacer
+			band:=V
+				Para i:=1 hasta 199 hacer
+
+					Si A[i].cat > A[i+1].cat Entonces // categoria de menor a mayor A B C D E...
+						x:=A[i]
+						A[i]:=A[i+1]
+						A[i+1]:=x
+						band:=F
+					Fsi
+
+					Si A[i].cat = A[i+1].cat Entonces // ordeno categoria en orden descendiente de cant vistas
+						Si A[i].CANTIDAD_DE_VISTAS < A[i+1].CANTIDAD_DE_VISTAS Entonces Entonces
+							//cantidad de visitas de mayor a menor, 100000 - 2000 - 300 - 100...
+							x:=A[i]
+							A[i]:=A[i+1]
+							A[i+1]:=x
+							band:=F
+						Fsi
+					Fsi
+				
+				Fp
+		fm
+
+		Esc('Ingrese una categoría')
+		leer(cat)
+
+		i:=1
+		Mientras i<200 y cat<>A[i].cat Hacer // BLC
+			i:=i+1
+		Fm
+		Si cat=A[i].cat Entonces // encontre la categoria
+			res:=i 
+			i:=0
+			Para res hasta 200 hacer
+				Si cat=A[res].cat y i<10 Entonces
+					Esc(A[res].TDP) // imprimo el titulo de la pelicula
+					i:=i+1
+				Fsi
+				Si i = 10 Entonces // me ahorro el iterar de mas
+					res:=200
+				Fsi
+			fp
+		Sino 
+			Esc("ERROR, categoria no encontrada")
+		Fsi
+
+FA
+
+// COD: 27m
+// FAST DESK TEST: Segun mi excel, puede funcionar.
+
+//RESUMEN:
+// ORDENO COMO NECESITO, por categoria el orden (PA IMPRIMIR)
+// orden de cant visitas de mayor a menor, busco la categoria e imprimo
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.18
+
+Se precisa diseñar una agenda electrónica, donde se archivará el nombre, 
+la dirección y el teléfono de hasta 50 personas.
+
+Diseñe un algoritmo que permita efectuar consultas, modificaciones,
+eliminaciones de los datos de una persona y agregados de nuevas personas 
+(sólo será posible incorporar una persona si hay menos de 50 archivadas en la agenda). 
+
+Los datos se hallan almacenados en una secuencia.
+Considere que la agenda siempre debe mantenerse ordenada alfabéticamente.
+
+Accion 3.18(A:arreglo de [1..50] de treg) ES
+
+	Ambiente
+
+		treg = reg
+
+			nombre
+			dirección
+			teléfono
+
+		fr
+
+		x:treg
+
+		op,band:logico
+		opn:entero
+		i:entero
+		nmb:AN
+
+		Subaccion menu ES
+			Esc('MENU:')
+			Esc('1_ Consultar')
+			Esc('2_ Modificar')
+			Esc('3_ Eliminar')
+			Esc('4_ Agregar')
+			Esc('5_ Salir')
+		Fs
+
+		Subaccion Consultar ES
+				Esc('Nombre:',A[i].nombre)
+				Esc('Direccion:',A[i].dirección)
+				Esc('Telefono:',A[i].Telefono)
+		fs
+
+	Proceso
+
+		Esc('###AGENDA ELECTRONICA###')
+		Esc('Desea utilizar el programa? v/f')
+		leer(op)
+
+		Mientras op <> 'f' Hacer
+
+			Esc('Ingrese el nombre')
+			leer(nmb)
+
+			i:=1
+			Mientras i<50 y nmb<>A[i].nombre Hacer
+				i:=i+1
+			Fm
+
+			Menu()
+			leer(opn)
+
+			Si (nmb=A[i].nombre) o (opn <> 5) Entonces
+
+				Segun opn hacer
+					1:
+						Consultar
+					2:
+						// MODIFICAR
+							Esc('Que desea cambiar?, seguidamente ingrese el nuevo dato')
+							Esc('1_ El Nombre')
+							Esc('2_ La dirección')
+							Esc('3_ El telefono')
+							segun opn hacer
+
+								1:
+									leer(A[i].nombre)
+								2:
+									leer(A[i].dirección)
+								3: 
+									leer(A[i].Telefono)
+								Otros:
+								Esc('No se eligio ni una opcion, por lo tanto no se modifico nada')
+							fs
+						opn:=0
+					3:
+						//Eliminar
+							A[i]:=NIL // dejo todo en esa posicion del arreglo en estado NULO
+					4:
+						//Agregar
+						i:=1
+						Mientras i<50 y NIL<>A[i] Hacer // busco un lugar vacio para agregar
+							i:=i+1
+						Fm
+						Si NIL=A[i] Entonces
+
+							Esc('Ingrese nombre,direccion y telefono')
+							leer(A[i].nombre)
+							Leer(A[i].direccion)
+							leer(A[i].telefono)
+
+						Sino
+							Esc('ERROR, Ya alcanzo el cupo maximo de 50 contactos.')
+						Fsi
+
+
+					5:
+						op:=f
+				fs
+
+			Sino
+
+				Si nmb<>A[i].nombre Entonces
+					Esc('Nombre INEXISTENTE')
+				Fsi
+
+			Fsi
+
+			// debo ordenar la secuencia alfabéticamente
+
+		FM
+
+FA
+
+// COD: 40m
+// me parece que anda
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.19
+Escribir un algoritmo que emita cuál es y dónde está ubicado
+ el mayor elemento de cada fila de una matriz, e 
+ imprima un mensaje si todos los mayores se encuentran en la misma columna.
+
+Accion 3.19 ES
+
+	Ambiente
+
+		A:arreglo de [1..N][1..N] de entero
+		i,j:entero
+		posi,posj,respi,respj:entero
+		band:logico
+
+	Proceso
+
+		max:=LV
+		band:=F
+		Para i:=1 hasta N hacer
+			Para j:=1 hasta N hacer
+				Si A[i][j] > max Entonces
+					max:=A[i][j]
+					posi:=i 
+					posj:=j
+				Fsi
+			Fp 
+			Esc('El mayor esta en [',posi,'][',posj,'] y vale :',max)
+			Si i = 1 Entonces
+				respi:=posi 
+				respj:=posj
+			Fsi 
+			Si posj <> respj Entonces
+				band:=V 
+			Fsi
+			Si A[posi][posj] <> A[respi][respj] Entonces
+				band:=V 
+			Fsi
+		Fp
+		Si band = F Entonces
+			Esc('TODOS LOS MAYORES SE ENCUENTRAN EN LA MISMA FILA, LA CUAL ES:',respi)
+		Sino
+			Esc('Todos los mayores no estan en la misma fila')
+		Fsi
+
+FA
+
+// COD: 30m
+// DESK TEST: 20m
+// FUNCIONA
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.20¶
+Dadas dos matrices A y B, cuadradas, de 5 x 5, con números enteros, 
+cargar una matriz C, de 5 x 5 teniendo en cuenta las siguientes condiciones:
+
+ la diagonal principal completar con ceros, en las posiciones
+
+  que están por encima de la diagonal principal,  
+  copiar los correspondientes elementos de la matriz A y 
+
+  en las posiciones que están por debajo de la diagonal principal,
+   copiar los elementos correspondientes de la matriz B.
+
+Accion 3.20 ES
+
+	Ambiente
+
+		a,b,c:arreglo de [1..5][1..5] de entero
+		i,j,k,q:entero
+
+	Proceso // usar banderas hasta que sea 0 y ir recorriendo
+
+		// cargar arreglo
+		Para i:=1 hasta 5 Hacer
+			Para j:=1 hasta 5 hacer
+				leer(A[i][j])
+				leer(B[i][j])
+				Si i=j Entonces
+					C[i][j]:=0
+				Fsi
+			Fp
+		Fp 
+		K:=1;Q:=0
+		Para i:=1 hasta 5 hacer
+			Para j:=1 hasta 5 hacer
+				Si C[i][j] = 0 Entonces
+					k:=k+1; q:=1
+				sino
+					q:=q+1
+				Fsi
+				C[k][q]:=B[k][q]
+			fp 
+		Fp
+		Para i:=4 hasta 1 hacer
+			Para j:=5 hasta 1 hacer
+				Si C[i][j] = 0 Entonces
+					i:=i-1;
+					Si i = 0 Entonces
+						j:=6
+					Sino
+						j:=5
+					Fsi
+				Sino
+					C[i][j]:=A[i][j]
+				Fsi
+			Fp
+		Fp
+//40m tarde y salio horrible en hoja pero creo que funciona pero es horrible y no es la forma que se debe hacer
+
+// ESTE ES EL CODIGO BIEN HECHO FUNCIONAL Y EFICIENTE
+		Accion 3.20 ES
+		    Ambiente
+		    A:arreglo [1..5, 1..5] de entero
+		    B:arreglo [1..5,1..5] de entero
+		    C:arreglo [1..5,1..5] de entero
+		    Proceso
+
+		//ponenele que cargamos los datos de las matrices A y B
+
+		        Para i:=1 hasta 5 hacer
+		            Para j:=1 hasta 5 hacer
+		                si (i=j) entonces // se recomienda usar un condicional multiple
+		                    C[i,j]:=0 // COMPLETAR DIAGONAL PRINCIPAL
+		                Fin SI              
+		                Si i<j entonces
+		                   C[i,j]:=A[i,j]
+		                Fin Si 
+		                Si i>j entonces
+		                   C[i,j]:=B[i,j]
+		                Fin Si
+		            Fin Para
+		        Fin Para
+
+Fin Accion
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.21¶
+Dada una matriz de 6 x 6 de enteros, 
+cuya última fila y columna contienen ceros,
+calcular la suma de cada fila y 
+guardar en la última celda de la misma; 
+y la suma de cada columna y guardar en la última celda de la misma. 
+Calcular también el total general y guardar en la posición (6,6).
+
+Accion 3.21 A:arreglo de [1..6][1..6] de entero ES 
+
+	Ambiente
+
+		// hacelo vos
+
+	Proceso
+
+		f:=0
+		c:=0
+
+		Para i:=1 hasta 5 hacer
+			Para j:=1 hasta 5 hacer 
+				f:=f+A[i,j]
+			fp
+			A[i,6]:=f
+			Para k:=1 hasta 5 hacer
+				c:=c+A[k,i]
+			fp
+			A[6,i]:=c+f
+			f:=0
+			c:=0
+		Fp 
+
+//cod 15m 30s en hoja
+
+///////// SOLUCION EFICIENTE
+
+		f:=0
+		c:=0
+
+		Para i:=1 hasta 5 hacer
+
+			Para j:=1 hasta 5 hacer 
+				f:=f+A[i,j]
+				c:=c+A[j,i]
+			fp
+
+			A[i,6]:=f
+			A[6,i]:=c+f
+
+			f:=0
+			c:=0
+		Fp 
+
+// la 'k' estaba demas
+
+	FIN PROCESO
+FA
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.22¶
+Dada una matriz cuadrada de 5 x 5 de números, 
+sumar filas y columnas y guardar en una matriz de 2 x 5, 
+de modo que la fila 1 contenga la suma de cada fila y la fila 2, la suma de cada columna)
+
+Accion 3.22(A:arreglo de [1..5][1..5] de entero) ES 
+
+	Ambiente
+
+		B:arreglo de [1..2][1..5] de entero
+		ac_fila,ac_col,i,j:entero 
+
+	Proceso
+
+		ac_fila:=0;ac_col:=0
+
+		Para i:=1 hasta 5 hacer
+			Para j:=1 hasta 5 hacer
+
+				ac_fila:=ac_fila+A[i,j] // sumo filas
+				ac_col:=ac_col+A[j,i] // colum
+
+			fp
+
+			B[1,i]:=ac_fila
+			B[2,i]:=ac_col
+
+			ac_fila:=0
+			ac_col:=0
+		FP
+
+	Fin proceso
+FA
+
+// COD: 17m en hoja
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.23
+En un sector de un hospital, donde se encuentran internados 50 pacientes, 
+se toma la temperatura de cada paciente 4 veces al día durante una semana.
+
+Lectura	Dom	Lun	Mar	Mie	Jue	Vie	Sab
+1	XX	XX	XX	XX	XX	XX	XX
+2	XX	XX	XX	XX	XX	XX	XX
+3	XX	XX	XX	XX	XX	XX	XX
+4	XX	XX	XX	XX	XX	XX	XX
+
+Se dispone de un arreglo con la información recopilada de todos los pacientes.
+
+Construir un algoritmo que:
+
+Liste por pantalla las temperaturas máxima y mínima de cada paciente, 
+indicando el día y lectura en la que ocurrieron.
+
+Genere un nuevo arreglo que contenga la 
+temperatura promedio por día de cada paciente.
+
+Accion 3.23(A:arreglo de [1..50][1..7][1..4] entero) ES 
+
+	Ambiente
+		
+		S:arreglo de [1..50][1..7] entero // salida
+		i,j,k:entero
+		max,min:entero
+		resdiama,reslecma,resdiame,reslecme:entero
+		ac_prom:entero
+
+		Subaccion diaAN(dia:entero):AN ES
+
+			Segun dia Hacer
+
+				1:
+					diaAN():='Domingo'
+				2:
+					diaAN():='Lunes'
+				3:
+					diaAN():='Martes'
+				4:
+					diaAN():='Miercoles'
+				5:
+					diaAN():='Jueves'
+				6:
+					diaAN():='Viernes'
+				7:
+					diaAN():='Sabado'
+
+			Fs
+
+	Proceso
+
+		Para k:=1 hasta 50 hacer // pacientes
+			max:=LV
+			min:=HV
+			Para i:=1 hasta 7 hacer// dia		
+				ac_prom:=0
+				Para j:=1 hasta 4 hacer// lecturanro
+					Si A[i,j,k] > max Entonces
+						max:=A[i,j,k]
+						resdiama:=i 
+						reslecma:=j
+					Fsi 
+					Si A[i,j,k] < min Entonces
+						min:=A[i,j,k]
+						resdiame:=i 
+						reslecme:=j
+					Fsi
+
+					ac_prom:=ac_prom+A[i,j,k]
+				fp
+				// aca sale la max y min del dia
+				temprom:=ac_prom / 4
+				S[k,i]:=temprom
+			fp
+			// aca sale la max y min de la semana
+			Esc('PACIENTE NRO:', k)
+			esc('/////////////////////')
+			Esc('TEMP MAX:', max)
+			Esc('DIA:', diaAN(resdiama)) // funcion que devuelve el dia en alfanumerico con un segun
+			Esc('LECTURA:', reslecma)
+			esc('/////////////////////')
+			Esc('TEMP MIN:', min)
+			Esc('DIA:', diaAN(resdiame))
+			Esc('LECTURA:', reslecme)
+			esc('/////////////////////')
+
+
+		fp
+
+FA
+
+//cod 27m
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.24¶
+Se cuenta con información acerca de los cajeros de un Supermercado, 
+el cual se halla estructurado en 10 cajas registradoras.
+
+ Dicha información está registrada en una secuencia que contiene Apellido 
+ y Nombre del empleado, número de caja que tiene asignada, 
+ importe facturado y horario de facturación;
+  la secuencia está ordenada alfabéticamente por Apellido y Nombre. 
+
+  Se solicita una estadística de los importes facturados,
+
+   discriminado por
+    número de caja y franja de horas 
+   y además los montos totales, según el siguiente formato:
+
+Cajas	8-10	10-12	12-16	16-18	18-20	Total x Cajas
+1	...	...	...	...	...	...
+..	...	...	...	...	...	...
+10	...	...	...	...	...	...
+Total x horas	...	...	...	...	...	...
+
+Accion 3.24(arCAJ:archivo de cajeros ordenado por nomyap) ES
+
+	Ambiente
+
+		cajeros = reg
+
+			nomyap:AN(20)
+			caja:N(2)
+			importe:N(9,3)
+			hs:N(2)
+
+		fr
+
+		r:cajeros
+
+		A:arreglo de [1..11][1..6] de entero
+		i,j:entero
+
+	Proceso
+
+		AbrirE/(arCAJ)
+		Leer(arCAJ,r)
+
+		Para i:=1 hasta 11 hacer // para acumular pongo todo a 0
+			Para j:=1 hasta 6 hacer
+				A[i,j]:=0
+			fp 
+		fp
+
+		// le paso los datos a la matriz, recorro y acumulo
+
+		Mientras NFDA(arCAJ) hacer // cargo los importes en la matriz
+			i:=r.caja
+			Segun (r.hs) hacer
+				8..10:
+					j:=1
+				11..12:
+					j:=2
+				13..16:
+					j:=3
+				17..18:
+					j:=4
+				19..20:
+					j:=5
+			Fs 
+
+			A[i,j]:=A[i,j]+r.importe // cargo el importe
+
+			//A[coluxfila]
+			//A[caja,poshora]
+
+			A[i,6]:=A[i,6]+r.importe // acum x fila
+			A[11,j]:=A[11,j]+r.importe // x col
+
+			A[11,6]:=A[11,6]+r.importe // x total gral
+
+			Leer(arCAJ,r)
+
+		Fm
+
+		/*
+			 Se solicita una estadística de los importes facturados,
+			   discriminado por
+			    número de caja y franja de horas 
+			   y además los montos totales, según el siguiente formato:
+		*/
+ 
+		//IMPRIMIR DETALLE ESTADISTICO
+
+		Esc('Cajas   8-9   10-11   12-15   16-17   18-20   TotalxCajas')
+		Para i:=1 hasta 10 Hacer
+				Esc(i,'   ',A[i,1],'   ',A[i,2],'   ',A[i,3],'   ',A[i,4],'   ',A[i,5],'   ',A[i,6])
+		fp
+		Esc('TotalxHoras:',A[11,1],'   ',A[11,2],'   ',A[11,3],'   ',A[11,4],'   ',A[11,j+5])
+		Esc('Total general del importe:',A[11,6]) // creo q esta de extra
+
+		Cerrar(arCAJ,r)
+
+FA
+
+// bastante dificil de entender sin desk test en excel
+// cod: toda una vida como 2 dias estuve intentando entender este codigo, y me base en otro que estaba
+// bien segun las pruebas de escritorio realizadas.
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.25
+Una Fábrica que posee 4 plantas de producción en nuestro país
+ y compra materia prima a 3 proveedores distintos,
+
+
+  desea realizar un control de los montos totales correspondientes 
+  a compras realizadas
+ en cada planta durante el último año, 
+
+  discriminados por proveedor y por mes.
+
+   Para ello dispone de
+   un archivo con los datos de las facturas correspondientes. 
+
+   (Aclaración: el archivo no está ordenado por ningún criterio)
+
+3x4x12
+proveedor,planta,mes
+
+COMPRAS
+Nro_Factura
+Proveedor (A,B,C)
+Fecha dd/mm/aaaa
+Nro_Planta 1..4
+Importe
+
+Accion 3.25() ES 
+
+	Ambiente
+
+		tfecha = reg
+			dd:N(2)
+			mm:N(2)
+			yy:N(4)
+		fr
+
+		tCOMPRAS = reg
+
+			Nro_Factura:N(2)
+			pro:AN(1) // proveedor
+			Fecha:tfecha
+			pla:1..4 // nro de planta
+			Importe:real
+
+		fr
+
+		arCOM:archivo de tCOMPRAS de real
+		r:tCOMPRAS
+
+		year:N(4)
+		i:AN(1)
+		j,k:entero
+					// 12x3(C)x4
+		A:arreglo de [1..13,A..D,1..4] // mes,proveedor,planta
+
+	proceso
+
+		AbrirE/(arCOM)
+		Leer(arCOM,r)
+
+		Para j:=1 hasta 13 hacer // p/ acumular
+			Para i:=A hasta D hacer
+				Para k:=1 hasta 4 hacer
+					A[i,j,k]:=0
+				fp
+			fp
+		fp
+
+		Esc('Ingrese el year actual:')
+		leer(year)// 2021
+
+		Mientras NFDA(arCOM) Hacer // paso los datos a la matriz recorriendolo y acumulo
+
+			Si year = r.Fecha.yy Entonces
+				// mes,provedor,planta
+				A[r.mm,r.pro,r.pla]:=A[r.mm,r.pro,r.pla]+r.Importe // acumulo importe
+				A[r.mm,D,r.pla]:=A[r.mm,D,r.pla]+r.Importe // acumulo total de todos los provedores x MES
+				A[13,r.pro,r.pla]:=A[13,r.pro,r.pla]+r.Importe // acumulo total del anio
+				A[13,D,r.pla]:=A[13,D,r.pla]+r.importe // acumulo tot gral de la planta
+
+			Fsi
+
+			Leer(arCOM,r)
+
+		Fm
+
+		// imprimo
+		//// mes,proveedor,planta
+		//   i   j         k
+		Para k:=1 hasta 4 hacer
+			Esc('PLANTA NRO:', k)
+			Esc('IMPORTE TOTAL DE LA PLANTA:', A[13,D,k])
+			Para i:=A hasta C Hacer // total x prov
+				Esc('PROVEEDOR:', i)
+				Esc('IMPORTE TOTAL DEL PROVEEDOR POR MES:')
+				Para j:=1 hasta 12 Hacer
+					Esc('MES:', j)
+					Esc(A[j,i,k]) // mes 1 2 3.. del proveedor de la misma planta
+				fp
+				Esc('IMPORTE TOTAL DEL PROVEEDOR POR YEAR:', A[13,i,k])
+			Fp
+
+		fp
+
+		Cerrar(arCOM)
+
+FA
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.26¶
+Se dispone de un archivo secuencial de facturas de una empresa
+ de energía eléctrica, correspondientes a un año, con el siguiente formato:
+
+Nro_FacturaNro_UsuarioZonaFechaConsumo
+
+Se desea obtener un cuadro estadístico que informe los consumos
+ y los importes totales facturados por mes discriminados por zona, 
+ con el siguiente formato:
+
+	Zona A	Zona B	Zona C	Zona D	Total por mes
+Enero	...	...	...	...	...
+Febrero	...	...	...	...	...
+...	...	...	...	...	...
+Diciembre	...	...	...	...	...
+Total por zona	...	...	...	...	Total General
+
+La ciudad está dividida en 4 Zonas (A,B,C,D), 
+la tarifa por Kw. que cobra la empresa 
+en cada una de ellas es: 
+Zona A:0,05 ; Zona B: 0,07 ; Zona C: 0,09 ; 
+Zona D:0,13 ;
+
+Accion 3.26 ES
+
+	Ambiente
+
+		tfechas = reg
+
+			dd:N(2)
+			mm:N(2)
+			yy:N(4)
+
+		fr
+
+		tEMPRESA = reg
+
+			Nro_Factura:N(5)
+			Nro_Usuario:N(5)
+			Zona:AN(1)
+			Fecha:tfechas
+			consumo:N(10,2)
+
+		fr
+
+		CI = reg
+
+			consumo:N(10,2)
+			importe:N(10,2)
+
+		fr
+
+		//constantes
+		ZonaA=0,05 
+		ZonaB=0,07 
+		ZonaC=0,09 
+		ZonaD=0,13 
+
+		//variables
+		arEMP:archivo de tEMPRESA
+		r:tEMPRESA
+		A:arreglo de [1..13][A..E] de CI
+		j:caracter 
+		i,imp:entero
+
+	Proceso
+
+		AbrirE/(arEMP)
+		Leer(arEMP,r)
+
+		Para i:=1 hasta 13 Hacer // a 0 p/ acumular
+			Para j:=A hasta E hacer
+				A[i,j].consumo:=0
+				A[i,j].importe:=0
+			fp
+		fp
+
+		Mientras NFDA(arEMP) Hacer // metodo de carga de estadisticos
+ 
+			j:=r.zona
+			i:=r.Fecha.mm
+
+			A[i,j].consumo:=A[i,j].consumo+r.consumo// acum consumo
+			A[13,j].consumo:=A[13,j].consumo+r.consumo // tot x zona
+			A[i,E].consumo:=A[i,E].consumo+r.consumo // tot x mes
+			A[E,13].consumo:=A[E,13].consumo+r.consumo // tot gral de consumo
+
+			Segun i Hacer// obtengo importe
+				'A':
+					imp:=imp+(r.consumo*ZonaA)
+				'B':
+					imp:=imp+(r.consumo*ZonaB)
+				'C':
+					imp:=imp+(r.consumo*ZonaC)
+				'D':
+					imp:=imp+(r.consumo*ZonaD)
+			Fs
+		
+			A[i,j].importe:=A[i,j].importe+imp // acum importe
+			A[13,j].importe:=A[13,j].importe+imp // tot de importe x zona
+			A[i,E].importe:=A[i,E].importe+imp // tot imp x mes
+			A[E,13].importe:=A[E,13].importe+imp // tot imp gral
+			
+			Leer(arEMP,r)
+
+		fm // CARGA COMPLETADA
+
+		// IMPRIMIR SIOSI EN EL ESTADISTICO, PQ SINO ESTARA INCOMPLETO
+
+		Esc('ESTADISTICA DE CONSUMO:')
+		Esc('MES    Zona A   Zona B   Zona C   Zona D   Total por mes')
+		Para i:=1 hasta 12 hacer 
+		Esc(i,'   ',A[i,A].consumo,'   ',A[i,B].consumo,'   ',A[i,C].consumo,'   ',A[i,D].consumo,'   ',A[i,E].consumo)
+		fp
+		Esc('Total por zona ',A[13,A].consumo,'   ',A[13,B].consumo,'   ',A[13,C].consumo,'   ',A[13,D].consumo,'   Total general ', A[13,E].consumo)
+		Esc('ESTADISTICA DE IMPORTES:')
+		Esc('MES    Zona A   Zona B   Zona C   Zona D   Total por mes')
+		Para i:=1 hasta 12 hacer
+ 		Esc(i,'   ',A[i,A].importe,'   ',A[i,B].importe,'   ',A[i,C].importe,'   ',A[i,D].importe,'   ',A[i,E].importe)
+		fp
+		Esc('Total por zona ',A[13,A].importe,'   ',A[13,B].importe,'   ',A[13,C].importe,'   ',A[13,D].importe,'   Total general ', A[13,E].importe)
+
+		Cerrar(arEMP)
+
+FA
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.27¶
+Se desea efectuar una estadística de ventas. 
+Se cuenta para ello con una secuencia de las facturas emitidas,
+ las cuales son identificadas por un Número; 
+ dicha secuencia contiene información relativa al cliente:
+  su Número y Zona a la cual pertenece, 
+  como así también el Tipo de mercadería entregada,
+   la Cantidad de unidades, el total gravado,
+    el total exento de IVA y el valor del IVA.
+
+     Construya un algoritmo que emita
+      por zona, y dentro de la zona por tipo de mercadería
+      el total de unidades vendidas
+	, el total gravado, el total exento y el total de IVA,
+
+ 	y además un total general con la misma información.
+
+  Hay 9 zonas y 4 tipos de mercadería.
+
+  Ambiente
+
+  	treg = reg
+  		//todo numerico el tipo de dato
+  		Número
+  		Zona
+ 		TipoMc
+   		cant_uni
+   		totgrav
+        totexento
+        valorIVA
+
+  	fr
+
+  	tn = reg
+
+  		cant_uni
+   		totgrav
+        totexento
+        valorIVA
+
+  	fr
+
+  	A:arreglo de [1..10,1..5] de tn
+
+  Proceso
+
+  	Para i:=1 hasta 10 hacer
+  		Para j:=1 hasta 5 hacer
+  			A[i,j].cant_uni:=0
+  			A[i,j].totgrav:=0
+  			A[i,j].totexento:=0
+  			A[i,j].valorIVA:=0
+  		Fp
+  	Fp 
+
+  	AbrirE/(arFAC)
+  	Leer(arFAC,r)
+
+  	Mientras NFDA(arFAC) Hacer
+
+  		i:=r.zona 
+  		j:=r.tipo
+
+  		A[i,j].cant_uni:=A[i,j].cant_uni+r.cant_uni // GUARDO CAMPOS
+  		A[i,j].totgrav:=A[i,j].totgrav+r.totgrav
+  		A[i,j].totexento:=A[i,j].totexento+r.totexento
+  		A[i,j].valorIVA:=A[i,j].valorIVA+r.valorIVA
+
+  		A[i,5].cant_uni:=A[i,5].cant_uni+r.cant_uni // TOTAL X ZONA
+  		A[i,5].totgrav:=A[i,5].totgrav+r.totgrav
+  		A[i,5].totexento:=A[i,5].totexento+r.totexento
+  		A[i,5].valorIVA:=A[i,5].valorIVA+r.valorIVA
+
+  		A[10,j].cant_uni:=A[10,j].cant_uni+r.cant_uni // TOTAL X MERCADERIA
+  		A[10,j].totgrav:=A[10,j].totgrav+r.totgrav
+  		A[10,j].totexento:=A[10,j].totexento+r.totexento
+  		A[10,j].valorIVA:=A[10,j].valorIVA+r.valorIVA
+
+        A[10,5].cant_uni:=A[10,5].cant_uni+r.cant_uni // total gral
+        A[10,5].totgrav:=A[10,5].totgrav+r.totgrav
+        A[10,5].totexento:=A[10,5].totexento+r.totexento
+  		A[10,5].valorIVA:=A[10,5].valorIVA+r.valorIVA
+
+
+  		Leer(arFAC,r)
+
+  	Fm
+
+  	//imprimir
+  	/* FORMATO QUE USE:
+  	Esc('ZONA              TIPO1   TIPO2   TIPO3   TIPO4   TOTALXZONA')
+  	Esc('1 TOTALGRAVADO    ..	   ..								 ')
+  	Esc('1 TOTALEXENTO     ..	   ..								 ')
+  	Esc('1 TOTALDEUNID     											 ')
+  	Esc('1 TOTALDEIVA     											 ')
+  	Esc('2 TOTALGRAVADO    ..										 ')
+  	EsC('2 xTOTALEXENTO		                    					 ')
+  	...
+  	...					   ..
+  	Esc('9 xTOTALGRAVADO 			   ..							 ')
+  	...
+
+
+	Esc('TOTALxTIPODEMERCADERIA                            TOTALGRAL ')
+	Esc('xTOTALGRAVADO     ..										 ')
+  	Esc('xTOTALEXENTO    											 ')
+  	Esc('xTOTALDEUNID    											 ')
+  	Esc('xTOTALDEIVA     											 ')
+	*/
+
+  	Esc('ZONA              TIPO1   TIPO2   TIPO3   TIPO4   TOTALXZONA')
+  	Para i:=1 hasta 9 hacer
+  	Esc(i,' TOTALGRAVADO    ',A[i,1].totgrav,'   ',A[i,2].totgrav,'   ',A[i,3].totgrav,'   ',A[i,4].totgrav,'   ',A[i,5].totgrav)
+	Esc(i,'	TOTALEXENTO     ',A[i,1].totexento,'   ',A[i,2].totexento,'   ',A[i,3].totexento,'   ',A[i,4].totexento,'   ',A[i,5].totexento)
+	ESC(i,'	TOTALDEUNIDADES     ',A[i,1].cant_uni,'   ',A[i,2].cant_uni,'   ',A[i,3].cant_uni,'   ',A[i,4].cant_uni,'   ',A[i,5].cant_uni)
+	ESC(i,'	TOTALDEIVA    ',A[i,1].valorIVA,'   ',A[i,2].valorIVA,'   ',A[i,3].valorIVA,'   ',A[i,4].valorIVA,'   ',A[i,5].valorIVA)
+  	Fin Para
+  	Esc('TOTALxTIPODEMERCADERIA                            TOTALGRAL ')
+  	Esc('xTOTALGRAVADO     ',A[10,1].totgrav,'   ',A[10,2].totgrav,'   ',A[10,3].totgrav,'   ',A[10,4].totgrav,'   ',A[10,5].totgrav)
+ 	Esc('xTOTALEXENTO      ',A[10,1].totexento,'   ',A[10,2].totexento,'   ',A[10,3].totexento,'   ',A[10,4].totexento,'   ',A[10,5].totexento)
+ 	Esc('xTOTALDEUND      ',A[10,1].cant_uni,'   ',A[10,2].cant_uni,'   ',A[10,3].cant_uni,'   ',A[10,4].cant_uni,'   ',A[10,5].cant_uni)
+ 	Esc('xTOTALDEIVA      ',A[10,1].valorIVA,'   ',A[10,2].valorIVA,'   ',A[10,3].valorIVA,'   ',A[10,4].valorIVA,'   ',A[10,5].valorIVA)
+  	Cerrar(arFAC)
+
+//resumen: son 4 estadisticos en 1, ya que usa 4 campos en el arreglo de registros.
+// por eso la impresion puede parecer larga, pero es normal.
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.28¶
+
+//consigna:
+La Municipalidad de Resistencia desea obtener una estadística de los valores (en $)
+ de los terrenos de la ciudad, 
+ discriminados por zona y ubicación dentro de la manzana 
+ (en esquina, interna, etc.), y los totales por zona y ubicación.
+
+El valor de cada final de cada terreno es igual a: 
+// importe se saca asi
+Valor del Terreno = Superficie terreno (en M2) * valor del M2 * coeficiente de incremento
+
+
+// archivo
+Para ello cuenta con la siguiente información:
+Un archivo de los terrenos con los siguientes datos:
+Nro_TerrenoZonaUbicacionSuperficie
+
+//forma del arreglo
+Zona: codificadas de A a F
+Ubicación: codificada de 1 a 10
+
+//arreglo V 
+Un arreglo V que contiene los valores del M2 por zona.
+
+Accion 3.28() ES
+
+	Ambiente
+
+		tTERRENOS = reg
+			// todo del tipo entero aca
+			Nro_Terreno
+			Zona:AN(1)
+			Ubicacion
+			Superficie
+
+		fr
+
+		arTER:archivo de tTERRENOS ordenado por Nro_Terreno
+		r:tTERRENOS
+
+					// A..F 1..10
+		A:arreglo de [1..11] [A..G]de real
+		V:arreglo de [A..F] de real
+		j:caracter
+		i:entero
+		ce:entero
+
+	Proceso
+
+		Esc('Ingrese el coeficiente de incremento actual:')
+		Leer(ce)
+
+		Para i:=1 hasta 11 hacer
+			Para j:=A hasta G Hacer
+				A[i,j]:=0
+			fp
+		fp
+
+		AbrirE/(arTER)
+		Leer(arTER,r)
+
+		Mientras NFDA(arTER) Hacer
+
+			i:=r.Ubicacion
+			j:=r.Zona
+
+			// Superficie terreno (en M2) * valor del M2 * coeficiente de incremento
+			A[i,j]:=A[i,j]+r.Superficie*V[j]*ce
+			A[i,G]:=A[i,G]+r.Superficie*V[j]*ce // total por zona
+			A[11,j]:=A[11,j]+r.Superficie*V[j]*ce // total por ubicacion
+			A[11,G]:=A[11,G]+r.Superficie*V[j]*ce
+
+			Leer(arTER,r)
+
+		Fm
+
+		Esc('UBICACION   ZONA(A)   ZONA(B)   ZONA(C)   ZONA(D)   ZONA(E)   ZONA(F)   TOTALXUBICACION')
+		Para i:=1 hasta 10 hacer
+			Esc(i,'           ',A[i,A],'   ',A[i,B],'   ',A[i,C],'   ',A[i,D],'   ',A[i,E],'   ',A[i,F],'   ',A[i,G])
+		fp
+		Esc('TOTALXZONA  ',A[13,A],'   ',A[13,B],'   ',A[13,C],'   ',A[13,D],'   ',A[13,E],'   ',A[13,F],'   TOTAL GRAL:',A[i,G])
+		// TOTAL X ZONA
+
+		Cerrar(arTER)
+
+FA
+// COD: 28m
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.29
+Dada una secuencia de texto que contiene información sobre mascotas, 
+se desea generar un archivo de mascotas, teniendo en cuenta lo siguiente:
+
+En el texto vienen los siguientes datos:
+ nombre de la mascota, encerrado ente asteriscos (*), 
+ inmediatamente a continuación una palabra
+  de tres letras que identifica el tipo de documento y
+   separado por un blanco, 
+   8 posiciones numéricas que corresponden al número de documento del dueño,
+    seguidas por un símbolo numeral (#) y,
+     a continuación, la dirección de la persona,
+      finalizando con un signo de fin de interrogación (?). 
+      El final del texto está indicado por un símbolo de admiración (!).
+       Se desconoce la longitud de la dirección, así como la del nombre de la mascota.
+
+El formato del registro de salida es
+Tipo_Documento AN(3)Numero AN(8)Nombre_Mascota AN(30)Direccion AN(40
+
+Si la sigla es DNI, 
+el tipo es 0, si dice LCE el tipo es 1, si dice LEN el tipo es 2, para PAS es 3,
+ para cualquier otra cadena de letras el tipo es 4.
+
+Al final del proceso informar cuantos registros se grabaron en el archivo de salida.
+
+Accion 3.29 ES
+	
+	Ambiente
+
+		tmasc = reg
+			tipo: arreglo de [1..3] de caracter
+			DNI: arreglo de [1..8] de caracter
+			dirección,nombre: arreglo de [1..30] de caracter
+		fr
+
+		arMAS:archivo de tmasc
+		r:tmasc
+		sec:secuencia de caracter
+		v:caracter
+		ct,i:entero
+
+	Proceso
+
+		AbrirS/(arMAS)
+		Arrancar(sec)
+		ct:=1
+		
+		Mientras v <> '!' hacer
+			Mientras v <> '?' hacer
+				i:=1
+				Mientras = '*' hacer
+					AVZ(sec,v)
+				m
+				Mientras v <> '#' hacer
+					r.nombre[i]:=v
+					i:=i+1
+					AVZ(sec,v)
+				fm
+				i:=1
+				AVZ(sec,v)
+				Mientras v <> '' hacer
+					r.tipo[i]:=v
+					i:=i+1
+					AVZ(sec,v)
+				fm
+				i:=1
+				AVZ(sec,v)
+				Mientras v <> '#' hacer
+					r.DNI[i]:=v
+					i:=i+1
+					AVZ(sec,v)
+				fm
+				i:=1
+				AVZ(sec,v)
+				Mientras v <> '?' Hacer
+					r.dirección[i]:=v
+					i:=i+1
+					AVZ(sec,v)
+				fm
+				
+			fm
+			AVZ(sec,v)
+			r.tipo:=tratartipo(r.tipo)
+			ESCRIBIR(arMAS,r)
+			ct:=ct+1
+		fm
+
+	Esc('La cantidad de registros grabados es de: ',ct)
+
+FA
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.30¶ // no lo hice, ni quiero. (es de secuencias basicamente)
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.31
+Se lleva a cabo una encuesta a fin de anticipar los posibles porcentajes de votos
+ que obtendrán cada uno de los 4 partidos políticos de mayor peso en las elecciones.
+  Los datos solicitados a los encuestados son: 
+  partido al que Algoritmos y Estructuras de Datos 2019 
+  votara, edad, sexo y partido al que votó en las elecciones anteriores. 
+
+  Las respuestas se tabulan de acuerdo a los siguientes criterios:
+
+Partidos: P1, P2, P3, P4, Otro, En Blanco, Indeciso
+Edad: 18-25, 26-35, 36-45, 46-55, 56-65, +65
+Sexo: Femenino, Masculino
+Diseñe un algoritmo que, utilizando un arreglo de 4 dimensiones 
+(partido al que votara, edad, sexo , partido al que votó), permita responder a las siguientes consultas:
+
+Cantidad de personas de cierta edad que votarán a un Partido dado.
+Cantidad de personas de un sexo dado que votarán a un determinado Partido.
+Cantidad de personas de cierta edad que votaron a un determinado Partido
+ y actualmente votarán a otro Partido dado.
+Cantidad de personas de un sexo dado que votaron a un determinado Partido
+ y actualmente votarán a otro Partido dado.
+
+Accion 3.31 ES
+
+	Ambiente
+
+	Proceso
+
+FA
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 3.32¶
+La municipalidad posee un archivo secuencial con los datos de todos los estacionamientos realizados en el mes de Octubre de 2018
+
+ESTACIONAMIENTOS
+
+FECHA: fecha	PATENTE: AN(7)	HoraDesde: N(2)	HoraHasta: N(2)	Posta: 1..100
+El costo es por multiplos de 1 hora. El costo por hora se calcula considerando la franja horaria del estacionamiento (siempre tomar el mayor costo), las franjas horarias son:
+
+de 00 a 06: costo por hora $9
+de 07 a 13: costo por hora $14
+de 14 a 19: costo por hora $12
+de 20 a 23: costo por hora $6
+Ejemplo: si una persona estaciona desde las 5 hasta las 10, son 6 horas de estacionamiento (10 - 5 + 1) y como se encuentra en dos franajas horarias se tiene que tomar la de mayor costo ($14 por hora). Por lo tanto el importe generado es 14 x 6 = 84. (NOTA a efectos de simplificar los calculos, solo calcular el costo de la franja horaria con respecto a la hora desde y la hora hasta).
+
+Se pide realizar un algoritmo que permita determinar:
+
+Posta con mayor importe generado
+Día con mayor cantidad de estacionamientos.
+En qué día y en que posta se generó la mayor cantidad de estacionamientos
+Otras Preguntas:
+
+¿Es posible calcular cual fue la zona horaria con mayor cantidad de estacionamientos? En caso de ser posible, realizar el algoritmo.
+¿Es posible determinar la cantidad maxima de permanencia que tienen los autos estacionados? En caso de ser posible, realizar el algoritmo.

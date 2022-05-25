@@ -1,0 +1,109 @@
+Se desea efectuar una estadística de ventas. Se cuenta para ello con una secuencia de las facturas emitidas, las cuales son 
+identificadas por un Número; dicha secuencia contiene información relativa al cliente: su Número y Zona a la cual pertenece, 
+como así también el Tipo de mercadería entregada, la Cantidad de unidades, el total gravado, el total exento de IVA y el valor 
+del IVA. Construya un algoritmo que emita por zona, y dentro de la zona por tipo de mercadería el total de unidades vendidas, 
+el total gravado, el total exento y el total de IVA, y además un total general con la misma información. Hay 9 zonas y 4 tipos 
+de mercadería.
+
+accion 327 es
+    ambiente
+        DIMA = 10; DIMB = 5;
+        cliente = registro
+            nro_cliente:N(5)
+            zona:1..9;
+            tipo_mercaderia:1..4;
+            cantidad_unidades:N(4)
+            total_gravado:real;
+            tot_ex_iva:Real;
+            tot_iva:Real;
+        fin registro
+
+        factura = registro
+            nro_factura;N(5)
+            cliente:cliente
+        fin registro
+
+        facturas: Archivo de factura;
+        m:Arreglo [1..DIMA][1..DIMB] de Real;
+
+        subaccion cargar_totalizar(arch:Archivo de factura,
+                                    m:Arreglo [1..DIMA][1..DIMB] de Real,
+                                    x:1..4;
+                                ) es
+            ambiente
+                y,z:entero;
+                reg:factura
+            algoritmo
+                abri e/(arch);
+                leer(arch,reg)
+                mientras nfda(arch) hacer
+                    y:= reg.cliente.zona
+                    z:= reg.cliete.tipo_mercaderia
+                    segun (x) hacer
+                        //acumulamos en la casilla
+                        1: 
+                            //Totalizamos la cantidad de unidades
+                            m[y,z]:= m[y,z] + reg.cliente.cantidad_unidades 
+                        2: 
+                            //Totalizamos el gravado
+                            m[y,z]:= m[y,z] + reg.cliente.total_gravado 
+                        3: 
+                            //Totalizamos exento del iva
+                            m[y,z]:= m[y,z] + reg.cliente.tot_ex_iva 
+                        4: 
+                            //Totalizamos con iva 
+                            m[y,z]:= m[y,z] + reg.cliente.tot_iva 
+                    fin segun
+
+                    m[DIMA,z]:= m[DIMA,z] + m[y,z] //acumulamos en la ultima fila
+                    m[y,DIMB]:= m[y,DIMB] + m[y,z] //acumulamos en la ultima columna
+                    //Acumulamos en la casilla inferior izquiera
+                    m[DIMA, DIMB]:= m[DIMA, DIMB] + m[DIMA,z] 
+                    m[DIMA, DIMB]:= m[DIMA, DIMB] + m[y,DIMB]
+
+                    leer(arch,reg)
+                fin mientras
+                cerrar(arch)
+        fin subaccion
+
+        subaccion mostrar_resultados(m:Arreglo [1..DIMA][1..DIMB] de Real)
+            ambiente
+                x,y:entero
+            algoritmo
+                esc("Resultados")
+                esc("Total por zona y mercaderia")
+                para (x:= 1 a DIMA - 1) hacer
+                    para (y:=1 a DIMB - 1) hacer
+                        esc("Zona", x, "Tipo de mercaderia", y, "Total", m[x,y])
+                    fin para
+                fin para
+
+                esc("Total por zonas")
+                para (x:= 1 a DIMA) hacer
+                    esc(m[x,5])
+                fin para
+
+                esc("Total por Tipo de meracaderias")
+                para (x:= 1 a DIMb) hacer
+                    esc(m[10,x])
+                fin para
+        fin subaccion
+
+        subaccion init(m:Arreglo [1..DIMA][1..DIMB] de Real)
+            ambiente
+                x,y:entero
+            algoritmo
+                para (x:= 1 a DIMA) hacer
+                    para (y:= 1 a DIMB) hacer
+                        m[x,y]:= 0
+                    fin para
+                fin para
+        fin subaccion
+
+    algoritmo
+        init(m)
+        para (valor:= 1 a 4) hacer
+            cargar_totalizar(arch, m, valor)
+            mostrar_resultados(m)
+        fin para
+fin accion

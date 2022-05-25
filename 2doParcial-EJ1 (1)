@@ -1,0 +1,119 @@
+ACCIÓN 2doParcial ES
+    AMBIENTE
+        MAE = RREGISTRO
+            prodID: N(4)
+            st: N(4)
+        Fin_Registro
+
+        STOCK, SAL: Archivo de MAE ordenado por prodID
+        sa,s: STOCK
+
+        MOV = REGISTRO
+            producID: N(4)
+            cliente: N(4)
+            tipo: {"C", "D"}
+            cant: N(5)
+            precio: N(6)
+            total: N(6)
+            envio: {"suc" , "dom"}
+        Fin_Registro
+
+        MOVIMIENTOS_DIARIOS: Archivo de MOV ordenado por producID
+        m: MOV
+
+        PROD = REGISTRO
+            Clave = Registro
+                productoID: N(4)
+            Fin_Registro
+            nombre: AN(40)
+            desc: AN(70)
+            rubro: {"Limpieza", "Carnicería", "Verdulería", "Bazar", "Panadería"}
+        Fin_Registro
+
+        PRODUCTOS: Archivo de PROD indexado por productoID
+        p: PROD
+
+        contdom: entero
+        
+        SUBACCIÓN leer_mae ES
+            LEER(STOCK,s)
+            SI FDA(STOCK) ENTONCES
+                s.prodID:= HV
+            Fin_Si
+        Fin_Subacción
+
+        SUBACCIÓN leer_mov ES
+            LEER(STOCK,s)
+            SI FDA(MOVIMIENTOS_DIARIOS) ENTONCES
+                m.producID:= HV
+            Fin_Si
+        Fin_Subacción 
+
+    PROCESO
+        ABRIR E/(STOCK)
+        ABRIR E/(MOVIMIENTOS_DIARIOS)
+        ABRIR E/(PRODUCTOS)
+        ABRIR S/(SAL)
+
+        LEER(STOCK,s)
+        LEER(MOV,m)
+
+        leer_mae
+        leer_mov
+
+        contdom:= 0
+
+        MIENTRAS (s.prodID <> HV) Y (m.producID <> HV) HACER //Usé un ciclo incluyente
+            SI (s.prodID < m.producID) ENTONCES //no está en el de movimiento en ese producto
+                sa:= s
+                GRABAR(SAL,sa)
+                leer_mae
+                SI (m.tipo = "D") ENTONCES //Verifico si se trata de una devolución de un producto que no está en el mae y lo agrego.
+                    sa.prodID:= m.producID
+                    sa.st:=  (sa.st + m.cant)
+                    GRABAR(SAL,sa)
+                    leer_mov
+                Fin_Si
+            SINO
+                SI (s.prodID = m.producID) ENTONCES //Si está el producto en el maestro
+                    MIENTRAS (s.prodID = m.producID) HACER
+                        SI (m.tipo = "D") ENTONCES    //verifico si se trata de una devolución
+                            sa.prodID:= m.producID
+                            sa.st:=  (sa.st + m.cant)
+                            GRABAR(SAL,sa)
+                            leer_mov
+                        SINO
+                            p.clave:= m.producID
+                            LEER(PRODUCTOS,p)
+                            SI (EXISTE) ENTONCES
+                                SI (s.st >= m.cant) ENTONCES //Como se trata de una compra, verifico que haya stock
+                                    sa.prodID:= m.producID
+                                    sa.st:=  (sa.st - m.cant)
+                                    GRABAR(SAL,sa)
+                                    leer_mov
+                                SINO   //Si no hay stock
+                                    p.productoID:= s.prodID  //busco el nombre en el archivo indexado
+                                    ESC("ERROR. El producto", p.nombre," se ha quedado sin stock, faltan", (m.cant - s.st), "ejemplares del mismo")
+                                    leer_mov
+                                Fin_Si
+                                SI (m.envio = "dom") ENTONCES  //Si el envío es a domicilio
+                                    contdom:= contdom + 1
+                                Fin_Si
+                            SINO // no se encontro el indexado
+                                ESC("ERROR. Producto no encontrado")
+                            Fin_Si
+                        Fin_Si
+                        leer_mae
+                        leer_mov //avanzo los dos
+                    Fin_Mientras
+                SINO // Si no hubo cambios en ese producto. Aca no hago nada pq no hay alta
+                    leer_mov
+                Fin_Si
+            Fin_Si
+        Fin_Mientras
+        leer_mae
+        ESC("La cantidad de productos que deben ser enviados a domicilio son", contdom)
+        CERRAR(STOCK)
+        CERRAR(MOVIMIENTOS_DIARIOS)
+        CERRAR(PRODUCTOS)
+FIN_ACCIÓN

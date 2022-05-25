@@ -1,0 +1,144 @@
+ACCIÓN EJ2 ES
+    AMBIENTE
+        FECHA = REGISTRO
+            DÍA: N(2)
+            MES: N(2)
+            AÑO: N(2)
+        FIN_REGISTRO
+
+        MAE = REGISTRO
+            ID: N(4)
+            F: FECHA
+            precip: N(5)
+            estado: {"AC", "MA"}
+        FIN_REGISTRO
+
+        PRECIPITACIONES_ANUALES: Archivo de MAE ordenado por ID y F.
+        p: MAE
+
+        INDX = REGISTRO
+            pid: N(4)
+            modelo: N(4)
+            desc: AN(40)
+            Depto: [1..25]
+        FIN_REGISTRO
+
+        PLUVIÓMETROS: Archivo de INDX indexado por pid.
+        n: INDX
+
+        DEPARTAMENTO: Arreglo [1..25] de Alfanumérico(30)
+        d: entero
+
+        A: Arreglo [1..12,1..26] de entero 
+
+        depto, precip, MAYOR, MENOR, mes350, depto350, depto-, mes-, mes+ :entero
+        
+        PROCEDIMIENTO def_mes+ (mes+: entero) ES
+            SEGÚN (mes+) HACER
+                = 1: M+:= "ENERO"
+                = 2: M+:= "FEBRERO"
+                = 3: M+:= "MARZO"
+                = 4: M+:= "ABRIL"
+                = 5: M+:= "MAYO"
+                = 6: M+:= "JUNIO"
+                = 7: M+:= "JULIO"
+                = 8: M+:= "AGOSTO"
+                = 9: M+:= "SEPTIEMBRE"
+                = 10: M+:= "OCTUBRE"
+                = 11: M+:= "NOVIEMBRE"
+                = 12: M+:= "DICIEMBRE"
+            FIN_SEGÚN
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO def_mes350 (mes350: entero) ES
+            SEGÚN (mes350) HACER
+                = 1: M3:= "ENERO"
+                = 2: M3:= "FEBRERO"
+                = 3: M3:= "MARZO"
+                = 4: M3:= "ABRIL"
+                = 5: M3:= "MAYO"
+                = 6: M3:= "JUNIO"
+                = 7: M3:= "JULIO"
+                = 8: M3:= "AGOSTO"
+                = 9: M3:= "SEPTIEMBRE"
+                = 10: M3:= "OCTUBRE"
+                = 11: M3:= "NOVIEMBRE"
+                = 12: M3:= "DICIEMBRE"
+            FIN_SEGÚN
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO def_depto (depto: entero) ES
+            A[depto]:= D
+        FIN_PROCEDIMIENTO
+
+        M: Alfanumérico(20)
+
+    PROCESO
+        ABRIR E/(PRECIPITACIONES_ANUALES)
+
+    
+        MAYOR:= LV
+        MENOR:= HV
+
+        PARA i:= 0 a 25 HACER
+            PARA j:= 1 a 12 HACER
+                A[i,j]:= 0
+            FIN_PARA
+        FIN_PARA
+
+        MIENTRAS NFDA(PRECIPITACIONES_ANUALES) HACER
+            n:= m.ID
+            LEER(INDX,n)
+            SI (EXISTE) ENTONCES
+                i:= n.Depto
+                j:= m.F.MES
+            FIN_SI
+            PARA i:= 0 a 25 HACER
+                PARA j:= 1 a 12 HACER
+                    A[i,j]:= A[i,j] + m.precip
+                FIN_PARA
+            FIN_PARA
+            A[26,j]:= m.precip + A[26,j]
+            LEER(INDX,n)
+        FIN_MIENTRAS
+
+            
+                   
+
+        FIN_MIENTRAS
+
+        PARA i:= 1 a 12 HACER
+            PARA j:= 1 a 26 HACER
+                SI (A[i,j] > MAYOR) ENTONCES
+                    MAYOR:= A[i,j]
+                    mes+:= i
+                SINO
+                    SI (A[i,j] > 350) ENTONCES
+                        depto:= i
+                        mes350:= j
+                    SINO
+                        SI (A[i,j] > MENOR) ENTONCES
+                            MENOR:= A[i,j]
+                            depto-:= i
+                            mes:= j
+                        FIN_SI
+                    FIN_SI
+                FIN_SI
+            FIN_PARA
+        FIN_PARA
+
+        def_mes+(mes+) 
+        ESC("El mes con mayores precipitaciones fué", M+)
+
+        def_mes350(mes350) 
+        n:= depto350
+        LEER(INDX,n)
+        SI (EXISTE) ENTONCES
+            PARA d:= 1 a 25 HACER 
+                SI (n.depto = DEPARTAMENTO[d]) ENTONCES
+                    ESC("En el departamento ", DEPARTAMENTO[d], " se superaron los 350mm en el mes de",M3)
+                FIN_SI
+            FIN_PARA    
+        FIN_SI    
+        def_depto(depto)
+FIN_ACCIÓN

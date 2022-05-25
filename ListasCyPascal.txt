@@ -1,0 +1,127 @@
+// LISTAS EN C
+#include <stdio.h>
+#include <string.h>
+
+// lista simplemente enlazada en pseudo:
+struct talumno { // talumno el registro
+  int legajo; 
+  int dni; 
+  char *nombre; // En pseudo: *nombre:alfanumerico
+  char *materia;
+};
+// ya que c no admite strings, pero consume un poco mas de recursos, la alternativa seria 
+//char materia[20] por ejemplo..
+// resulta mas comodo pedir los alfanumericos de esta forma.
+
+struct tnodo {
+    struct talumno alumno; 
+    struct tnodo *sig;
+};
+typedef struct tnodo listsim; 
+
+struct tnodo *prim,*p; 
+/////////////////////////////////////////////////////
+
+// lista doblemente enlazada
+typedef struct tclientes
+{
+  int nrosocio;
+  int dni;
+  int cantvidalquilados;
+  char *nombre;
+}cli;
+typedef struct tnododoble 
+{ 
+    cli cliente;
+    struct tnododoble *sig;
+    struct tnododoble *ant;
+}  listdob;
+
+struct tnododoble *prim2,*ult2,*p2;
+
+/////////////////////////////////////////////////////
+
+// Lista circular simple
+
+struct nodocs
+{
+    int nrocontrib;
+    int dni;
+    char *nombre;
+    int nromedidor;
+    struct nodocs *sig;
+};
+typedef struct nodocs listcs;
+struct nodocs *prim3,*p3;
+
+///////////////////////////////////////////////////////
+
+//Lista circular doble
+typedef struct nodocd
+{
+    int nrosocio;
+    int dni;
+    char *nombre;
+    struct nodocd *sig;
+    struct nodocd *ant;
+} listcd;
+
+struct nodocd *prim4,*p4; // puntero para la lista circular doble
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Listas en pascal
+
+program Listas;
+
+// Lista simplemente enlazada
+
+type
+lista = ^nodosimple;
+    nodosimple = record
+            dni: integer;
+            nombre: integer; 
+            materia: string[40];
+            legajo  : string[30];
+            sig : lista;
+    end;
+
+// lista doblemente enlazada
+type
+listad = ^nododob;
+    nododob = record
+            dni: integer;
+            nombre: integer; 
+            nrosocio: integer;
+            cantvideos : integer;
+            sig,ant : listad;
+    end;
+
+// Lista circular simplemente enlazada
+type
+listacs = ^nodocs;
+    nodocs = record
+            dni: integer;
+            nombre: integer; 
+            nromedidor: integer;
+            nrocontribuyente : integer;
+            sig : listacs;
+    end;
+
+// Lista circular doblemente enlazada
+type
+listacd = ^nodocd;
+    nodocd = record
+            dni: integer;
+            nombre: integer; 
+            nrosocio: integer;
+            sig,ant : listacd;
+    end;
+
+var 
+    prim,p:lista;// simple
+    prim2,ult2,p2:listad;// doble
+    prim3,p3:listacs; // circular simple
+    prim4,p4:listacd;// circular doble
+
+

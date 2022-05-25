@@ -1,0 +1,99 @@
+Accion bimembre es
+	Ambiente
+		sec1: secuencia de caracteres
+		v1: caracter
+		sec2: secuencia de caracteres
+		v2: caracter
+		Sal: secuencia de caracter
+		Cant_oraciones1: numerico
+		Cant_oraciones2: numerico
+
+		Procedimiento AVZBLANCOS() ES
+
+			Mientras v1 = ' ' hacer
+				AVZ(sec1,v1)
+			Fin Mientras
+			Mientras v2 = ' ' hacer
+				AVZ(sec2,v2)
+			Fin Mientras
+
+		FP
+
+
+	Proceso
+		Arr(Sec1)
+		Avz(Sec1, v1)
+		Arr(Sec2)
+		Avz(Sec2, v2)
+		Crear(Sal)
+		Cantoraciones1:= 0
+		Cantoraciones2:= 0
+
+/*
+sec1:     Persona,,, alta.. Estudiante, universitario.*
+sec2: No puedo, tengo fulvo. I'm, student. Estoy, estudiando.*
+
+sal: Persona, tengo fulvo. Estudiante, student. .*
+
+ */ 
+		Mientras NFDS(sec1) o NFDS(sec2) hacer
+			
+			AVZBLANCOS()
+
+			Mientras v1 <> '.' y NFDS(sec1) hacer
+
+				Mientras v1 <> ',' hacer
+					GRABAR(sal,v1)
+					AVZ(sec1,v1)
+				Fin Mientras
+
+				GRABAR(sal,v1)
+
+				Mientras v1 = ',' hacer
+					AVZ(sec1,v1)
+				fin mientras
+
+				Mientras v1 <> '.' y NFDS(sec1) hacer
+					AVZ(sec1,v1)
+				Fin mientras
+				Cantoracion1:=Cantoracion1+1
+
+			Fin Mientras
+
+			Mientras v2 <> '.' y NFDS(sec2) hacer
+
+				Mientras v2 <> ',' hacer
+					AVZ(sec2,v2)
+				Fin Mientras
+
+				Mientras v2 = ',' hacer
+					AVZ(sec2,v2)
+				fin mientras
+
+				Mientras v2 <> '.' y NFDS(sec2) hacer
+					Si NFDS(sec1) Entonces
+						GRABAR(sal,v2)
+					Fin Si
+					AVZ(sec2,v2)
+				Fin mientras
+
+				Cantoracion2:=Cantoracion2+1
+
+			Fin Mientras
+			GRABAR(sal,v2) // grabo el .
+
+            Mientras v1 = '.' Hacer
+				AVZ(sec1,v1) // proxima oracion de sec1.
+			Fin Mientras
+
+			Mientras v2 = '.' Hacer
+					AVZ(sec2,v2) // proxima oracion de sec1.
+			Fin mientras
+
+		Fin mientras
+
+		Cerrar(Sec1)
+		Cerrar(Sec2)
+		Cerrar(Sal)
+		Esc("La cantidad de oraciones que tiene la secuencia 1 son:", (Cantoracion1)"y la oracion dos:", Cantoracion2);
+	Fin Accion

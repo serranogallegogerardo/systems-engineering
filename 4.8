@@ -1,0 +1,93 @@
+Genere un algoritmo que recorra una secuencia texto y genere una lista simplemente encadenada con la frecuencia de utilización de cada letra. La lista debe mantenerse ordenada alfabéticamente y al final informar cual fue la frecuencia de cada letra y cuáles fueron la de mayor y menor frecuencia.
+
+ACCION 4.8 (PRIM: PUNTERO A NODO) ES 
+AMBIENTE 
+    P: PUNTERO A NODO 
+    letra = REGISTRO 
+        Tletra: AN(1)
+        frecuencia: N(10)
+    NODO = REGISTRO 
+        datos: letra
+        prox: puntero a NODO 
+    FR 
+    max,min: entero 
+    Texto: secuencia de caracteres 
+    T: caracter 
+    letMax, letMin: caracter
+PROCESO 
+    ARR(Texto)
+    AVZ(Texto,T)
+    MIENTRAS NFDS(Texto) HACER
+        P:= PRIM
+        Nuevo(Q)
+        *Q.datos.Tletra:= T 
+        *Q.datos.Frecuencia:= *Q.datos.Frecuencia + 1
+        SI PRIM= NILL ENTONCES 
+            *PRIM.prox:= Q 
+            *Q.prox:= NILL 
+        FSI
+        MIENTRAS P <> nill y *P.datos.Tletra < T HACER
+            ANT:= P 
+            P:= *P.prox 
+        FM 
+        SI PRIM = P ENTONCES //1er elemento 
+            *PRIM.prox:= Q 
+            *Q.prox:= P
+        SINO //no es el primero 
+            SI P = NILL ENTONCES 
+                *Q.prox:= NILL 
+                *P.prox:= Q 
+            SINO 
+                *Q.prox:= *P.prox 
+                *P.prox:= Q 
+            FSI
+        FSI
+        AVZ(Texto,t) 
+    FM 
+    P:= PRIM
+    max:= LV 
+    min:= HV 
+    MIENTRAS P<> NILL HACER 
+        Esc("la frecuencia de la letra ", *P.datos.Tletra, "es ", *P.datos.frecuencia)
+        SI *P.datos.frecuencia > max ENTONCES 
+            max:= *P.datos.frecuencia
+            letMax:= *P.datos.Tletra
+        SINO 
+            SI *P.datos.frecuencia < min ENTONCES 
+                min:= *P.datos.frecuencia
+                letMin:= *P.datos.Tletra
+            FSI 
+        FSI 
+        Esc("La letra con mayor frecuencia es", letMax)
+        Esc("la letra con menor frecuencia es", letMin)
+        Cerrar(Texto)
+
+
+
+
+    nuevo(Q)
+    *Q.DATO:= *P.DATO
+//CARGA ORDENADA DE LISTAS SIMPLES             
+Subaccion CargaOrdenada ES 
+    SI PRIM= NILL ENTONCES //Otra ves, si la lista esta vacia
+        *PRIM.prox:= Q 
+        *Q.prox:= NILL 
+    FSI
+
+    //de nuevo busco donde insertar mi elemento 
+    MIENTRAS P <> nill y *P.datos.Tletra < T HACER
+        P:= *P.prox 
+    FM 
+    SI PRIM = P ENTONCES //Si se tiene que insertar en el 1er elemento 
+        *PRIM.prox:= Q 
+        *Q.prox:= P
+    SINO //Se inserta en cualquier otro lugar
+        SI P = NILL ENTONCES //en el caso que se tenga q insertar al final de la lista
+            *Q.prox:= NILL 
+            *P.prox:= Q 
+        SINO //aca seria para insertar entre medio de 2 nodos. 
+            *Q.prox:= *P.prox 
+            *P.prox:= Q 
+        FSI
+    FSI
+FF

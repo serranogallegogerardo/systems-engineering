@@ -1,0 +1,131 @@
+En un práctico para la Facultad un grupo de alumnos debe implementar una Red Social llamada UTNBook. Para lo cual debe utilizar 
+los siguientes archivos:
+
+AMIGOS Ordenado por Cod_Usuario y Cod_Amigo
+
+    Cod_Usuario Cod_Amigo Fecha_Amistad Mensaje_Muro 
+
+Cada registro indica la fecha desde que los usuarios son amigos y el último mensaje que un amigo ha escrito en el muro del usuario.
+
+NOTIFICACIONES Ordenado por Cod_Usuario y Cod_Amigo
+
+    Cod_Usuario Cod_Amigo Cod_Movimiento Fecha_Amistad Mensaje_Muro 
+
+Periódicamente se debe actualizar el archivo Amigos, con el fin de que refleje las amistades que posee cada usuario. En el 
+archivo notificaciones pueden existir tres tipos de acciones: la solicitud de una amistad (Cod_mov = 'A'); la eliminación de una 
+amistad (Cod_mov = 'B'); o la información de un mensaje que un amigo ha escrito en el muro del usuario (Cod_mov = 'M'). Considerar 
+que la eliminación de una amistad implica la baja física de un registro y que hay un solo registro de Notificaciones por cada 
+registro de Amigo.
+
+accion 2221 es
+    ambiente
+        fecha = registro 
+            aa:N(4)
+            mm:1..12
+            dd:1..31
+        fin registro
+
+        clave = registro
+            cod_usuario:N(5)
+            cod_amigo:N(5)
+        fin registro
+
+        amigo = registro
+            clave: clave
+            fecha_amistad:fecha
+            mensaje_muro:AN(255)
+        fin resgistro
+
+        notificacion = resgistro
+            claver:clave
+            cod_movimiento:('A', 'B','M')
+            fecha_amistad:fecha
+            mensaje_muro:AN(255)
+        fin resgistro
+
+        amigos, nuevo_amigos:Archivo de amigo ordenado por clave
+        r1,r2:amigo
+
+        notificaciones: Archivo de notificacion ordenado por clave
+        nt:notificacion
+
+        subaccion leer_maestro() es
+            leer(amigos, r1)
+            si fda(amigos) entonces
+                r1.clave.cod_usuario:= HIGH_VALUE
+                r1.clave.cod_amigo:= HIGH_VALUE
+            fin si
+        fin subaccion
+
+        subaccion leer_movimiento() es
+            leer(notificaciones, r2)
+            si fda(amigos) entonces
+                r2.clave.cod_usuario:= HIGH_VALUE
+                r2.clave.cod_amigo:= HIGH_VALUE
+            fin si
+        fin subaccion
+
+        subaccion proceso_iguales() es
+            si (r2.cod_movimiento = 'A') entonces
+                esc('Error: El usuario ya existen el registro de amigos')
+                r2:=r1
+                grabar(nuevo_amigos, r2)
+            contrario
+                si (r2.cod_movimiento = 'M') entonces
+                    proceso_mod_maestro()
+                    r2:=r1
+                    grabar(nuevo_amigos, r2)
+                fin si
+                //NO REALIZAMOS UN UN CONTROL PARA EL CODIGO DE MOVIMIENTO 'B' PORQUE IMPLICA UNA BAJA FISICA Y NO HAY QUE CIPIAR A 
+                //SALIDA EL REGISTRO
+            fin si
+            leer_movimiento()
+            leer_maestro()
+        fin subaccion
+
+        subaccion proceso_distintos() es
+            si (r2.cod_movimiento = 'A') entonces
+                //ES UN NUEVO AMIGO
+                r2.clave:= nt.clave
+                r2.fecha_amistad:= nt.fecha_amistad
+                r2.mensaje_muro:= tn.mensaje_muro
+                grabar(nuevo_amigos, r2)
+            contrario
+                esc('Imposible realizar la accion. Código de movimiento incorrecto')
+            fin si
+            leer_movimiento()
+        fin subaccion
+
+        subaccion proceso_mod_maestro() es
+            si (nt.fecha_amistad <> ' ') entonces
+                r2.fecha_amistad:= nt.fecha_amistad
+            fin si
+            si (nt.mensaje_muro <> ' ') entonces
+                r2.mensaje_muro:= nt.mensaje_muro
+            fin si
+        fin subaccion
+
+
+    algoritmo
+        abrir e/(alumnos); abrir e/(notificaciones); abrir /s(nuevo_amigos);
+        leer_maestro()
+        leer_movimiento()
+
+        mientras (r1.clave <> HIGH_VALUE) y (nt.clave <> HIGH_VALUE) hacer
+            si(r1.clave = nt.clave) entonces
+                proceso_iguales()
+            contrario
+                si (r1.clave < nt.clave) entonces
+                    //COPIAR DIRECAMENTE A LA SALIDA
+                    r2:=r1
+                    grabar(nuevo_amigos, r2)
+                    leer_movimiento()
+                contrario
+                    proceso_distintos()
+                fin si
+            fin si
+        fin mientras
+
+        cerrar(nuevo_amigos); cerrar(amigos); cerrar(notificaciones);
+fin accion
+

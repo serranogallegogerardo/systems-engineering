@@ -1,0 +1,109 @@
+Accion Ejerc 2.2.24 es
+	Ambiente
+		CPA = Registro
+			Cod_Afiliado: N(8);
+			Fecha_Alta: Fecha;
+			Fecha_Baja: Fecha;
+			Cant_Servicios: entero;
+			Costo: entero;
+		Fin Registro
+
+		SS = Registro
+			Cod_Afiliado: N(8);
+			Fecha_At: Fecha;
+			Cod_Servicio: N(3);
+			Costo: entero;
+		Fin Registro
+
+		Fecha = Registro
+			DD: N(2);
+			MM: N(2);
+			AA: N(4);
+		Fin Registro
+
+		Arch_CPA, Arch_CPA_Actual: Archivo de CPA ordenado por Cod_Afiliado;
+		Arch_SS: Archivo de SS ordenado por Cod_Afiliado;
+		Reg_CPA, Reg_CPA_Actual, Reg_Aux: CPA;
+		Reg_SS: SS;
+
+		Accion Leer_CPA es
+			Leer (Arch_CPA, Reg_CPA);
+			Si FDA (Arch_CPA) entonces
+				Reg_CPA.Cod_Afiliado:= HV;
+			Fin Si
+		Fin Accion
+
+		Accion Leer_SS es
+			Leer (Arch_SS, Reg_SS) es
+			Si FDA (Arch_SS) entonces
+				Reg_SS.Cod_Afiliado:= HV;
+			Fin Si
+		Fin Accion
+
+		Acción Proceso_Movimiento es 
+ 			Si (Reg_CPA.Cod_Afiliado = '001') entonces			*alta*
+				Escribir ('Error, alta no existe');
+			Sino
+				Si (Reg_CPA.Cod_Afiliado = '000') entonces			*baja lógica*
+					Marcar_Registro;
+				Sino
+					Proceso_Modificacion_Maestro;				*modificacion*
+				Fin Si
+			Fin Si
+		Fin Accion
+
+		Accion Proceso_Modificacion_Maestro es
+			Reg_Aux.Cant_Servicios:= Reg_Aux.Cant_Servicios + 1;
+			Reg_Aux.Costo:= Reg_Aux.Costo + Reg_SS.Costo;
+		Fin Accion
+
+		Accion Marcar_registro es
+			Reg_Aux.Fecha_Baja:= Reg_SS.Fecha_At;
+		Fin Accion
+
+	Algoritmo
+		Abrir E/ (Arch_CPA);
+		Abrir E/ (Arch_SS);
+		Crear (Arch_CPA_Actual);
+		Leer_CPA;
+		Leer_SS;
+		Mientras (Reg_CPA.Cod_Afiliado <> HV) o (Reg_SS.Cod_Afiliado <> HV) hacer
+			Si (Reg_CPA.Cod_Afiliado < Reg_SS.Cod_Afiliado) hacer
+				Reg_CPA_Actual:= Reg_CPA;
+				Grabar (Arch_CPA_Actual, Reg_CPA_Actual);
+				Leer_Maestro;
+			Sino
+				Si (Reg_CPA.Cod_Afiliado = Reg_SS.Cod_Afiliado) hacer
+					Reg_Aux:= Reg_CPA;
+					Mientras (Reg_CPA.Cod_Afiliado = Reg_SS.Cod_Afiliado) hacer
+						Proceso_Movimiento;
+						Leer_Movimiento;
+					Fin Mientras
+					Reg_CPA_Actual:= Reg_Aux;
+					Grabar (Arch_CPA_Actual, Reg_CPA_Actual);
+					Leer_Maestro;
+				Sino
+					Si (Reg_SS.Cod_Servicio = '001') entonces
+						Reg_Aux.Cod_Afiliado:= Reg_SS.Cod_Afiliado;
+						Reg_Aux.Fecha_Alta:= Reg_SS.Fecha_At;
+						Reg_Aux.Fecha_Baja:= ' ';
+						Reg_Aux.Cant_Servicios:= 1;
+						Reg_Aux.Costo:= Reg_SS.Costo;
+						Leer_Movimiento;
+						Mientras (Reg_Aux.Cod_Afiliado = Reg_SS.Cod_Afiliado) entonces
+							Proceso_Movimiento;
+							Leer_Movimiento;
+						Fin Mientras
+						Reg_CPA_Actual:= Reg_Aux;
+						Grabar (Arch_CPA_Actual, Reg_CPA_Actual);
+					Sino
+						Escribir('Error');
+						Leer_Movimiento;
+					Fin Si
+				Fin Si
+			Fin Si	
+		Fin Mientras
+		Cerrar (Arch_CPA);
+		Cerrar (Arch_CPA_Actual);
+		Cerrar (Arch_SS);
+Fin Accion	

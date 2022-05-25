@@ -27,7 +27,7 @@ La directora del evento necesita que se
       LEER(array[i].Altura)
     FP
     
-    Para i:= 2 a N hacer
+    Para i:= 2 a N hacer // este codigo asume que el primer elemento // esta ordenado por lo tanto no recomiendo usar esto.
       x:= array[i].Altura;
       j:=i-1;
       Mientras((j > 0) y (x < array[j].Altura)) hacer

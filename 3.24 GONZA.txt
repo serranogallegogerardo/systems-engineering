@@ -1,0 +1,46 @@
+ACCION 3.24 ES 
+AMBIENTE
+    super:= REGISTRO 
+        NyA: AN(60)
+        N_Caja: 1..10
+        ImpF: N(2,2)
+        Hora: N(4)
+    FR 
+    sal: arreglo de [1..11, 1..6] de reales
+    Arch: archivo de super ordenado por NyA.
+    i,j: entero
+    s: super
+PROCESO
+    Abrir E/(Arch) 
+    Leer(Arch,s)
+    PARA i:=1 hasta 11 HACER
+        PARA j:= 1 hasta 6 HACER
+            sal[i,j]:= 0
+        FP
+    FP
+    8-10	10-12	12-16	16-18	18-20
+    MIENTRAS NFA(Arch) HACER
+        SEGUN s.Hora HACER
+            =>8 y <=9: j:=1
+            =>10 y <=11: j:= 2
+            =>12 y <=15: j:= 3
+            =>16 y <=17: j:= 4
+            =>18 y <=20: j:= 5
+        FS 
+        i:= s.N_Caja
+        
+        // ACUMULO EN C/U de los totales // CDM
+        // METODO DE Tl ( es la posicion q voy a acumulando )
+        // Tl es basicamente estadisticos
+        
+        sal[i,j]:= sal[i,j] + s.ImpF // acumulo el importe
+        
+        sal[i,6]:= sal[i,6] + s.ImpF // acumulo el total x fila (caja)
+        sal[11,j]:= sal[11,j] + s.ImpF // acumulo el total x colum(hs)
+        
+        sal[11,6]:= sal[11,6] + s.ImpF // acumulo total gral
+        
+        Leer(Arch,s)
+    FM 
+Cerrar(Arch)
+FA 

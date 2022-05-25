@@ -1,0 +1,31 @@
+ejercicio 2
+
+Accion ej2 es
+	Ambiente
+
+	Caso base
+	DEVOLVER:=i        							Si numero mod 10 = 1
+
+	Caso recursivo
+	DEVOLVER:=DEVOLVER(numero div 10,i+1)  		Si numero mod 10 <> 1
+
+	Funcion DEVOLVER(n,i:entero):entero es
+		Si n mod 10 = 1 entonces
+			DEVOLVER:=i
+		sino
+			DEVOLVER:=DEVOLVER(n div 10,i+1)
+		fs
+	ff
+
+	numero:entero
+
+Proceso
+
+esc("INGRESE UN NUMERO QUE SOLO TENGA 1 O 0, AL MENOS UN 1")
+LEER(numero)
+
+Esc("la posicion del primer 1 es" DEVOLVER(numero,0))
+
+FA
+
+

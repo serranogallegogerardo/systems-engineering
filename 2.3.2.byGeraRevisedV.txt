@@ -1,0 +1,157 @@
+2.3.2
+Una empresa dispone de un fichero secuencial con datos de sus empleados, ordenado por número de sucursal,
+ y categoría, con los siguientes datos:
+
+EMPLEADOS Ordenado por Nro_Sucursal, Categoria
+Nro_SucursalCategoria (A,B,C)Nombre_EmpleadoCod_CursoTecnico (si,no)
+
+Y un fichero con datos de cursos, indexado por código de curso:
+
+CURSO Indexado por Cod_Curso
+Cod_CursoNombreFechaCant_Horas
+
+Emitir un listado informando:
+
+Para cada empleado: sucursal, categoría, nombre del empleado y nombre del curso que debe realizar.
+Por sucursal, categoría y toda la empresa:
+Total empleados técnicos
+Total empleados no técnicos
+Total empleados
+
+Accion 2.3.2 ES 
+
+	Ambiente 
+
+		tfecha = reg
+
+			dd
+			mm 
+			yy
+
+		fr
+
+		tEMPLEADOS = reg
+
+			Cod_Curso
+			Nro_Sucursal
+			Categoria:AN(1)//('A','B','C')
+			Nombre_Empleado
+			Tecnico:AN(2)//('si','no')
+
+		fr
+
+		tCURSO = reg
+
+			Cod_Curso
+			Nombre
+			Fecha:tfecha
+			Cant_Horas
+
+		fr
+
+		arEMP:archivo de tEMPLEADOS Ordenado por Nro_Sucursal, Categoria
+		arCUR:archivo de tCURSO Indexado por Cod_Curso
+
+		rEMP:tEMPLEADOS
+		rCUR:tCURSO
+		op:logico
+
+		c_tec,c_Ntec,c_st,c_Nst,c_tec_total,c_Ntec_total:entero
+		res_nro_sucursal:entero
+		res_categoria:AN(1)
+
+		Subaccion corte_sucursal ES
+
+			corte_categoria
+
+			Esc('Sucursal:',res_nro_sucursal)
+			Esc('Cantidad de tecnicos de la sucursal',c_st)
+			Esc('Cantidad de empleados no formados de la sucursal:',c_Nst)
+
+			c_tec_total:=c_tec_total+c_st
+			c_Ntec_total:=c_tec_total+c_Nst
+
+			c_st:=0;c_Nst:=0;
+
+			res_nro_sucursal:=rEMP.Nro_Sucursal
+
+		Fs 
+
+		Subaccion corte_categoria ES 
+
+			//i'm here
+			Esc('Categoria:',res_categoria)
+			Esc('Cantidad de tecnicos de la categoria:',c_tec)
+			Esc('Cantidad de empleados no formados de la categoria:',c_Ntec)
+
+			ct_st:=ct_st+c_tec
+			ct_Nst:=ct_Nst+c_Ntec
+
+			c_tec:=0
+			c_Ntec:=0
+
+			res_categoria:=rEMP.categoria
+
+		Fs
+
+	
+	Proceso
+
+		AbrirE/S(arCUR)
+		AbrirE/(arEMP)
+		Leer(arEMP,rEMP)
+
+		c_tec:=0;c_Ntec:=0
+		c_st:=0;c_Nst:=0;
+		c_tec_total:=0
+		c_Ntec_total:=0
+
+		Esc("Desea utilizar el programa v/f")
+		Leer(op)
+
+
+		Mientras op <> 'f' Hacer // sucursal, categoría, nombre del empleado y nombre del curso que debe realizar.
+
+			Esc('sucursal/categoría/nombre del empleado/nombre del curso')
+			
+		Mientras NFDA(arEMP) Hacer
+
+			Si 	res_nro_sucursal <> rEMP.Nro_Sucursal Entonces
+				corte_sucursal
+			Sino
+
+				Si res_categoria = rEMP.categoría Entonces
+					corte_categoria
+				Fsi
+				
+				//CONTADORES
+				Si rEMP.Tecnico = 'si' Entonces
+					c_tec:=c_tec+1
+				Sino
+					c_Ntec:=c_Ntec+1
+				Fsi
+				
+				//INDEX COURSO + LISTADO
+				rCUR.Cod_Curso:=rEMP.Cod_Curso
+				Leer(arCUR,rCUR)
+				Si EXISTE Entonces
+					Esc(rEMP.Nro_Sucursal,'/',rEMP.Categoria,'/',rEMP,'/',rCUR.Nombre)
+				Sino 
+					Esc('El curso no existe.')
+				Fsi
+
+			Fsi
+
+			Leer(arEMP,rEMP)
+
+		Fm
+
+		corte_sucursal
+
+		Esc('Total de tecnicos:',c_tec_total)
+		Esc('Total de empleados no formados de toda la empresa:',c_Ntec_total)
+		Esc('Total de empleados:',(c_tec_total+c_Ntec_total))
+
+		Cerrar(arEMP)
+
+FA

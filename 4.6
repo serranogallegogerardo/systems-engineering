@@ -1,0 +1,65 @@
+En el restaurante ÑOQUIS se está pensando en una solución informática para el soporte de datos del nuevo sistema de atención a clientes. Se han decidido por LISTAS por su dinamismo en cuanto a la cantidad de elementos. Diseñe un algoritmo que realice las siguientes funciones:
+
+    Añadir cliente al ser atendido (lista simple ordenada por Nombre del Cliente).
+    Registrar su consumo (Acumular el Total Consumido en valores de montos).
+    Realizar el cobro (emitir ticket con Nombre, Fecha, Número de Mesa y Total).
+    Eliminar del listado de atención.
+
+La información almacenada debe mantenerse ordenada por Nombre del cliente.
+
+
+ACCION 4.6(PRIM: PUNTERO A NODO) ES 
+AMBIENTE 
+    FECHA = REGISTRO 
+        dia: 1..31 
+        mes: 1..12 
+        año: N(4)
+    r_cliente = REGISTRO 
+        NombreC: AN(20)
+        consumo: N(7)
+        N_mesa: N(2)
+        Fecha: FECHA 
+    FR 
+    NODO = REGISTRO 
+        datos: r_cliente
+        prox: puntero a nodo 
+    FR 
+    P,Q: puntero a nodo 
+
+PROCESO 
+    Esc("Ingrese el nombre del cliente")
+    Leer(nombre)
+    Esc("Ingrese su consumo")
+    Leer(consumo) 
+    Esc("Ingrese el numero de mesa")
+    Leer(mesa)
+    Nuevo(Q)
+    *Q.datos.NombreC:= nombre 
+    *Q.datos.consumo:= consumo 
+    *Q.datos.N_mesa:= mesa
+    *Q.datos.Fecha:= FECHA_SISTEMA()
+    SI PRIM = NILL ENTONCES // 1er nodo
+        *PRIM.prox:= Q 
+        *Q.prox:= NILL 
+        P:= Q 
+    SINO // no es el primer elemento 
+        MIENTRAS P<>NILL y *P.datos.NombreC < *Q.datos.NombreC HACER 
+            P:= *P.prox
+        FM 
+        SI PRIM = P ENTONCES // tiene q ir en el primer elemento 
+            *PRIM.prox:= Q 
+            *Q.prox:= P 
+        SINO //no esta en el primer elemento 
+            SI P = NILL ENTONCES 
+                *P.prox:= Q 
+                *Q.prox:= NILL 
+            SINO 
+                *Q.prox:= *P.prox 
+                *P.prox:= Q 
+            FSI 
+        FSI 
+
+
+        // NO COMPRENDO BIEN COMO SEGUIR PORQ NO SE ENTIENDE EL ENUNCIADO//
+
+

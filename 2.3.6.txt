@@ -1,0 +1,262 @@
+Ejercicio 2.3.6
+Una Municipalidad debe liquidar las patentes de su parque automotor 
+para el cuarto trimestre del año e imprimir un padrón de cobros y deudas,
+ con 
+ cortes de importe por grupo, categoría y año de fabricación.
+ // CORTE DE CONTROL!!!!!!!!!! + INDEXADOS
+
+Los archivos son:
+
+AUTOS Ordenado por CLAVE
+Grupo N(2)Categoria 1..50Anio_Fab N(4)Nro_Patente N(8)DNI AN(8)ApyNom AN(25)Domicilio AN(30)
+
+DEUDAS Indexado por CLAVED
+Nro_Patente N(8)Anio_Deuda N(4)Trimestre N(1)Importe N(5,2)
+
+Para el trimestre actual, la cuota a abonar viene en el siguiente archivo:
+
+CUOTAS Indexado por CLAVEC
+
+Grupo N(2)Categoria 1..50Anio_Fab N(4)Importe N(5,2)
+Antes de imprimir el renglón correspondiente a cada nro de patente 
+se debe verificar si existen deudas pendientes, 
+en cuyo caso se sumaran todos los importes adeudados y 
+se consignarán en la columna de deudas.
+
+PADRON
+
+CLAVE	DNI	APYNOM	DOMIC	DEUDA	4to TRIMESTRE
+.....	...	......	.....	$ XXX,XX	$ XXX,XX
+TOTAL	$ XXX,XX	$ XXX,XX
+
+Accion 2.3.6 ES
+
+	Ambiente
+
+		tclave = reg 
+
+			Grupo N(2)
+			Categoria 1..50
+			Anio_Fab N(4)
+			Nro_Patente N(8)
+
+		fr
+
+		tclaved = reg
+
+			Nro_Patente N(8)
+			Anio_Deuda N(4)
+			Trimestre N(1)
+
+		fr
+
+		tclavec = reg
+
+			Grupo N(2)
+			Categoria 1..50
+			Anio_Fab N(4)
+
+		fr
+
+		tAUTOS = reg
+
+			clave:tclave
+			DNI AN(8)
+			ApyNom AN(25)
+			Domicilio AN(30)
+
+		fr
+
+		tDEUDAS = reg
+
+			clave:tclaved
+			Importe N(5,2)
+
+		fr
+
+		tCUOTAS = reg
+
+			clave:tclavec
+			Importe N(5,2)
+
+		fr
+
+		arAUT:archivo de tAUTOS Ordenado por CLAVE
+		arDEU:archivo de tDEUDAS Indexado por CLAVE
+		arCUO:archivo de tCUOTAS Indexado por CLAVE
+
+		rAUT:tAUTOS
+		rDEU:tDEUDAS
+		rCUO:tCUOTAS
+
+		resgrupo,rescategoría,resAnio_Fab:entero
+		tot_imp_AF,tot_imp_CC:entero
+		tot_imp_CT:entero
+		tot_imp_CT_CC:entero
+		tot_imp_GP:entero
+		tot_imp_GP_CC:entero
+
+		Subaccion corte_grupo ES
+
+			corte_categoria
+			Esc('TOTAL x GRUPO: $',tot_imp_GP,'   ',tot_imp_GP_CC)
+
+			// no me piden total de totales total totalisimo mega total total estesi total no lo piden
+			// entonces no lo acumulo en totgral
+
+			tot_imp_GP:=0
+			tot_imp_GP_CC:=0
+
+			resgrupo:=rAUT.clave.grupo
+			
+		Fs
+
+		Subaccion corte_categoria ES
+
+			corte_Anio_Fab
+			Esc('TOTAL x CATEGORIA: $',tot_imp_CT,'   ',tot_imp_CT_CC)
+
+			tot_imp_GP:=tot_imp_GP+tot_imp_CT // total importe grupo deuda
+			tot_imp_GP_CC:=tot_imp_GP_CC+tot_imp_CT_CC // total importe cuarto categoria cuarto trimestre
+
+			tot_imp_CT:=0
+			tot_imp_CT_CC:=0
+
+			rescategoría:=rAUT.clave.categoria
+
+		Fs
+
+		Subaccion corte_Anio_Fab ES
+
+			//i'm here
+			Esc('TOTAL x AÑO FAB.: $',tot_imp_AF,'   ',tot_imp_CC) // de las deudas  y el cuarto cuatri x anio
+			
+			tot_imp_CT:=tot_imp_CT+tot_imp_AF
+			tot_imp_CT_CC:=tot_imp_CT_CC+tot_imp_CC
+
+			tot_imp_AF:=0
+			tot_imp_CC:=0
+
+			resAnio_Fab:=rAUT.clave.Anio_Fab
+
+		Fs
+
+		Subaccion imprimirformato ES
+
+			Esc('PADRON')
+			Esc('CLAVE   DNI   APYNOM   DOMIC   DEUDA   4to_TRIMESTRE')
+
+		Fs
+
+	Proceso
+
+		AbrirE/(arAUT)
+		AbrirE/(arDEU) // ABRO DE ENTRADA PQ NO MODIFICO EL ARCHIVO
+		AbrirE/(arCUO)
+
+		Leer(arAUT,rAUT)
+
+		tot_imp_AF:=0
+		tot_imp_CC:=0
+		tot_imp_CT:=0
+		tot_imp_CT_CC:=0
+		tot_imp_GP:=0
+		tot_imp_GP_CC:=0
+
+		resgrupo:=rAUT.clave.grupo
+		rescategoría:=rAUT.clave.categoria
+		resAnio_Fab:=rAUT.clave.Anio_Fab
+
+		imprimirformato()
+
+		Mientras NFDA(arAUT) Hacer
+
+			//tratarCDC
+			Si resgrupo <> rAUT.grupo Entonces
+				corte_grupo
+				imprimirformato
+			Sino
+				Si rescategoría <> rAUT.categoria
+					corte_categoria
+					imprimirformato
+				Sino
+					Si resAnio_Fab <> rAUT.Anio_Fab Entonces
+						corte_Anio_Fab
+						imprimirformato
+					Fsi
+				Fsi
+			Fsi
+
+			//tratarindexados
+			
+			rDEU.Nro_Patente:=rAUT.Nro_Patente
+			leer(arDEU,rDEU)
+
+			Si EXISTE Entonces
+				// total importe de anio fabricacion de deuda
+				tot_imp_AF:=ac_imp_AF+rDEU.claved.Importe
+
+				rCUO.clavec.Grupo:=rAUT.clave.Grupo
+				rCUO.clavec.Categoria:=rAUT.clave.Categoria
+				rCUO.clavec.Anio_Fab:=rAUT.clave.Anio_Fab
+
+				Leer(arCUO,rCUO)
+
+				Si EXISTE Entonces
+				// 	CLAVE   DNI   APYNOM   DOMIC   DEUDA   4to_TRIMESTRE
+
+					// yo entendi que la clave es el nro_patente, ni idea
+					Esc(rDEU.claved.Nro_Patente,'   ',rAUT.clave.DNI,'   ',rAUT.clave.APYNOM
+						,'   ',rAUT.clave.Domicilio,'   ',rDEU.claved.Importe,'   ',rCUO.clavec.Importe)
+
+
+					// total de importe para el cuarto cuatrimestre
+					tot_imp_CC:=tot_imp_CC+rCUO.clavec.Importe
+
+				Sino
+					//Se produce un error en la cuota del cuarto cuatrimestre y se imprime el resto.
+					Esc(Esc(rDEU.claved.Nro_Patente,'   ',rAUT.clave.DNI,'   ',rAUT.clave.APYNOM
+						,'   ',rAUT.clave.Domicilio,'   ',rDEU.claved.Importe,'   ERROR',)
+				Fsi
+
+			Sino
+				//EscERROR DEUDAS
+
+				rCUO.clavec.Grupo:=rAUT.clave.Grupo
+				rCUO.clavec.Categoria:=rAUT.clave.Categoria
+				rCUO.clavec.Anio_Fab:=rAUT.clave.Anio_Fab
+
+				Leer(arCUO,rCUO)
+
+				Si EXISTE Entonces
+				// 	CLAVE   DNI   APYNOM   DOMIC   DEUDA   4to_TRIMESTRE
+
+					// Se produce un error en el importe de deuda, pero se imprime el resto.
+					Esc(rDEU.claved.Nro_Patente,'   ',rAUT.clave.DNI,'   ',rAUT.clave.APYNOM
+						,'   ',rAUT.clave.Domicilio,'   ERROR   ',rCUO.clavec.Importe)
+
+
+					// total de importe para el cuarto cuatrimestre
+					tot_imp_CC:=tot_imp_CC+rCUO.clavec.Importe
+
+				Sino
+					//Se produce un error en la cuota del cuarto cuatrimestre e deudas y se imprime el resto.
+					Esc(rDEU.claved.Nro_Patente,'   ',rAUT.clave.DNI,'   ',rAUT.clave.APYNOM
+						,'   ',rAUT.clave.Domicilio,'   ERROR   ERROR')
+
+				Fsi
+
+			Fsi
+
+			////////////////////
+			leer(arAUT,rAUT)
+
+		Fm
+
+		corte_grupo
+
+		Cerrar(arAUT)
+		Cerrar(arCUO)
+		Cerrar(arDEU)
+
+FA

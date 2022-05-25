@@ -1,0 +1,57 @@
+Dada una lista simplemente encadenada que contiene datos de todas las provincias de la República Argentina: nombre, capital, cantidad total de habitantes y cantidad de analfabetos, y está ordenada en forma decreciente por número de habitantes analfabetos, generar otras tres listas que contengan el nombre, la capital y el porcentaje de analfabetos de las Provincias que respondan a las siguientes restricciones.
+
+L1: <= 10 % analfabetos
+L2: 16 a 25 % analfabetos
+L3: => 26 % analfabetos
+
+ACCION 4.5 ES 
+AMBIENTE 
+    PRIM,P: PUNTERO A NODO
+    PRIM1,P1: PUNTERO A NODO
+    PRIM2,P2: PUNTERO A NODO
+    PRIM3,P3: PUNTERO A NODO
+    DATOS= REGISTRO
+        ANALFABETOSTOTAL: N(10) 
+        NOMBRE: AN(10)
+        CAPITAL: AN(10)
+        HABITANTESTOTAL: N(10)
+    FR
+    NODO = REGISTRO 
+        DATO: DATOS 
+        PROX: PUNTERO A NODO 
+    FR 
+
+    PROCEDIMIENTO CARGAR_LISTA(Q,ANT,PRIM,P:PUNTERO A NODO)
+        NUEVO(Q)
+        Q.DATOS:= P.DATOS 
+        SI PRIM = NILL ENTONCES 
+            PRIM:= Q
+            *Q.PROX:= NILL 
+            ANT:= Q
+        SINO 
+            *Q.PROX:= Q
+            ANT:= Q
+        FSI 
+    FP 
+
+
+PROCESO 
+    P:= PRIM 
+    SI PRIM= P ENTONCES
+        ESC("LA LISTA ESTA VACIA")
+    FSI
+    SINO
+        MIENTRAS P<> NILL HACER 
+            porcentaje:= ((P.DATOS.ANALFABETOSTOTAL)*100) DIV P.DATOS.HABITANTESTOTAL
+            SEGUN porcentaje HACER
+                <=10:CARGAR_LISTA(P1,ANT1,PRIM1,P)
+                >=16 Y <25 :CARGAR_LISTA(P2,ANT2,PRIM2,P)
+                >=26:CARGAR_LISTA(P3,ANT3,PRIM3,P)
+            FS 
+        FM 
+    FSI 
+    
+                    
+
+                    
+

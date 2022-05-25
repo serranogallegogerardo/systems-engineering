@@ -1,0 +1,106 @@
+Gerardo
+Accion peaje Es
+
+ Ambiente
+
+	 ffecha = reg de
+
+	 	dd:n(2)
+	 	mm:n(2)
+	 	yy:n(4)
+
+	 freg
+
+	 cclave = reg de
+
+	 	patente:an(6)
+	 	fecha:ffecha
+	 	
+	 freg
+
+	 peajes = reg de
+
+	 	clave:cclave
+	 	ult_hora:n(4)
+	 	costo:N(3,2)
+
+	 freg
+
+	 arPEAJES:Archivo de peajes indexado por cclave
+	 rPEAJE:peajes
+	 cat:entero;
+	 respatente:an(6)
+	 resfecha:ffecha
+	 paso,op:booleano
+
+ Proceso
+
+ 	AbrirE/S(arPEAJES)
+ 	
+ 	Esc('Ingrese la patente del auto:')
+ 	leer(respatente)
+ 	Esc('Ingrese la fecha:')
+ 	leer(resfecha)
+ 	Esc('Ingrese la categoria 1/2/3/4')
+ 	leer(cat)
+
+ 	Esc('PATENTE/FECHA/ult_hora/COSTO')
+
+ 	Esc('Desea ejecutar el programa? s/n')
+ 	leer(op)
+
+ 	Mientras op <> true hacer
+
+ 		paso:=false
+
+ 		Si existe Entonces
+
+ 		 Si ( paso = false ) y (rPEAJE.clave.fecha = resfecha) y (rPEAJE.clave.patente = respatente) Entonces
+
+	 			Segun cat Hacer
+
+	 				='1':
+
+	 					rPEAJE.costo+= 1.20;
+
+	 				='2':
+
+	 					rPEAJE.cost+= 2.50;
+
+	 				='3':
+
+	 					rPEAJE.costo+= 4.00;
+
+	 				='4':
+
+	 				 	rPEAJE.costo+= 5.00;
+
+	 	 	 	Fsegun
+
+	 	 	 	paso:=true
+	 	 	 	
+	 	 	 	REGRABAR(arPEAJES,rPEAJE)
+
+	 	  Fmientras
+
+
+ 	 	 	Si
+
+ 	 	 		Esc('ESTE VEHICULO YA PASO PREVIAMENTE')
+
+ 	 	 	Fsi
+
+ 	 	 	Leer(arPEAJES,rPEAJE);
+
+ 		Sino
+
+ 			Esc('ERROR, NO EXISTE')
+ 			Leer(arPEAJES,rPEAJE)
+
+ 		Fsi
+
+ 	Fmientras
+
+ 	Cerrar(arPEAJES)
+
+Faccion

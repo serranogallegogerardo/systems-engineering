@@ -1,0 +1,131 @@
+ACCIÓN 2.1.28 ES
+    AMBIENTE
+        artistas, sal: secuencia de caracter //NadinePeralta+Resistencia+19+R+3455?
+        a, s: caracter
+
+        obras: secuencia de caracter  //LaVieEstBelle,2021,$567,R/
+        o: caracter
+
+        ResgNombre,producciones: secuencia de caracter
+        res,prod: caracter
+
+        mayor_artista, total, produc,renacentistas: entero
+        porcentaje: real
+        
+        PROCEDIMIENTO inicializar ES
+            ARR(artistas)
+            AVZ(artistas,a)
+
+            ARR(obras)
+            AVZ(obras,o)
+
+            mayor_artista:= LV
+            total:= 0
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO finalizar ES
+            CERRAR(artistas)
+            CERRAR(obras)
+            GRABAR(sal)
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO avanzar_blancos ES
+            MIENTRAS (a = "") HACER
+                AVZ(artistas,a)
+            FIN_MIENTRAS
+
+            MIENTRAS (o = "") HACER
+                AVZ(obras, o)
+            FIN_MIENTRAS
+        FIN_PROCEDIMIENTO
+
+    PROCESO
+        inicializar()
+        CREAR(ResgNombre)
+        CREAR(producciones)
+        
+        avanzar_blanco()
+        
+        MIENTRAS NFDS(artistas) HACER
+            produc:= 0
+            MIENTRAS (a <> +) HACER //Estoy en el nombre
+                res:= a
+                GRABAR(ResgNombre, r) //Guardo en una secuencia de resguardo pq despues tengo que avanzar para ver si es renacentista
+            FIN_MIENTRAS
+            AVZ(artistas,a) //Avanzo el +
+
+            MIENTRAS (a <> +) HACER // Estiy en la provincia
+                AVZ(artistas,a)
+            FIN_MIENTRAS
+            AVZ(artistas,a) //Avanzo el +
+
+            MIENTRAS (a <> +) HACER //estoy en la edad
+                AVZ(artistas,a)
+            FIN_MIENTRAS
+            AVZ(artistas,a)  //Avanzo el +
+
+            SI (a = "R") o (a = "r") ENTONCES   //Si es renacentista 
+                renacentistas:= renacentistas + 1
+                CREAR(sal)
+
+                MIENTRAS (a <> +) HACER //Grabo en la salida el nombre que tenia en la secuencia de resguardo
+                    sa:= res
+                    GRABAR(sal,sa)
+                FIN_MIENTRAS
+
+                sa:= "+"    //Esto es pq todo tiene que estar separado por +
+                GRABAR(sal,sa)
+                sa:= "R"
+                GRABAR(sal,sa)
+                sa:="+"
+                GRABAR(sal,sa)
+                AVZ(artistas,a)
+
+                MIENTRAS (a <> "?") HACER //Mientras no terminen los datos del artista, copio en una secuencia de resguardo la cantidad de obras que pinto
+                    prod:= a 
+                    GRABAR(producciones,prod)
+                FIN_MIENTRAS
+
+                produc:= producciones // esto nosé si estrá bien, paso de la secuencia a un entero
+
+                SI  (mayor_artista < produc) ENTONCES //Busco cuál es la mayor cantidad de obras que hizo un artista
+                    mayor_artista:= product
+                FIN_SI
+                
+                PARA i:= 0 a produc, +1 Hacer  // Product vendría a ser el entero que está mas arriba. Acá cargo los datos de la obra en la salida
+                    MIENTRAS (o <> ",") HACER // Grabo en la salida el nombre de la obra
+                        sa:= o
+                        GRABAR(sal,sa)
+                        AVZ(obras,o)
+                    FIN_MIENTRAS
+                    AVZ(obras,o) //Avanzo la ,
+
+                    sa:="+" //agrego la separacion
+                    GRABAR(sal,sa) 
+
+                    MIENTRAS (o <> ",") HACER // Grabo en la salida el año de produccion de la obra
+                        sa:= o
+                        GRABAR(sal,sa)
+                        AVZ(obras,o)
+                    FIN_MIENTRAS
+                    AVZ(obras,o) //Avanzo la ,
+
+                    MIENTRAS(o <> "/") HACER //mientras que se trate de la misma obra, avanzo
+                        AVZ(obras,o)
+                    FIN_MIENTRAS
+                    AVZ(obras,o)
+                FIN_PARA
+                sa:= "?" //pongo la marca de fin de artista
+
+            SINO //Si no es renacentista 
+                AVZ(artistas,a)
+            FIN_SI
+
+            total:= total + produc //sumo al total la cantidad de obras de este artista
+        FIN_MIENTRAS
+
+        porcentaje:= (renacentistas * 100) / total
+        ESC("La mayor cantidad de obras vendidas por un artista fue de", mayor_artista)
+        ESC("El porcentaje de obras renacentistas sobre el total es", porcentaje, " %")
+        finalizar()
+FIN_ACCIÓN

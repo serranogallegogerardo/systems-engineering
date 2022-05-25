@@ -1,0 +1,137 @@
+Se dispone de una lista circular con un conjunto de números naturales. Este conjunto está dividido en 6 grupos. En cada grupo el primer elemento indica la cantidad de números subsiguientes a él que integran dicho grupo. Se desea generar una nueva lista doblemente encadenada en la cual cada nodo contendrá el promedio de cada grupo. Dicha lista debe quedar ordenada en forma ascendente y, al final se debe informar cuál fue el máximo y el mínimo promedio de todo el conjunto de números.
+
+//ACA ESTA BIEN PERO LA LISTA DE SALIDA NO ESTA ORDENADA
+ACCION (PRIM: PUNTERO A NODO) ES 
+    AMBIENTE 
+        P: PUNTERO A NODO
+        NODO = REGISTRO 
+            numero: N(4)
+            prox: puntero a NODO
+        FR 
+        NODO1 = REGISTRO
+            numero: Entero
+            ant, prox: PUNTERO A NODO1
+        FR
+        PRIM2, ULT, P2,ANT: PUNTERO A NODO1
+        suma,cant_nodos: entero 
+    PROCESO 
+        P=PRIM 
+        max:= LV 
+        min:= HV 
+        MIENTRAS *P.prox <> PRIM HACER 
+            cant_nodos: *P.numero 
+            P:=*P.prox
+            PARA i:=1 HASTA cant_nodos HACER
+                suma:= suma + *P.numero
+                P:= P.prox 
+            FP
+            nuevo(P2)
+            *P2.numero:= suma DIV cant_nodos
+            *P2.prox:= Nill
+            SI PRIM2 = nill ENTONCES 
+                PRIM2:= P2
+                ULT:= P2 
+                *P2.prox:= Nill
+                *P2.ant:= Nill 
+                ANT:= P2
+            SINO 
+                *P2.ant:= ANT 
+                ANT:= P2
+                *P2.prox:= NILL
+            FSI 
+            SI *P2.numero > max ENTONCES 
+                maximo:= *P2.numero
+            SINO 
+                SI *P2.numero < min ENTONCES 
+                    minimo:= *P2.numero 
+                FSI 
+            FSI 
+        FM 
+        Esc("El maximo de promedio de todo el conjunto de numeros es:" maximo)
+        Esc("El minimo de promedio de todo el conjunto de numeros es:" minimo)
+    FIN_accion 
+
+
+            
+//ACA ESTA ORDENADA 
+Acción Listas10(primc:puntero a nodoc) es
+Ambiente
+	nodoc = registro
+		numero:entero
+		prox: puntero a nodoc
+	FR
+	pc:puntero a nodoc
+	
+	nodod = registro
+		numero:real
+		ant,prox: puntero a nodod
+	FR
+	primd,qd,pd:puntero a nodod
+	
+	cantidad:entero
+	promedio:real
+	maximo,minimo:real
+
+
+//CARGA ORDENADA LISTAS DOBLES 
+//qd seria el nodo nuevo. pd seria el puntero 
+Subacción carga_ordenada ES
+Algoritmo
+
+	SI primd = NIL ENTONCES //si la lista esta vacia, directamente cargo el primer nodo al incio 
+		qd*.prox:=NIL
+		qd*.ant:=NIL
+		ultd:=qd
+		primd:=qd
+
+	SINO // si no esta vacia, entonces busco donde deberia estar
+		pd:=primd
+
+		//aca avanzo la lista( una onda como se hacia con secuencias), hasta que encuentro el valor donde tiene que estar.
+		Mientras (pd<>NIL y qd*.dato>pd*.dato) Hacer
+			pd:=pd*.prox
+		FM
+
+		//Si el valor tiene que ir en el primer elemento: 
+		SI pd=primd ENTONCES
+			qd*.prox:=pd
+			qd*.ant:=NIL
+			Pd*.ant:=qd
+			primd:=qd
+
+		//si el valor tiene que ir en cualquier otro lugar
+		SINO 
+			SI pd=NIL ENTONCES //esto es si tiene que ir en el ultimo elemento(si no es en el ultimo, va a ser si o si entre dos nodos)
+				qd*.ant:=ultd
+				qd*.prox:=NIL
+				ultd*.prox:=qd
+				ultd:=qd
+			SINO //Aca seria si es en el medio de 2 nodos 
+				qd*.prox:=pd
+				qd*.ant:=pd*.ant
+				(pd*.ant)*.prox:=qd
+				pd*.ant:=qd
+			FS
+		FS
+	FS
+
+PROCESO
+	primd:=NIL
+	ultd:=NIL
+	pd:=NIL
+	
+	pc:=primc
+	cantidad:=*pc.numero
+	pc:=pc*.prox
+	Mientras pc<>primc Hacer
+		promedio:=0
+		Para i:=1 a cantidad Hacer
+			promedio:=promedio + pc*.numero
+			pc:=pc*.prox
+		FP
+		Nuevo(qd)
+		qd*.numero:=promedio/cantidad
+		Carga_ordenada
+		cantidad:= pc*.numero
+	FM
+	

@@ -1,0 +1,631 @@
+Listas
+
+Accion "4.1" es;
+	amb
+		Nodo=Registro
+			Dato:N(2)
+			Prox:Puntero a Nodo
+		FR
+		C,K:Entero
+		P,Prim,Aux:Puntero a Nodo
+		Op:1..4;
+
+		SubAccion "Busqueda" es;
+			C:=0;	//Contador de Posicion
+			Mientras (*P.Prox<>Nil) y (C<>K) hacer
+				C:=C+1; *Aux.Prox:=P; P:=*P.Prox;
+			fm
+		fsa
+
+	proceso
+		Prim=Nil;
+		Repetir
+			Esc("Lista Simplemente Encadenada");
+			Esc("|1-Acceder|2-Insertar|3-Eliminar|4-Terminar|")
+			Esc("Ingrese Opcion");
+			Repetir
+				Leer(Op);
+			Hasta que Op in 1..4
+			Si Op<4 ent
+				Esc("Ingrese Posicion");
+				Leer(K);
+			fs
+			Segun Op hacer
+				1:	Si Prim=Nil ent
+						Esc("Error Lista Vacia");
+					Sino
+						P:=Prim;
+						Busqueda;
+						Si C=K ent 		//Si llego a encontrar la posicion K
+							Esc("El Elemento K Contiene:" *P.Dato);
+						Sino
+							Esc("El Elemento K no Existe");
+						fs
+					fs
+				2:	Nuevo(Q);
+					Esc("Ingrese Valor"); Leer(*Q.Dato);
+					Si (Prim=Nil) ent //Lista Vacia
+						*Q.Prox:=Nil; Prim:=Q;
+					Sino
+						Busqueda;
+						Si C=K ent 		//Si llego a encontrar la posicion K
+							*Q.Prox:=*Aun.Prox;
+							*Aux.Prox:=Q;
+						Sino 	//Si no lo encuentro lo posiciono al final
+							*Q.Prox:=Nil;
+							*P.Prox:=Q;
+						fs
+					fs
+				3:	Si Prim=Nil ent
+						Esc("Error Lista Vacia");
+					Sino	
+						Si (K=1 y *P.Prox=Nil) ent
+							Prim:=Nill;
+						Sino
+							Si (K=1 y *P.Prox<>Nil) ent
+								Prim:=*P.Prox;
+							fs
+						fs
+						Busqueda;
+						Si C=K ent 		//Si llego a encontrar la posicion K
+							*Aux.Prox:=*P.Prox;
+							Disponer(P);
+						fs
+					fs
+			fse
+			Esc("Desea Ejecutar otra accion? Si/No"); Leer(R); 
+		hasta que R="Si"
+FA
+
+Accion "4.2" es;
+	amb
+		Nodo=Registro
+			Dato:Entero;
+			Prox:Puntero a Nodo;
+		fr
+
+		P,Q,R,Aux,Prim,Prim2:Puntero a Nodo;
+		C:Entero;
+		//P es la lista ya cargada de Enteros
+		//Aux es la Auxiliar de Posicion de P
+		//Q es la nueva lista a cargar con numeros que terminen en 0
+
+	Proceso
+		Si Prim=Nil ent
+			Esc("La lista esta Vacia T_T");
+		Sino
+			Prim:=P; //Posiciono en el 1er elemento de la lista cargada
+			C:=0;
+			Mientras (P<>Nil) hacer
+				C:=C+1;
+				Si (*P.Dato MOD 10)=0 ent //Si el entero es multiplo de 10..
+					Q:=P;
+					Si (Prim2=Nil) ent //La nueva lista esta Vacia, 1ra vez
+						Prim2:=Q; *Q.Prox:=Nil;
+					Sino
+						*R.Prox:=Nil; *Q.Prox:=R; //Posiciono al final del ultimo nodo
+					FS
+					Si C=1 ent  //Si llega a ser el 1er Nodo de P
+						Prim:=*P.Prox; Disponer(P);
+					Sino 	//Significa que esta en el medio o al final
+						*Aux.Prox:=*P.Prox; Disponer(P);
+					FS
+				Sino
+					Aux=P;
+				FS
+				P:=*P.Prox;
+			FM
+		FS
+FA
+
+Accion "4.3"(Prim:Puntero a Final) es;
+	Amb //Lista simple de enteros, calcular total acumulado de pares e impares
+		Final=Registro
+			Num: Entero;
+			Sig: Puntero a Final;
+		FR
+		P:Puntero a Final;
+		Par,Imp,C:Entero
+	Proceso
+		Prim:=P; Imp:=0; Par:=0; C:=0;
+		Mientras (P<>Nill) hacer
+			C:=C+1;
+			Si (C MOD 2)=1 ent
+				Imp:=Imp+*P.Num;
+			Sino
+				Par:=Par+*P.Num;
+			FM
+			P:=*P.Sig;
+		FM
+FA
+
+Accion "4.4"(Prim:Puntero a Lista) es; //Invertir la Lista Simple
+	Amb
+		Lista=Registro
+			Clave: Entero;
+			Sig: Puntero a Lista;
+		FR
+		P,Q,A:Puntero a Lista; //Primero, Medio, Ultimo
+	Proceso
+		p:=prim
+		Si prim=nil entonces 
+			Esc('Lista vacia')
+		Sino
+			Si *p.prox=nil entonces 
+				Esc('Hay un solo elemento en la lista.')
+			Sino 
+				Q:=P;
+				P:=*P.Sig;
+				*Q.Sig:=Nill
+				A:=P
+				Mientras P<>Nill hacer
+					P:=*P.Sig;
+					*A.Sig:=Q
+					Prim:=A
+					A:=P
+					Q:=Prim
+				FM
+			FS 
+		FS
+FA
+
+Accion "4.5"(Prim:Puntero a Arg) es;
+	Amb
+		Arg=Registro
+			Dato:	Prov=Registro
+						Nom: AN(50);
+						Cap: AN(50);
+						Hab: Entero;
+						Anl: Entero;
+					FR
+			Sig: Puntero a Arg;
+		FR
+		P:Puntero a Arg;
+		New=Registro
+			Dato:	Res=Registro
+						Nom: AN(50);
+						Cap: AN(50);
+						Por: Real(2,2);
+					FR
+			Prox: Puntero a New;
+		FR
+		Prim1,Prim2,Prim3,L1,L2,L3:Puntero a New;
+
+	Proceso
+		P:=Prim; 
+		Prim1=Nill; Prim2=Nill; Prim3=Nill;
+		Mientras (P<>Nill) hacer
+			Si (*P.Dato.Hab*0,1)=>*P.Dato.Anl ent //Si es menor al 10%
+				Si (Prim1=Nill) ent //Lista Vacia
+					a
+				Sino
+					a
+				FS
+			Sino
+				Si (*P.Dato.Hab*0,16)<=*P.Dato.Anl y (*P.Dato.Hab*0,25)=>*P.Dato.Anl ent
+					Si (Prim2=Nill) ent //Lista Vacia --- Esta entre el 16% y 25%
+						a
+					Sino
+						a
+					FS
+				Sino //Es mayor al 26%
+					Si (Prim3=Nill) ent //Lista Vacia
+						a
+					Sino
+						a
+					FS
+				FS
+			FS
+			P:=*P.Sig;
+FA
+
+Accion "4.6" es;
+	Amb
+		Ñoq=Registro
+			a
+		FR
+	Proceso
+		a
+FA
+
+Accion "4.7" es;
+	Amb
+		Sec:Secuencia de AN;
+		V:AN;
+		Lis=Registro
+			Let:AN;
+			Fre:Entero;
+			ProX:Puntero a Lis;
+		FR
+		Prim,P,A:Puntero a Lis; //A:Nodo Auxiliar
+
+	Proceso
+		ARR(S); AVZ(S,V);
+		Prim=Nill;
+		Men:=9999; May:=0;
+		Mientras (NFDS(S)) hacer
+			Si (Prim=Nill) ent //Lista Vacia
+				Nuevo(Q); Prim:=Q; *Q.Prox:=Nill;
+				*Q.Let:=V; *Q.Fre:=1;
+			Sino
+				Mientras (P<>Nill) y (*P.Let<>V) y (*P.Let<V) hacer //A<Z
+					P:=*P.Prox;
+				FM
+				Si (*P.Let=V) ent
+					*P.Fre:=*P.Fre+1;
+				Sino
+					Si (P=Prim) y (*P.Let>V) ent //Letra que va al principio por ser menor
+						Nuevo(Q); *Q.Prox:=*Prim.Prox; Prim:=Q;
+						*P.Let:=V; *P.Fre:=*P.Fre+1; A=Q;
+					Sino
+						Si (P=Nill) y (*P.Let<V) ent //Letra que va al final por ser mayor
+							Nuevo(Q); *Q.Prox:=*P.Prox; *P.Prox:=Q;
+							*Q.Let:=V; *Q.Fre:=1; A=P;
+						Sino //Esta entre 2 nodos
+							Nuevo(Q); *Q.Prox:=*A.Prox; *A.Prox:=Q;
+							*Q.Let:=V; *Q.Fre:=1; A=Q;
+						FS
+					FS
+				FS
+			FS
+			AVZ(S,V);
+		FM
+		P:=Prim;
+		Mientras (P<>Nill) hacer
+			Si (*P.Fre<Men) ent
+				Men:=*P.Fre; Lm:=*P.Let; //Letra con menor Frecuencia
+			FS
+			Si (*P.Fre>May) ent
+				May:=*P.Fre; LM:=*P.Let; //Letra con Mayor Frecuencia
+			FS
+			Esc("La Letra:", *P.Let"Tiene una Frecuencia de:", *P.Fre);
+			P:=*P.Prox;
+		FM
+		Esc("La Letra:", LM "Tiene la Mayor Frecuencia, siendo:", May);
+		Esc("La Letra:", Lm "Tiene la Menor Frecuencia, siendo:", Men);
+FA
+
+Accion "4.8"(Prim:Puntero a Nodo) es; //Lista Circular: Prim-Nodo-Nodo-Nodo-Prim
+	Amb
+		Nodo=Registro
+			Cla:Entero;
+			Dato:Entero;
+			Prox:Puntero a Nodo;
+		FR
+		A,P:Puntero a Nodo;
+		N,R:=Entero;
+
+		SubAccion "Encontrado" es;
+			Esc("Nodo Encontrado")
+			Esc(*P.Dato);
+		FSA
+		SubAccion "Eliminado" es;
+			Si (P=Prim) y (*P.Prox=Prim) ent //Unico Nodo;
+				*Prim.Prox:=*P.Prox; Disponer(P);
+			Sino	
+				Si (P=Prim) y (*P.Prox<>Prim) ent //Esta al Principio y no es el unico
+					*Prim.Prox:=*P.Prox; Disponer(P);
+				Sino
+					Si (P<>Prim) y (*P.Prox=Prim) ent //Esta al Final y no es el unico
+						*A.Prox:=*P.Prox; Disponer(P);
+					Sino //Esta entre nodos;
+						*A.Prox:=*P.Prox; Disponer(P);
+					FS
+				FS
+			FS
+		FSA
+		SubAccion "Busqueda" es;
+			Si (Prim=Nill) ent //Lista Vacia, ERROR
+				Esc("Error, Lista Vacia");
+			Sino
+				Esc("Ingrese Clave del elemento:"); Leer(N);
+				Mientras (*P.Prox<>Prim) y (*P.Cla<>N) hacer
+					A=P;
+					P:=*P.Prox;
+				FM
+				Si (*P.Prox=Prim) y (*P.Cla<>N) ent //Llego al final y no existe tal nodo
+					Esc("Nodo Inexistente");
+				Sino
+					Si (*P.Cla=N) ent
+						Si (R=1) ent
+							Encontrado;
+						FS
+						Si (R=2) ent
+							Eliminado;
+						FS
+					Fs
+				FS
+			FS
+		FSA
+
+	Proceso
+		Esc("Buenas, que accion desea efectuar?");
+		Esc("1.Buscar");
+		Esc("2.Eliminar");
+		Esc("3.Insertar");
+		Leer(R); P:=Prim;
+		Si (R=1) o (R=2) ent
+			Busqueda;
+		Sino
+			Mientras (*P.Prox<>Prim) hacer
+				A=P;
+				P:=*P.Prox;
+			FM
+			Nuevo(Q);
+			Esc("Ingrese la Clave para el Nuevo Nodo:"); Leer(*Q.Cla);
+			Esc("Ingrese el Dato Numerico para el Nuevo Nodo:"); Leer(*Q.Dato);
+			*Q.Prox:=*A.Prox; *A.Prox:=Q;
+		FS
+FA
+
+Accion "4.9"(Prim1:Puntero a Nodo) es; Prim-1-2-3-4-5-6-7-8-Prim
+//Poseo una lista circular de 8 nodos con numeros para encriptacion, el usuario debe ingresar
+//un texto por teclado (Para ello se utilizara un arreglo de 255 elementos como Max cada elem
+//mento contiene un caracter), el texto ya encriptado debe almacenarse en una lista simple de 
+//Salida (Cada Nodo podria tener una Palabra), y por ultimo mostrar el texto encriptado
+	Amb
+		Nodo=Registro
+			a
+		FR
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Accion "4.10"(Prim1:Puntero a Nodo) es;
+	//Una lista circular divididad en 6 grupos cada primer nodo indica la cant de nodos del grupo *primer grupo, nodo1 = 4: tiene 4 nodos
+	//Crear una lista doble y en ella crear un nodo por cada grupo y que contenga el promedio, quedando ordenado de forma ascendente informando el promedio max y min de todo el conjunto de numeros
+	Circular
+	Prim1-->|3||-->|8||-->|7||-->|5||------->|2||-->|4||-->|9||------->...|1||-->Prim1
+
+	Prim2-->| 6.42 ||-->| 6,50 ||-->| 6,67 ||-->Nill
+	Nill<---| 	   ||<--|      ||<--|      ||<--Ult
+
+	Amb
+		C,Prim1:Puntero a Nodo;
+		Cir=Registro
+			Num:N(3);
+			Sig:Puntero a Nodo;
+		FR
+		D,Prim2,Ult:Puntero a Nodo;
+		Dob=Registro
+			Num:N(3,2);
+			Ant,Prox:Puntero a Nodo;
+		FR
+		Prom,Max,Min:N(3,2);
+
+		SubAccion "PrimerD" es; //El primer Nodo D
+			Nuevo(D); *Prim2:=D; *Ult:=D; *D.Ant:=Nill; 
+			*D.Prox:=Nill; *D.Num:=Prom;
+		FR
+ 
+	Proceso
+		Max:=LV; Min:=HV;
+		C:=Prim1; //Inicio el Circular
+		Prim2=Nill; Ult:=Nill; //Creo la Lista Doble
+
+		Mientras (*C.Prox<>Prim1) hacer
+			N:=*C.Num; i:=0; Prom:=0;
+			Mientras (i<>N) y (*C.Prox<>Prim1) hacer
+				C:=*C.Sig;
+				i:=i+1;
+				Prom:=Prom+*C.Num;
+			FM
+			Prom:=Prom/N;
+			Si (Max<Prom) ent //encuentro el promedio mayor
+				Max=Prom;
+			FS
+			Si (Min>Prom) ent //encuentro el promedio menor
+				Min=Prom;
+			FS
+
+			Si (Prim2=Nill) ent //Vacia;
+				PrimerD;
+			Sino
+				D=Prim2;
+				Mientras (*D.Prox<>Nill) y (*D.Num<Prom) hacer //mandarlo al final
+					D:=*D.Prox;
+				FM
+				Nuevo(D);
+				Si (*D.Prox=Nill) ent //al final
+					*(*D.Ant).Prox:= *D.Prox; *(*D.Ant).Prox:=D
+					*(*Ult.Prox).Ant:= *D.Ant; *(*Ult.prox).Ant:= D;
+				Sino
+					Si(D=Prim2) ent //es el nodo mas pequeño
+						*(Prim2.Ant).Prox:= *D.Prox; *(Prim2.Ant).Prox:= D;
+						*(*D.prox).Ant:= *D.Ant; *(*D.prox).Ant:= D;
+					Sino //En el medio
+						*(*D.Ant).Prox:= *D.Prox;    [1] [] [3] Para que el nodo [1] Apuntes a [3]
+						*(*D.Prox).Ant:= *D.Ant;   [1] [] [3] Para que el nodo [3] Apuntes a [1]
+						*(*D.Ant).Prox:= D;
+						*(*D.Prox).Ant:= D;
+					fs
+				fs
+			FS
+			C:=*C.Sig;
+		FM
+
+
+
+FA
+
+Accion "4.11" es;
+	amb
+		Personal=Registro
+			DNI:N(8);
+			Nom:AN(50);
+			Asig:N(5);
+			Anti:N(2);
+		FR
+		Per:Archivo de Personal Ord por DNI; R:Personal;
+		Nodo=Registro
+			Dato:Personal;
+			Ant,Prox:Puntero a Nodo;
+		FR
+		P,Q,A,Prim,Ult:Puntero a Nodo;
+
+	Proceso
+		Abrir E/(Per); Leer(Per,R);
+		P:=Prim;
+		Mientras NDFA(Per) hacer
+			Nuevo(Q);
+			Si (Prim=Nil) ent //Lista Vacia, Primer Nodo
+				*Prim:=Q; *Q.Dato=R; *Q.Ant=Nil;
+				*Q.Prox=Nil; *Ult:=Q;
+			Sino
+				P=Prim;
+				Mientras (P<>Nil) hacer
+					A:=P;
+					Si (*P.Dato.Anti<R.Anti) y (P=Prim) ent //Mas Grande que el 1er Nodo, Colocar Adelante de Todos
+						Nuevo(Q); *Q.Dato=R; *Q.Prox:=
+					Sino
+						Si (*P.Dato.Anti>R.Anti) y (P=Ult) ent ////Mas Pequeño que el Ultimo Nodo, Colocar al Final de Todos
+							*Q.Prox:=*P.Prox; *Q.Ant:=*Ult.Ant;
+							*P.Prox:=Q; *Ult.Ant:=Q;
+						Sino //En el Medio
+							*Q.Prox:=*A.Prox; *Q.Ant:=*P.Ant;
+							*A.Prox:=Q; *P.Ant:=Q;
+						FS
+					FS
+					P:=*P.Prox;
+			FS
+
+Accion "4.12"(Prim,Ult:Puntero a Pedido) es;
+	Amb
+		Pedido=Registro
+			Nom: AN(50);
+			Dir: AN(50);
+			Tel: N(10);
+			Total: N(3,2)
+			Est: AN(1);
+			Ant,Prox:Puntero a Pedido
+		FR
+		A,P:Puntero a Pedido;
+		N:Entero(3,2);
+		R:AN(1);
+		Funcion "Random"(N) es; //Obtener una tarifa aleatoria de 3digitos y 2 decimales
+			Random:=Random(N);
+		FF
+		SubAccion "Eliminar" es;
+			Si (P=Prim) y (*P.Prox=Nill) ent //Unico Cliente;
+				Prim:=Nill; Ult:=Nill; Disponer(P);
+			Sino	
+				Si (P=Prim) y (*P.Prox<>Nill) ent //Esta al Principio y no es el unico
+					A:=*P.Prox; Prim:=A; *A.Ant:=*P.Ant; Disponer(P);
+				Sino
+					Si (P<>Prim) y (*P.Prox=Nill) ent //Esta al Final y no es el unico
+						*A.Prox:=*P.Prox; Ult:=*P.Ant; Disponer(P);
+					Sino //Esta entre nodos;
+						*A.Prox:=*P.Prox; *(*P.Prox).Ant:=*P.Ant; Disponer(P);
+					FS
+				FS
+			FS
+
+	Proceso
+		Esc("Buenos/as Dias/Tardes/Noches, desea armar su pedido? S/N"); Leer(R);
+		Si (R="S") ent
+			Nuevo(Q);
+			Esc("Ingrese su Nombre:"); Leer(*Q.Nom);
+			Esc("Direccion:"); Leer(*Q.Dir);
+			Esc("Telefono +54 9:"); Leer(*Q.Tel);
+			Si (Prim=Nill) ent //Lista Vacia, Primer Cliente
+				Prim:=Q; Ult:=Q; *Q.Ant:=Nill; *Q.Prox:=Nill;
+			Sino
+				Mientras (P<>Nill) y (*Q.Nom>*P.Nom) hacer
+					A=P;
+					P:=*P.Prox;
+				FM
+				Si (P=Nill) y (*Q.Nom>*P.Nom) ent //Al Final de la lista
+					*Q.Prox:=*P.Prox; *P.Prox:=Q;
+					*Q.Ant:=*Ult.Prox; Ult:=Q;
+				Sino	
+					Si (P=Prim) y (*Q.Nom<*P.Nom) ent //Al Principio de la lista;
+						*Q.Prox:=*Prim.Prox; Prim:=Q;
+						*Q.Ant:=*P.Ant; *P.Ant:=Q;
+					Sino
+						Si (P<>Prim) y (*Q.Nom>*P.Nom) ent //Esta entre 2 nodos
+							*Q.Prox:=*A.Prox; *A.Prox:=Q;
+							*Q.Ant:=*P.Ant; *P.Ant:=Q;
+						FS
+					FS
+				FS		
+			FS
+			*Q.Est:="P";
+			Esc("Espere su Turno");
+			Delay;
+			Esc("Su Pedido esta listo! Te lo estamos enviando"); *Q.Est:="E";
+			Delay;
+			Esc("El Pedido llego a su domicilio, seran:", Random(N));
+			Si se verifica el pago; Eliminar;
+			Esc("Gracias por usar nuestros Servicios! :3");
+		FS
+FA
+
+Accion "4.13"(Prim,Ult:Puntero de Nodo) es;
+	Amb
+		Nodo=Registro
+			Num:Entero
+			Prox,Ant:Puntero a Nodo;
+		FR
+		A,P:Puntero a Nodo;
+
+	Proceso
+		P:=Prim;
+		//Mientras no termine la lista y el numero del proximo sea menor al actual
+		Mientras (P<>Nill) y (*(*P.Prox).Num<*P.Num) hacer
+			A=P; P:=*P.Prox;
+		FM
+		Si (*(*P.Prox).Num>*P.Num) ent
+			Esc("ERROR");
+		Sino
+			//Mientras no termine la lista y el numero del proximo sea distinto al actual
+			Mientras (P<>Nill) hacer
+				Mientras (*(*P.Prox).Num<>*P.Num) y (P<>Nill) hacer
+					A=P; P:=*P.Prox;
+				FM
+				Si (*(*P.Prox).Num=*P.Num) ent
+					Si (P=Prim) ent //Hay un duplicado al principio
+						Prim:=*P.Prox; *(*P.Prox).Ant:=*P.Ant; Disponer(P);
+					Sino
+						Si (*(*P.Prox).Prox=Nill) o (*(*P.Prox).Prox=Nill) ent 
+							//Hay un duplicado al final o entre Nodos
+							*A.Prox:=*P.Prox; *(*P.Prox).Ant:=A; Disponer(P);
+						FS
+					FS
+				Sino //No hubo duplicados
+					Esc("No hubo entradas duplicadas");
+				FS
+			FM
+			Esc("EXITO!");
+		FS
+FA

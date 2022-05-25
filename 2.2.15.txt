@@ -1,0 +1,147 @@
+Ejercicio 2.2.15
+El organismo del cual dependen las escuelas de un distrito lleva un archivo con los registros para todos los alumnos de nivel secundario de ese distrito:
+
+ALUMNOS Ordenado por Escuela, Año, División
+
+EscuelaAñoDivisiónNombreCant_Inasistencias
+
+Se introduce como dato el número de distrito y la cantidad de días de clase dictados en el año. 
+El archivo está ordenado por número de escuela, año y división. // NO DICE INDEXADO POR LO TANTO LO TRATO COMO OTRO CORTE DE CONTROL MAS
+ Los alumnos que superan el 20% de las inasistencias están en situación de LIBRES,
+  de lo contrario son REGULARES.
+
+Se desea conocer:
+Para cada división:
+//- Cantidad de alumnos  
+Para cada año:
+//- Cantidad total de alumnos libres
+//- Cantidad de alumnos regulares
+//- Cantidad total de alumnos
+Todas las escuelas:
+//- Cantidad total de alumnos
+- Porcentaje de alumnos libres. - Promedio de inasistencias por alumnos.
+
+Accion 2.2.15 ES
+
+	Ambiente
+
+		tALUMNOS = reg
+
+			Escuela:AN(20)
+			Año:N(1)
+			División:AN(1)
+			Nombre:AN(20)
+			Cant_Inasistencias:N(2)
+
+		fr
+
+		ar_alum: archivo de tALUMNOS Ordenado por Escuela, Año, División
+		r:tALUMNOS
+
+		Subaccion corte_Escuela ES
+
+			corte_Año
+
+			Esc("Escuela:",res_Escuela)
+			Esc("Cantidad total de alumnos de la misma:", ct_es)
+
+			totalum:=totalum+ct_es
+
+			ct_es:=0
+
+			res_Escuela:=r.Escuela
+
+		Fs
+
+		Subaccion corte_Año ES
+		
+			corte_division
+			Esc("Año:", res_Año)
+			Esc("La cantidad de alumnos del mismo año es de:", ct_an)
+			Esc('Cantidad de alumnos libres:', ct_libre)
+			Esc("Cantidad de alumnos regulares:",ct_regular)
+
+			ct_es:=ct_es+ct_an
+
+
+			ct_libre:=0
+			ct_regular:=0
+			ct_an:=0
+
+			res_Año:=r.Año
+
+		Fs
+
+		Subaccion corte_division ES
+
+			//i'm here
+			//imprimir
+			Esc("Division: ",res_division)
+			Esc('Cantidad de alumnos de la division:',ct_alum)
+
+			ct_an:=ct_an+ct_alum
+
+			ct_alum:=0
+
+			res_division:=r.division
+		
+		Fs
+
+	Proceso
+
+		AbrirE/(ar_alum)
+		Leer(ar_alum,r)
+
+		//cont 		  --- acum
+		ct_regular:=0;	
+		ct_libre:=0	 ;	
+		ct_alum:=0	 ;	
+		ct_an:=0	 ;	
+		ct_es:=0	 ;	
+		totalum:=0	 ;	
+
+
+		//Se introduce como dato el número de distrito y la cantidad de días de clase dictados en el año. 
+		Esc("Ingrese como dato el número de distrito: "); Leer(nrodistrito)
+		Esc('Ingrese la cantidad de días de clase dictados en el año.') ; Leer(cantdias)
+
+		//resguardos
+		res_Escuela:=r.Escuela
+		res_Año:=r.Año
+		res_division:=r.Division
+
+			Mientras NFDA(ar_alum) Hacer
+			
+				Si res_Escuela <> r.Escuela  Entonces // tratar corte
+					corte_Escuela
+				Sino
+					Si res_Año <> r.Año Entonces
+						corte_Año
+					Sino
+						Si res_division <> r.Division Entonces
+
+							corte_division
+
+						Fsi
+						
+					Fsi
+				Fsi
+				
+				ct_alum:=ct_alum+1 // alumno // tratar datos del corte
+				Si (r.Cant_Inasistencias > (cantdias*0.20)) Entonces
+					ct_libre:=ct_libre+1
+				Sino
+					ct_regular:=ct_regular+1
+				Fsi
+				
+				Leer(ar_alum,r) // leer
+				
+			Fm
+		corte_Escuela
+		//totales grales
+		Esc("La cantidad total de alumnos de todas las escuelas es de:", totalum)
+		//FALTO - Porcentaje de alumnos libres. - Promedio de inasistencias por alumnos.
+
+		Cerrar(ar_alum)
+
+FA

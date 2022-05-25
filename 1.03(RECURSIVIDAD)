@@ -1,0 +1,8 @@
+Funcion POTENCIA(a,b:enteros):entero ES 
+    SI b = 0 ENTONCES 
+        POTENCIA:= 1 
+    SINO 
+        POTENCIA:= a * POTENCIA(a, b-1)
+    FSI
+F_Funcion
+

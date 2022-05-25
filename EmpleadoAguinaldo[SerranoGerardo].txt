@@ -1,0 +1,168 @@
+tarea aed
+
+Se desea diseñar una solución en pseudocódigo que permita obtener el aguinaldo a pagar a un empleado teniendo en cuenta la siguiente información:
+Nombre y Apellido
+Cantidad de Hs. Trabajadas a la semana
+Turno de Trabajo ('M' Mañana | T' Tarde 'N' Noche) Salario base por hora'
+
+Además existen otras consideraciones:
+Si el empleado trabaja en turno T. el precio por hora aumenta un 5%
+Si el empleado trabaja en turno N, se le otorga un aumento del 10%
+
+Si el empleado trabajó más de 40hs, se le suman $200 por cada hora demás trabajada.
+
+El aguinaldo es equivalente a cobrar un mes mas de sueldo, cuyo importe es el promedio cobrado en los últimos 12 meses.
+Dé al informe el formato que considere adecuado
+
+Accion pagar ES
+
+	Ambiente
+
+		emp = reg
+
+			sph:N(10,2)
+			nombre:AN(20)
+			apellido:AN(40)
+			cant_ht:N(2)
+			turno:AN(1)
+			aguinaldo:real(10,2)
+
+		fin registro
+
+		x:emp
+		op:logico
+
+		Subaccion cargaremp ES
+
+			Esc('Ingrese el sueldo por hora')
+			Leer(sph)
+			Esc('Nombre:')
+			Leer(x.nombre)
+			Esc('Apellido:')
+			Leer(x.apellido)
+
+		Fin subaccion
+
+		Subaccion cargarempx ES
+
+			Esc('Cantidad de horas trabajadas en la semana:')
+			Leer(x.cant_ht)
+			Esc(Turno [morning(M), afternoon(T), Night(N)] ?:)
+			Leer(x.turno)
+
+		Fin subaccion
+
+		Funcion GetAguinaldo(x.sph:N(10,2)):real ES
+
+			Ambiente
+
+				i,j:entero
+
+			Proceso
+
+			x.aguinaldo:=0 // es un acumulador el aguinaldo
+
+			Para i:=1 hasta 12 Hacer // mes
+
+				Para j:=1 hasta 4 Hacer // semana
+
+					cargarempx()
+
+					Segun (x.turno) Hacer
+
+						'T':
+							x.aguinaldo:=x.aguinaldo+((x.cant_ht*x.sph)*1.05)
+						'N':
+							x.aguinaldo:=x.aguinaldo+((x.cant_ht*x.sph)*1.10)
+						'M':
+							x.aguinaldo:=x.aguinaldo+x.cant_ht*x.sph
+
+					Fin segun
+
+					Si x.cant_ht > 40 Entonces
+
+						x.cant_ht:=(x.cant_ht-40)
+						x.aguinaldo:=x.aguinaldo+(x.cant_ht*200)
+
+					Fin si
+
+				Fin Para
+
+			Fin Para
+
+			// 4semanas*12meses <> 1 year, ya que son 11 meses faltaria agregar las 4,14 semanas restantes
+			// hay 4,14 semanas faltantes ya que 1 mes = 4,345 semanas
+			// entonces nos faltaria 4,14 semanas que son 4 semanas y 1 dia. vuelvo a repetir el proceso con 4 semanas mas
+			// y 0,14 son 23,52 HORAS a si que le pido 1 dia mas
+
+			Para j:=1 hasta 4 Hacer // semana 4,14 agrego es lo que le faltaria, ya que 4 semanas <> 1 mes
+
+					cargarempx()
+
+					Segun (x.turno) Hacer
+
+						'T':
+							x.aguinaldo:=x.aguinaldo+((x.cant_ht*x.sph)*1.05)
+						'N':
+							x.aguinaldo:=x.aguinaldo+((x.cant_ht*x.sph)*1.10)
+						'M':
+							x.aguinaldo:=x.aguinaldo+x.cant_ht*x.sph
+
+					Fin segun
+
+					Si x.cant_ht > 40 Entonces
+
+						x.cant_ht:=(x.cant_ht-40)
+						x.aguinaldo:=x.aguinaldo+(x.cant_ht*200)
+
+					Fin si
+
+			Fin Para
+
+			// y 0,14 semanas de las 4,14 semanas = 23,52 HORAS a si que le pido 1 dia mas
+
+			Esc('Ingrese la cantidad de horas trabajadas en el ultimo dia')
+			Leer(x.cant_ht)
+			x.aguinaldo:=x.aguinaldo+(x.cant_ht*x.sph)
+
+			x.aguinaldo:=x.aguinaldo+(x.aguinaldo/12) // saco el promedio y le sumo
+
+			GetAguinaldo:=x.aguinaldo
+
+
+		Fin Funcion
+
+		Procedimiento ImprimirAg(x:emp) ES
+
+			Esc('//////////////////////////////////')
+			Esc('Nombre: ', x.nombre)
+			Esc('Apellido: ' x.apellido)
+			Esc('Salario por hora:', x.sph)
+			Esc('//////////////////////////////////')
+			Esc('Aguinaldo : $', x.aguinaldo)
+			// (LINEA 98 en adelante explicacion) teoricamente me tendria que imprimir el salario exacto.
+			// con un margen de 0,8 HORAS = 5 minutos de error.
+			// y sin calcular la parte nuevamente de 4,14 semanas, seria un margen de error
+			// 695,52 horas sin haber procesado cuales fueron las laborales.
+			// suponiendo 40 horas laborales en esas 695 , le estariamos quitando muchas horas del sueldo en su aguinaldo.
+			Esc('//////////////////////////////////')
+
+		Fin Procedimiento
+
+	Proceso
+
+		Esc('Desea cargar un empleado?')
+		Leer(op)
+
+		Mientras op <> falso Hacer
+
+			cargaremp()
+			x.aguinaldo:=GetAguinaldo(x)
+			ImprimirAg(x) 
+
+			Esc('Desea cargar nuevamente un empleado?')
+			Leer(op)
+
+		Fin Mientras
+
+Fin Accion

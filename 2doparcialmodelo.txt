@@ -1,0 +1,86 @@
+Accion parcial (t:arreglo [1..10] de AN) ES
+  Ambiente 
+    tv = registro
+      nro_venta:N(6)
+      nro_pro:N(6)
+      barco:1..3
+      tipov:n(2)
+      estado:{'ft','d'}
+    fin registro
+    tp = registro
+      barco:1..3
+      nro_pro:n(6)
+      tipo{'I','P'}
+      tipov:N(2)
+      fumador:{'si','no'}
+      cat:1..3
+    fin registro
+    arven: archivo de tv ordenado por nro_venta
+    arpro: archivo de tp ordenado por barco y numero
+    rp:tp ; rv:tv
+    ct_tot , ctf_5 , ctf_2 , ct_5 , ct_2:entero
+    x:real
+    Procedimiento contA0() ES
+      ct_tot , ctf_5 , ctf_2 , ct_5 , ct_2:=0
+    fp
+    Procedimiento cerr() ES
+      cerrar(arven)
+      cerrar(arpro)
+    fp
+    Procedimiento baja() es
+      rp.barco:=nil
+      rp.nro_pro:=nil
+      rp.tipo:=nil
+      rp.tipov:=nil
+      rp.fumador:=nil
+      rp.cat:=nil
+    fp
+    Procedimiento contarft() es
+      Segun rv.tipov hacer
+        2:ctf_2:=ctf_2+1
+        5:ctf_5:=ctf_5+1
+      fs
+    fp
+    Procedimiento informar() ES
+      Esc('Cantidad de ventas en')
+      Esc(t[2],':', ct_2)
+      Esc(t[5],':', ct_5)
+      Esc('Porcentaje total de ventas fuera de temporada')
+      x:=(ctf_2*100)/ct_tot
+      Esc(t[2],':',x)
+      x:=(ctf_5*100)/ct_tot
+      Esc(t[5],':',x)
+    fp
+  proceso
+    contA0()
+    Abrir E/(arven); leer(arven,rv)
+    Abrir E/S(arpro)
+    Mientras NFDA(arven) hacer
+      // primero se le pasa el indexado
+      rp.barco:= rv.barco
+      rp.nro_pro:= rv.nro_po
+      Leer(arpro,rp)
+      Si Existe Entonces
+        Si rv.estado = 'FT' Entonces 
+          contarft()
+          baja()
+          re-grabar(arpro,rp)
+        Sino // va ser en temporada 'I'
+          Si rv.tipov = 10 Entonces
+            rp.cat:=3
+            re-grabar(arpro,rp)
+          Fin si
+          segun rv.tipov hacer
+            2:ct_2:=ct_2+1
+            5:ct_5:=ct_5+1
+          fs
+        Fin si
+        ct_tot:=ct_tot+1
+      Sino
+        Esc('No existe el barco y numero de producto.')
+      Fin si
+      leer(arvent,rv) 
+    Fin mientras
+    informar()
+    cerr()
+finAccion

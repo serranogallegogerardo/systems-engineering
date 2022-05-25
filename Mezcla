@@ -1,0 +1,324 @@
+Mezcla
+Accion "Actualizacion" es;
+	amb
+		Fecha=Registro
+			A:	N(4)
+			M:	N(2)
+			D:	N(2)
+		FR
+
+		Clave=Registro
+			Far:	AN(30)
+			Med:	AN(30)
+		FR
+
+		Maestro=Registro
+			Clave;
+			CanA:	N(4)
+			FeV:	Fecha;
+		FR
+
+		Movimiento=Registro
+			Clave;
+			CodM:	AN(30)
+			CanR:	N(4)
+		FR
+
+		RemVen=Registro
+			Med:	AN(30)
+			CanV:	N(4)
+		FR 
+
+		Mae,Sal: Archivo de Maestro Ord por Far y Medicamento; Ma,S: Maestro;
+		Mov: Archivo de Movimiento Ord por Far,  Med y CodM; Mo: Movimiento;
+		Ven: Archivo de RemVen Ord por Med; Ve:RemVen;
+
+		SubAccion "LeerMae" es;
+			Leer(Mae,Ma);
+			Si FDA(Mae) Ent
+				Ma.Clave:=HV;
+			FS
+		FSA
+
+		SubAccion "LeerMov" es;
+			Leer(Mov,Mo);
+			Si FDA(Mov) Ent
+				Mo.Clave:=HV;
+			FS
+		FSA
+
+	Proceso
+		Abrir E/(Mae); Abrir E/(Mov); Abrir /S(Sal); Abrir /S(Ven);
+		LeerMae;LeerMov;
+
+		Mientras (Mae<>HV) y (Mov<>HV) hacer
+			Si (Ma.Clave<Mo.Clave) ent
+				S:=Ma;
+				Grabar(Sal,S);
+				LeerMae;
+			Sino
+				Si (Ma.Clave=Mo.Clave) ent
+					Segun Mo.CodM hacer
+						=1: Esc("Error, Alta Invalida");
+							S:=Ma;
+							Grabar(Sal,S);
+						=2: Ve.Med:=Ma.Clave.Med;
+							Ve.CanV:=Ma.CanA;
+							Grabar(Ven,Ve);
+						=3:	S:=Ma;
+							S.CanA:=Mo.CanR;
+							Grabar(Sal,S);
+					FS
+					LeerMae;LeerMov;
+				Sino
+					Segun Mo.CodM hacer
+						=1: S.Clave:=Mo.Clave;
+							S.CanA:=Mo.CanR;
+							S.FeV:=FechaActual;
+							S.FeV.D:=Ma.FeV.D+30;
+							Si (S.FeV.D>31) ent
+								S.FeV.D:=31-Ma.FeV.D;
+								S.FeV.M:=S.FeV.M+1;
+							FS
+							Si (S.FeV.M>12) ent
+								S.FeV.M:=1;
+								S.FeV.A:=S.FeV.A+1;
+							FS
+							Grabar(Sal,S);
+						=2: Esc("Error Baja Invalida")
+						=3:	Esc("Error Modificacion Invalida")
+					FS
+					LeerMov;
+				FS
+			FS
+		FM
+		Cerrar(Mae);Cerrar(Mov);Cerrar(Sal);Cerrar(Ven);
+FA
+
+2.21 y 2.23 listos para la semana que viene.
+
+Accion "2.2.21" es;
+	amb
+		Fecha=Registro
+			A:N(4);
+			M:1..12;
+			D:1..31;
+		FR
+
+		Clave=Registro
+			CoU:AN(5);
+			CoA:AN(5);
+		FR
+
+		Amigos=Registro //Maestro
+			Clave;
+			FeA:Fecha;
+			MenM:AN(500);
+		FR
+
+		Notificaciones=Registro //Mov
+			Clave;
+			CoM:AN(1);
+			FeA:Fecha;
+			MenM:AN(500);
+		FR
+
+		Ami,Sal:Archivo de Amigos Ordenado por Clave;
+		A,S:Amigos;
+		Not: Archivo de Notificaciones Ordenado por Clave;
+		N:Notificaciones;
+
+		SubAccion "LeerMae" es;
+			Leer(Ami,A);
+			Si FDA(Ami) Ent
+				A.Clave:=HV;
+			FS
+		FSA
+
+		SubAccion "LeerMov" es;
+			Leer(Not,N);
+			Si FDA(Not) Ent
+				N.Clave:=HV;
+			FS
+		FSA
+
+	Proceso
+		Abrir E/(Ami);Abrir E/(Not);Abrir /S(Sal);
+		LeerMae; LeerMov;
+		Mientras (A.Clave<>HV) y (N.Clave<>HV) hacer
+			Si (A.Clave<N.Clave) ent
+				S:=A; Grabar(Sal,S); LeerMae;
+			Sino
+				Si (A.Clave=N.Clave) ent
+					Segun (N.CoM) hacer
+						"A":Esc("Error Alta no Existe");
+							S:=A;
+							Grabar(Sal,S);
+						"M":Esc("Error Modificacion no Existe");
+					FS
+					LeerMae;
+					LeerMov;
+				Sino
+					Segun (N.CoM) hacer
+						"A":S.Clave:=N.Clave;
+							S.FeA:=N.FeA;
+							S.MenM:=N.MenM;
+							Grabar(Sal,S);
+						"B":Esc("Error: Baja no Existe");
+						"M":Esc("Error: Modificacion no Existe");
+					FS
+					LeerMov;
+				FS
+			FS
+		FM
+	Cerrar(Sal);
+	Cerrar(Ami);
+	Cerrar(Not);
+FA
+
+Accion "2.2.23" es;
+	Amb
+		Fecha=Registro
+			A:N(4);
+			M:1..12;
+			D:1..31;
+		FR
+
+		Cliente=Registro //Maestro
+			IDC:AN(10);
+			FUL:Fecha;
+			CaL:N(10);
+			PrL:Real(5,2);
+			TiC=("A","B","C");
+		FR
+
+		Mediciones=Registro //Mov
+			IDC:AN(10);
+			FeM:Fecha;
+			Con:N(5);
+		FR
+
+		Cli,Sal:Archivo de Cliente Ordenado por IDC;
+		C,S:Cliente;
+		Med: Archivo de Mediciones Ordenado por IDC;
+		M:Mediciones;
+
+		SubAccion "LeerMae" es;
+			Leer(Cli,C);
+			Si FDA(Cli) Ent
+				C.IDC:=HV;
+			FS
+		FSA
+
+		SubAccion "LeerMov" es;
+			Leer(Med,M);
+			Si FDA(Med) Ent
+				M.IDC:=HV;
+			FS
+		FSA
+
+	Proceso
+		Abrir E/(Cli);Abrir E/(Med);Abrir /S(Sal);
+		LeerMae; LeerMov;
+		Mientras (C.IDC<>HV) y (M.IDC<>HV) hacer
+			Si (C.IDC<M.IDC) ent
+				Grabar(Sal,C);
+				LeerMae;
+			Sino
+				Si (C.IDC=M.IDC) ent
+					Mientras (C.IDC=M.IDC) hacer //Actualizacion por Lotes
+						Si (M.FeM.A<2015) o ((M.FeM.A=2015) y (M.FeM.M=1)) ent	
+							C.PrL:=(C.CaL*C.PrL)+M.Con/C.CaL+1;
+							C.CaL:=C.CaL+1;
+							C.FUL:=M.FeM;
+						FS
+						LeerMov;
+					FM
+					Segun (C.PrL) hacer
+						<20: C.TiC;="A";
+						<20: C.TiC;="B";
+						>40: C.TiC;="C";
+					FS
+					Grabar(Sal,C);
+					LeerMae;
+				Sino
+					C.IDC:=M.IDC;
+					C.FUL:=M.FeM;
+					C.CaL:=1;
+					C.PrL:=M.Con;
+					LeerMov;
+					Mientras (C.IDC=M.IDC) hacer //Actualizacion por Lotes
+						Si (M.FeM.A<2015) o ((M.FeM.A=2015) y (M.FeM.M=1)) ent	
+							C.PrL:=(C.CaL*C.PrL)+M.Con/C.CaL+1;
+							C.CaL:=C.CaL+1;
+							C.FUL:=M.FeM;
+						FS
+						LeerMov;
+					FM
+					Segun (C.PrL) hacer
+						<20: C.TiC;="A";
+						<20: C.TiC;="B";
+						>40: C.TiC;="C";
+					FS
+					Grabar(Sal,C);
+				FS
+			FS
+		FM
+	Cerrar(Sal);
+	Cerrar(Cli);
+	Cerrar(Med);
+FA
+
+Accion "2.2.23" es;
+	Amb
+		Fecha=Registro
+			A:N(4);
+			M:1..12;
+			D:1..31;
+		FR
+
+		Costos=Registro //Maestro
+			CAf:AN(10);
+			FAl:Fecha;
+			FBa:Fecha;
+			CaS:N(10);
+			Cot:Real(5,2);
+		FR
+		Servicios=Registro //Movimiento
+			CAf:AN(10);
+			FAl:Fecha;
+			Cod:N(3);
+			Cot:Real(5,2);
+		FR
+
+		Cos:Archivo de Costo Ordenado por CAf; C:Costo;
+		Ser:Archivo de Servicios Ordenado por CAf; S:Servicio;
+
+		SubAccion "LeerMae" es;
+			Leer(Cos,C);
+			Si FDA(Cos) Ent
+				C.CAf:=HV;
+			FS
+		FSA
+
+		SubAccion "LeerMov" es;
+			Leer(Ser,S);
+			Si FDA(Ser) Ent
+				S.CAf:=HV;
+			FS
+		FSA
+
+	Proceso
+		Abrir E/S(Cos); Abrir E/(Ser);
+		Leer(Cos,C); Leer(Ser,S);
+
+		Mientras (C.CAf<>HV) y (S.CAf<>HV) hacer
+			Si (S.CAf<C.CAf) y (S.Cod=001) ent //Nuevo Afiliado
+				
+			Sino
+				Si (S.CAf=C.CAf) y (S.Cod=000) ent //Nuevo Afiliado
+
+				Sino
+					Si (S.CAf=C.CAf) y (S.Cod<>000) ent //Nuevo Afiliado					
+			Si (S.CAf>yo sigoC.CAf) ent //Afiliado sin uso de servicios
+

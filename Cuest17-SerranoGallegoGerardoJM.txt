@@ -1,0 +1,61 @@
+/*
+En forma similar a la realizada en clase para determinar todos los casos de eliminar un elemento en la lista simplemente enlazada,
+deberán realizar los distintos casos que se presentan para eliminar un elemento en una lista circular simplemente enlazada, y al final como sería el algoritmo general, tratando de resumir los casos si es posible.
+*/
+
+Accion cuest17 ES
+
+	Ambiente
+
+		nodo : registro
+			valor:entero
+			prox:puntero a nodo
+		fin registro
+
+		valor:entero
+		prim,p,q,ant:puntero a nodo
+    op:logico
+
+	Proceso
+
+  Esc('Desea utilizar el programa para eliminar elementos de la lista? v/f')
+  leer(op)
+
+  Mientras op <> 'f' Hacer
+
+    Si prim = nil Entonces
+      Escribir('La lista se encuentra vacia.')
+    Sino
+      Leer(valor);
+      p:=prim
+      ant:=nil
+      Mientras (valor<>*p.valor)
+      y (*p.prox <> prim) Hacer
+        ant:=p
+        p:=*p.prox
+      Fin mientras
+
+      Si p = *p.prox Entonces
+        prim:=nil
+      Sino
+        Si p=prim Entonces // en el primer elemento
+          q:=prim
+          Mientras (*q.prox <> prim) Hacer 
+          // recorro hasta encontrar el anterior al primero para redireccionar
+            q:=*q.prox
+          Fin mientras
+          *q.prox:=*p.prox
+          prim:=*p.prox
+        Sino //  eliminacion que no es el primer elemento.
+          *ant.prox:=*p.prox
+        Fin si
+        disponer(p)
+      Fin si
+    Fin si
+
+    Esc('Desea utilizar el programa nuevamente v/f')
+    leer(op)
+
+  Fin mientras
+
+Fin accion

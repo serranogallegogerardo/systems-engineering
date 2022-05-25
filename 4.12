@@ -1,0 +1,103 @@
+En el nuevo DELIVERY VAMOS-RAPIDO se está diseñando una solución informática para la atención de clientes. Se ha pensado en una LISTA por su dinamismo en cuanto a la cantidad de elementos. Diseñe un algoritmo que realice las siguientes funciones:
+
+Registrar su pedido en una lista Doble (se agrega en Estado P (Pendiente), y se mantiene ordenado por Nombre del Cliente).
+Realizar el envío (cambia estado del pedido de P (pendiente) a E (Enviado)).
+Eliminar del listado de atención una vez recibido el cobro (al atender el cobro del cadete que hizo el trabajo).
+Datos a almacenar por pedido: Nombre, Dirección, Teléfono y Total.
+La información almacenada debe mantenerse ordenada por Nombre del cliente.
+
+
+ACCION 4.23 (PRIM: puntero a nodo) ES 
+AMBIENTE 
+    PEDIDO = REGISTRO 
+        Nombre: AN(20)
+        Direccion: AN(30)
+        Telefono: N(10)
+        Total: N(4)
+        Estado: ('P', 'E')
+    FR
+    nodo = REGISTRO 
+        datos: PEDIDO
+        prox,ant: puntero a nodo
+    FR 
+    ULT,P,Q: puntero a nodo 
+
+PROCESO 
+    Esc("Quiere registrar un Pedido? S/N")
+    Leer(B_Pedido)
+    MIENTRAS B_Pedido = 'S' HACER   
+        P:= PRIM 
+        Nuevo(Q)
+        Esc("Ingrese el nombre del cliente")
+        Leer(c_Nombre)
+        Esc("Ingrese su Direccion")
+        Leer(c_Direccion)
+        Esc("Ingrese su Telefono")
+        Leer(c_Telefono)
+        Esc("Ingrese el Total a pagar")
+        Leer(c_Total)
+        *Q.datos.Nombre:= c_Nombre
+        *Q.datos.Direccion:= c_Direccion
+        *Q.datos.Telefono:= c_Telefono
+        *Q.datos.Total:=c_Total
+        *Q.datos.Estado:= 'P' 
+        SI PRIM = NILL ENTONCES //lista vacia
+            PRIM:= Q 
+            *Q.prox:= NILL
+            *Q.ant:= NILL 
+            ULT:= Q
+        MIENTRAS P <> NILL y *Q.datos.Nombre> c_Nombre HACER
+            P:= *P.prox 
+        FM 
+        SI P = PRIM ENTONCES // 1er elemento 
+            *Q.prox:= P 
+            *Q.ant:= NILL
+            PRIM:= Q 
+            *P.ant:= Q 
+        SINO // no es el primer elemento 
+            SI P = NILL ENTONCES //tiene que ir al final
+                *Q.prox:= NILL 
+                *Q.ant:= ULT
+                *ULT.prox:= Q 
+                ULT:= Q
+                SINO //esta entre medio
+                    *Q.prox:= P
+                    *Q.ant:= *P.ant 
+                    (*P.ant).prox:= Q 
+                    *P.ant:= Q 
+                FSI 
+            FSI 
+        FSI 
+        Esc("Quiere registrar otro pedido? S/N")
+        Leer(B_Pedido)
+    FM 
+    Esc("Quiere realizar un envio? S/N")
+    Leer(B_Pedido)
+    MIENTRAS B_Pedido = 'S' HACER 
+        Esc("Ingrese el nombre del cliente a enviar")
+        Leer(c_Nombre)
+        MIENTRAS P <> NILL Y *P.datos.Nombre> c_Nombre HACER 
+            P:=*P.prox 
+        FM 
+        SI *P.datos.Nombre= c_Nombre ENTONCES 
+            *P.datos.Estado:= 'E'
+        SINO 
+            Esc("No se encuentra al cliente ingresado")
+        FSI 
+        Esc("Quiere realizar otro envio? S/N")
+        Leer(B_Pedido)
+    FM 
+    Esc("ha recibido un cobro? S/N")
+    Leer(B_Pedido)
+    MIENTRAS B_Pedido = 'S' HACER 
+        Esc("Ingrese el nombre del envio ya hecho")
+        Leer(c_Nombre)
+        MIENTRAS P <> NILL Y *P.datos.Nombre> c_Nombre HACER 
+            P:=*P.prox 
+        FM
+        
+                
+
+
+        
+

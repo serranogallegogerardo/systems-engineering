@@ -1,0 +1,134 @@
+Accion 2.2.24 ES // En el archivo SERVICIOS_SEMANALES puede existir más de un registro por cada afiliado.
+				// ES X LOTE DEBIDO A ESO
+	Ambiente
+
+		tfecha = reg 
+			yy: N(4)
+			mm:1..12
+			dd:1..31
+		fr
+
+		tCOSTOS = registro
+
+			Cod_Afiliado
+			Fecha_Alta:tfecha
+			Fecha_Baja:tfecha
+			Cant_Servicios
+			Costo
+
+		fr
+
+		tSERVICIOS = reg
+
+			Cod_Afiliado
+			Fecha_At:tfecha
+			Cod_Servicio
+			Costo
+
+		fr
+
+		arMAE,arSAL:archivo de tCOSTOS Ordenado por Cod_Afiliado
+		arMOV:archivo de tSERVICIOS Ordenado por Cod_Afiliado
+		rMAE,rSAL:tCOSTOS
+		rMOV:tSERVICIOS
+    nuevoafiliado:logico
+		rescod:entero
+
+		Subaccion LeerMAE ES 
+
+			leer(arMAE,rMAE)
+			
+
+			SI FDA(arMAE) Entonces
+				rMAE.cod_afiliado:=HV
+			Fsi
+
+		Fs
+
+		Subaccion LeerMOV ES 
+
+			Leer(arMOV,rMOV)
+
+			Si FDA(arMOV) Entonces
+				rMOV.cod_afiliado:=HV
+			Fsi
+
+		Fs 
+
+
+	Proceso
+
+		AbrirE/(arMAE);AbrirE/(arMOV);AbrirS/(arSAL);
+		LeerMAE;LeerMOV;
+
+		Mientras rMAE.cod_afiliado <> HV o rMOV.cod_afiliado <> HV Hacer
+
+			Si rMAE.cod_afiliado < rMOV.cod_afiliado Entonces // jubilado que no utilizo los servicios va igual a la salida
+			
+					/**
+					 * Si algún Cod_Afiliado de COSTOS_POR_AFILIADO 
+					 * no se encuentra en el archivo SERVICIOS_SEMANALES, 
+					 * se trata de un afiliado que no utilizó los servicios
+					 *  en la semana que se realiza la actualización.
+					 **/
+
+				Escribir(arSAL,rMAE)
+				LeerMAE
+
+			Sino
+
+        	Si rMAE.cod_afiliado = rMOV.cod_afiliado Entonces // jubilado que no utilizo los servicios va igual a la salida
+           
+            rSAl:= rMAE // cargo en memoria interna
+
+            //trato las modificaciones
+            Mientras rescod = rMOV.Cod_afiliado Hacer
+              Segun rMOV.cod_servicio Hacer
+                000: 
+                rSal.fecha_Baja:= rMOV.Fecha_At;
+                001:
+                Esc('Error, No se puede dar de alta un afiliado existente.')
+                otros:
+                rSal.Cant_servicios:=rsal.cant_servicios+1
+                rSal.costo:=rMov.costo+rMAE.costo
+              Fin segun
+        
+              LeerRMOV
+
+            Fin mientras
+            // escribir en la salida
+            grabar(arSal,rSal)
+            //acordarse de leer
+            LeerRMAE
+		    	Sino // rMAE>rMOV
+
+            
+            // cargo en memoria interna
+            rSAL.cod_afiliado:=rMOV.cod_afiliado
+            rSAL.Fecha_Alta:=fechahoy()
+            rSAL.Cant_Servicios:=1
+             rSAL.Costo:=rMOV.costo
+            //modificaciones del alta del nuevo mov
+            Mientras  rSAL.cod_afiliado = rMOV.Cod_afiliado Hacer
+              Segun rMOV.cod_servicio Hacer
+                000: 
+                  rSal.fecha_Baja:= rMOV.Fecha_At;
+                001:
+                    Esc('Error, no se puede dar de alta')
+                otros:
+                rSal.Cant_servicios:=rsal.cant_servicios+1
+                rSal.costo:=rMov.costo+rMAE.costo
+              Fin segun
+            Fin mientras
+            GRABAR(arSAL,rSAL)
+          Fin si
+
+      Fin si
+
+		Fm
+
+		Cerrar(arMAE);Cerrar(arMOV);Cerrar(arSAL);
+
+FA
+
+// BOTTARO Y SERRANO GALLEGO

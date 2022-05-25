@@ -1,0 +1,172 @@
+05/08/2020 
+
+2.2.3.-1
+
+CLASE AED TEORIA INDEX
+
+Caso de actualizacion indexada
+se tiene un archivo de emp[leados al ingresar a la oficina, 
+	cuyos registros tienen el siguiente formato:
+
+NroEmpleado/AyN/Area/Edad/Temp
+
+Se debe actualizar el archivo al finalizar el horario de 
+trabajo de la oficina. midiendo la temperatura a cada empleado.
+
+Accion temp ES
+
+	Ambiente
+
+		tEMPLEADO = reg
+
+			NroEmpleado:n(3)
+			AyN:AN(20)
+			Area:AN(20)
+			Edad:N(2)
+			Temp:N(3,2)
+
+		fr
+
+		arEMP:archivo de tEMPLEADO indexado por NroEmpleado
+		r:tEMPLEADO
+		op:logico
+		tempdada:N(3,2)
+		nro:entero
+
+	Proceso
+
+		AbrirE/S(arEMP,r)
+
+		Esc("Desea iniciar verdadero/falso")
+		Leer(op)
+
+		Mientras op <> falso Hacer
+
+			Esc("Ingrese nro de empleado")
+			Leer(nro) // PIDO LA CLAVE PAL INDEX
+
+			r.NroEmpleado:=nro// LE PASO AL REGISTRO LA CLAVE
+			Leer(arEMP,r) // BUSCO EN EL ARCH INDEX LA CLAVE
+			
+			Si Existe Entonces
+
+				Esc("Ingrese la temperatura del mismo")
+				Leer(tempdada)
+				Si tempdada <> r.temp Entonces	
+					r.temp:=tempdada
+					RE-ESCRIBIR(arEMP,r)// CUIDADITO CON EL RE-ESCRIBIR
+				Fsi
+
+			Sino
+
+				Esc("ERROR, El nro de empleado no existe.")
+
+			Fsi
+
+			Esc("Desea iniciar nuevamente? verdadero/falso")
+			Leer(op)
+
+		Fm
+
+		Cerrar(arEMP)
+
+FA
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+2.2.3.0 PPT
+
+Producto de actividades de testing obtiene un informe que contiene las modificaciones
+ que deben realizarse al software para que cumpla con las funcionalidades para las cuales fue creado inicialmente.
+Supongamos que se cuenta con un archivo de proyectos de software de los cuales se tiene la siguiente informacion:
+
+IDproyecto
+Tipo(Web-Mobile)
+Estado(Done-Test)
+FechaUltTEST
+
+Se debe actualizar el archivo proyectos, a medida que se ingresan datos obtenidos 
+como resultado de nuevas pruebas: 
+Estado
+Fecha Ultimo test 
+
+Si el proyecto esta en estado DONE, se debe emitir un error "Test Innecesario". 
+
+Solamente actualizar la fecha de ultimo test si el estado es distinto de DONE.
+
+Informar el porcentaje de proyectos que han cambiado de estado TEST a DONE sobre el total.
+
+Accion proy ES 
+
+	Ambiente
+
+		tfecha = reg
+			dd:n(2)
+			mm:n(2)
+			yy:n(4)
+		fr
+		tPROY = reg 
+			IDproyecto:N(2)
+			Tipo:('Web','Mobile')
+			Estado:('DONE','TEST')
+			FechaUltTEST:tfecha
+		fr
+
+		arpro:archivo de tPROY indexado por IDproyecto
+		r:tPROY
+		idDADA:entero
+		pct:real
+		ct_total,ct_TaD:entero
+
+	Proceso
+
+		AbrirE/S(arpro,r)
+
+		ct_total:=0 ; ct_TaD:=0 ; 
+
+		Esc("Desea utilizar el programa verdadero/falso")
+		leer(op)
+
+		Mientras op <> falso Hacer
+
+			Esc("Ingrese el id del proyecto:")
+			Leer(idDADA)
+
+			r.IDproyecto:=idDADA
+			Leer(arpro,r)
+
+			Si EXISTE Entonces
+				ct_total:=ct_total+1
+				Si r.Estado = 'DONE' Entonces
+					 // total de DONE
+					esc('Test Innecesario.')
+				Sino // SER DETALLISTA AL PEDIR DATOS AL USUARIO
+					 // total de TEST a DONE
+					Esc('Ingrese el estado:')
+					Leer(r.Estado)
+					Esc('Ingrese la ultima fecha de test:')
+					Leer(r.FechaUltTEST)
+
+					Si r.FechaUltTEST = 'DONE' Entonces
+						ct_TaD:=ct_TaD+1
+					Fsi
+
+					RE-ESCRIBIR(arpro,r) // POR QUE ESTO?
+					// PORQUE ES UN ARCHIVO VIEJO EL QUE ESTAMOS DANDOLE UN NUEVO
+					// DATO Y EL MISMO ARCHIVO ESTA INDEX
+				Fsi
+				
+			Sino
+				Esc("ERROR, el ID de proyecto no existe.")
+			Fsi
+
+			Esc("Desea utilizar nuevamente el programa verdadero/falso")
+			Leer(op)
+
+		fm
+		pct:=(ct_TaD*100 / ct_total)
+		Escribir("El porcentaje de proyectos que pasaron de test a DONE es del:", pct, "%.")
+
+		Cerrar(arpro,r)
+
+FA

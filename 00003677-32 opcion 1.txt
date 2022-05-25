@@ -1,0 +1,116 @@
+Acción Ej332 es
+Ambiente
+	RegEst = registro
+		fecha: registro
+			año:1970..2038
+			mes:1..12
+			dia:1..31
+		FR
+		patente:AN(7)
+		horadesde:N(2)
+		horashasta:N(2)
+		posta:1..100
+	FR
+	R:RegEst
+	estacionamientos:archivo de RegEst
+	RegA = registro
+		costo:N(10,2)
+		estacionamientos:N(3)
+	FR
+
+	A:arreglo[1..101,1..32] de RegA
+	i,j:entero
+	horas:entero
+	valorhora:entero
+	importe:N(10,2)
+	
+	valorhora1,valorhora2:entero
+	
+	importemax:N(10,2)
+	postamax:entero
+	
+	estacionamientosmax:entero
+	diamax:entero
+	
+	imax,jmax,celdamaxima:entero
+	
+Algoritmo
+	AbrirE/(estacionamientos)
+	Leer(estacionamientos,R)
+	Para i:=1 a 101 Hacer
+		Para j:=1 a 32 Hacer
+			A[i,j].costo:=0
+			A[i,j].estacionamientos:=0
+		FP
+	FP
+	Mientras NFDA(estacionamientos) Hacer
+		
+		Si ((R.horadesde) Hacer
+			<=6:valorhora1:=9
+			<=13:valorhora1:=14
+			<=19:valorhora1:=12
+			<=23:valorhora1:=6
+		FS
+		Si ((R.horahasta) Hacer
+			<=6:valorhora2:=9
+			<=13:valorhora2:=14
+			<=19:valorhora2:=12
+			<=23:valorhora2:=6
+		FS
+		Si valorhora1>valorhora2
+		Entonces
+			valorhora:=valorhora1
+		contrario
+			valorhora:=valorhora2
+		FS
+		
+		horas:=R.horashasta-R.horadesde+1
+		importe:=horas*valorhora
+		
+		
+		A[posta,R.fecha.dia].estacionamientos:=A[posta,R.fecha.dia].estacionamientos + 1
+		
+		A[posta,32].costo:=A[posta,R.fecha.dia].costo + importe
+		
+		A[101,R.fecha.dia].estacionamientos:=A[posta,R.fecha.dia].estacionamientos + 1
+		
+		Leer(estacionamientos,R)
+	FM
+	
+	celdamaxima:=0
+	Para i:=1 a 100 Hacer
+		Para j:=1 a 31 Hacer
+			Si A[i,j].estacionamientos>=celdamaxima
+			Entonces
+				celdamaxima:=A[i,j].estacionamientos
+				imax:=i
+				jmax:=j
+		FP
+	FP
+	
+	Escribir('En posta ',imax,' el día ',jmax,' hubo la mayor cantidad de estacionamientos')
+	
+	importemax:=0
+	Para i:=1 a 100 Hacer
+		Si A[i,32].costo>=importemax
+		Entonces
+			importemax:=A[i,32]].costo
+			postamax:=i
+		FS
+	FP
+	
+	Escribir('Posta más recaudadora fue la ',postamax)
+	
+	estacionamientosmax:=0
+	Para j:=1 a 31 Hacer
+		Si A[101,j].estacionamientos>=estacionamientosmax
+		Entonces
+			estacionamientosmax:=A[101,j].estacionamientos
+			diamax:=i
+		FS
+	FP
+	
+	Escribir('Día con más estacionamientos fue ',diamax)
+	
+	Cerrar(estacionamientos)
+FA

@@ -1,0 +1,96 @@
+Ejercicio 2.2.8
+De los datos del siguiente ejercicio:
+
+COMPRAS Ordenado por Nro_Cliente
+
+Nro_ClienteFecha_Ultima_CompraMonto
+
+CLIENTES Ordenado por Nro_Cliente
+
+Nro_ClienteApellido_NombreDomicilioTeléfonoDNI
+
+Ambos archivos están ordenados por Nro. de Cliente en forma ascendente. 
+
+Listar los nombres fecha y monto de última compra, 
+de todos aquellos clientes cuya última compra sea posterior a una fecha dada y el monto supere un monto dado.
+
+Accion 2.2.8 ES
+
+	Ambiente
+
+		tfecha = reg
+
+			dd:n(2)
+			mm:n(2)
+			yy:n(4)
+
+		fr
+
+		tCOMPRAS = reg
+
+			Nro_Cliente:N(5)
+			Fecha_Ultima_Compra:tfecha
+			Monto:N(5,2)
+
+		fr
+
+		tCLIENTES = reg
+
+			Nro_Cliente:N(5)
+			Apellido_Nombre:AN(20)
+			Domicilio:AN(20)
+			Teléfono:N(8)
+			DNI:N(8)
+
+		fr
+
+		arcom:archivo de tCOMPRAS Ordenado por Nro_Cliente
+		arcli:archivo de tCLIENTES Ordenado por Nro_Cliente
+		rcom:tCOMPRAS
+		rcli:tCLIENTES
+		fd:tfecha
+		md:N(5,2)
+		b:logico
+
+	Proceso
+
+		abrirE/(arcom,rcom);abrirE/(arcli,rcli);
+		Leer(arcom,rcom);Leer(arcli,rcli)
+
+			esc("Ingrese una dia")
+			leer(fd.dd)
+			esc("Ingrese un mes")
+			leer(fd.mm)
+			esc("Ingrese un anio")
+			leer(fd.yy)
+			esc("Ingrese un monto")
+			leer(md)
+
+			b := falso;
+
+
+			Mientras NFDA(arcom) Hacer
+
+				Si ((rcom.Fecha_Ultima_Compra > fd) y (rcom.monto > md)) Entonces
+
+					Si b = falso Entonces
+
+						b := verdadero
+						Esc("/NOMBRE/FECHA/MONTO_ULT_COMPRA/")
+
+					Sino
+
+						Esc(rcli.Apellido_Nombre,'/',rcom.Fecha_Ultima_Compra,'/',rcli.monto)
+
+					Fsi
+
+				Fsi
+
+				Leer(arcom,rcom)
+				Leer(arcli,rcli) 
+
+			Fm
+
+		cerrar(arcom);cerrar(arcli);
+
+FA

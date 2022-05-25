@@ -1,0 +1,26 @@
+Dada una lista simplemente encadenada de números diseñar un algoritmo que calcule en forma independiente: La suma de los números impares, y la suma de los números pares.
+
+ACCION 4.3 ES
+AMBIENTE 
+    P,PRIM: PUNTEROS A NODO
+    NODO = REGISTRO 
+        DATO: n(4)
+        PROX: PUNTERO A NODO
+    FR 
+
+
+PROCESO 
+    PRIM:=P 
+    MIENTRAS P<> NILL HACER 
+        SI *P.DATO MOD 2 = 0 ENTONCES 
+            numP:= *P.DATO 
+            sumaPar:= sumaPar + num 
+        SINO 
+            SI *P.DATO MOD 3 = 0 ENTONCES 
+                numI:= *P.DATO 
+                sumaImpar:= sumaImpar + numI 
+            FSI 
+        FSI 
+        P:=*P.PROX 
+    FM 
+ 

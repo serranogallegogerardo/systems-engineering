@@ -1,0 +1,183 @@
+Ejercicio 2.2.13
+Un Casino de la región ha notado un incremento en los costos de las reparaciones de tragamonedas en sus sucursales. 
+Por ello solicitó un informe con la 
+
+
+Se dispone de un archivo REPARACIONES, con el siguiente formato. 
+Cada registro representa la reparación de un tragamonedas,
+
+
+REPARACIONES Ordenado por Cod_Sucursal, Marca, Modelo, Cod_Tragamonedas
+
+// CORTEES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Cod_Sucursal/Marca/Modelo/Cod_Tragamonedas/ Fecha_Reparacion/Costo_Reparacion 
+// HASTA COD_TRAGMOND!!!!!!!!!!!!!!!!!!!!!!  
+
+Realice el algoritmo para emitir el informe con los totales solicitados
+cantidad de reparaciones y sus costos, discriminados según tragamonedas, modelo, marca, sucursal y total general.
+
+
+
+Accion 2.2.13 ES 
+
+	Ambiente
+
+		tfecha = reg
+
+			dd:n(2)
+			mm:n(2)
+			yy:n(4)
+
+		fr
+
+		tREPARACIONES = reg 
+
+			Cod_Sucursal:N(5)
+			Marca:AN(10)
+			Modelo:AN(10)
+			Cod_Tragamonedas:N(5)
+			Fecha_Reparacion:tfecha 
+			Costo_Reparacion:N(5,2)
+
+		fr 
+
+		ar_rep:archivo de tREPARACIONES Ordenado por Cod_Sucursal, Marca, Modelo, Cod_Tragamonedas
+		r:tREPARACIONES
+
+		ct_cantrep,ct_Modelo,ct_Marca,ct_sucursal:entero // contadorees
+		ac_costos,ac_Modelo,ac_Marca,ac_sucursal:entero // acumuladores
+		totalrep,totalgast:entero // totalesgrales
+
+		Subaccion corte_Cod_Sucursal ES
+
+			corte_Marca
+
+			Esc("Codigo de sucursal:",res_Cod_Sucursal)
+			Esc("Cantidad de reparaciones reealizadas por la sucursal: ",ct_sucursal)
+			Esc("Gastos de la sucursal:",ac_sucursal)
+
+			totalrep:=totalrep+ct_sucursal
+			totalgast:=totalgast+ac_sucursal
+
+			ct_sucursal:=0
+			ac_sucursal:=0
+
+			res_Cod_Sucursal:=r.Cod_Sucursal
+
+		fs
+
+		Subaccion corte_Marca ES
+
+			corte_Modelo
+
+			Esc("Marca:".res_Marca)
+			Esc("Cantidad de reparaciones de la marca:", ct_Marca)
+			Esc("Cantidad gastada en la marca:", ac_Marca)
+
+			ct_sucursal:=ct_sucursal+ct_Marca
+			ac_sucursal:=ac_sucursal+ac_Marca
+
+			ct_Marca:=0
+			ac_Marca:=0
+
+			res_Marca:=r.Marca
+
+		Fs 
+
+		Subaccion corte_Modelo ES 
+
+			corte_Cod_Tragamonedas
+
+			Esc("Modelo:",res_Modelo)
+			Esc("Cantidad de reparaciones por modelo:",ct_Modelo)
+			Esc("Gastos totales en reparaciones del modelo:",ac_Modelo)
+
+			ct_Marca:=ct_Marca+ct_Modelo
+			ac_Marca:=ac_Marca+ac_Modelo
+
+			ct_Modelo:=0
+			ac_Modelo:=0
+
+			res_Modelo:=r.Modelo
+
+
+		fs
+
+		Subaccion corte_Cod_Tragamonedas ES 
+
+			//i'm on N.I.I
+			//GRABO o IMPRIMO
+			Esc("Codigo de Maquina Tragamonedas:",res_Cod_Tragamonedas)
+			Esc("Cantidad de veces que se reparo el mismo:", ct_cantrep)
+			Esc("Costo total de las reparaciones de la misma: ", ac_costos)
+			//acumulo N.S.
+			ct_Modelo:=ct_Modelo+ct_cantrep
+			ac_Modelo:=ac_Modelo+ac_costos
+			//actualizo var testigo y cont :=0
+
+			ct_cantrep:=0
+			ac_costos:=0
+
+			res_Cod_Tragamonedas:=r.Cod_Tragamonedas
+
+		fs
+
+	Proceso 
+
+		AbrirE/(ar_rep)
+		Leer(ar_rep,r)
+
+		//cont := 0  // acumulador := 0
+
+		ct_cantrep:=0    ; ac_costos:=0
+		ct_Modelo:=0     ; ac_Modelo:=0
+		ct_Marca:=0      ; ac_Marca:=0
+		ct_sucursal:=0   ; ac_sucursal:=0
+
+		// res
+		res_Cod_Sucursal:=r.Cod_Sucursal
+		res_Marca:=r.Marca 
+		res_Modelo:=r.Modelo
+		res_Cod_Tragamonedas:=r.Cod_Tragamonedas
+
+
+		Mientras NFDA(ar_rep) ES
+
+			Si res_Cod_Sucursal <> r.Cod_Sucursal Entonces 
+				corte_Cod_Sucursal
+			Sino 
+				Si res_Marca <> r.Marca Entonces 
+					corte_Marca
+				Sino
+					Si res_Modelo <> r.Modelo Entonces
+						corte_Modelo
+					Sino 
+
+						Si res_Cod_Tragamonedas <> r.Cod_Tragamonedas
+
+							corte_Cod_Tragamonedas
+
+						Fsi
+
+					Fsi
+				Fsi		
+
+			Fsi
+			
+			ct_cantrep:=ct_cantrep+1
+			ac_costos:=ac_costos+r.Costo_Reparacion
+
+			Leer(ar_rep,r)
+
+		Fm 
+
+		corte_Cod_Sucursal
+
+		// TOT GRALES
+
+		Esc("Cantidad de reparaciones totales :", totalrep)
+		Esc("Cantidad de dinero total consumida :", totalgast)
+
+		Cerrar(ar_rep)
+
+FA

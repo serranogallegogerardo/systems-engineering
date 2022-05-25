@@ -1,0 +1,143 @@
+Crear un algoritmo que simule el trabajo de una caja de supermercado. El algoritmo debe permitir imprimir el ticket de compra 
+y realizar el descuento de stock del producto. Al generar el comprobante del ticket debe guardar los datos en los archivos 
+TICKET y DETALLE_TICKET (el cliente es: "consumidor final" y el NroTicket se genera automáticamente, mediante la función 
+OBTENER_TICKET). Archivos:
+
+PRODUCTOS Indexado por Cod_Prod
+    Cod_Prod; Nombre; Stock; Precio;
+
+TICKET Indexado por Nro_Ticket
+    Nro_Ticket; Fecha; Cliente;
+
+DETALLE_TICKET Indexado por Nro_Ticket
+    Nro_Ticket; Nro_Linea; Cod_Prod; Cantidad;
+
+accion 231 es
+    ambiente
+        fecha = registro
+            aa:N(4)
+            mm:1..12
+            dd: 1..31
+        fin registro
+
+        producto = registro
+            cod_prod: N(5)
+            nombre:AN(30)
+            stock:N(4)
+            precio:real
+        fin registro
+        
+        ticket = registro
+            nro_ticket:N(5)
+            fecha: fecha
+            cliente:AN(10)
+        fin registro
+
+        detalle = registro
+            nro_ticket:N(5)
+            nro_linea:N(4)
+            cod_prod:N(5)
+            cantidad:N(4)
+        fin registro
+
+        comprobante = registro
+            empresa:AN(30)
+            cuit:N(11)
+            fe_actual:fecha 
+            producto: N(5)
+            cantidad:N(4)
+            subtotal:real
+        fin registro
+
+        arch: Archivo de producto Indexado por cod_prod
+        TICKET: Archivo de ticket indexado por nro_ticket
+        DETALLE_TICKET: archivo de detalle indexado por nro_ticket
+
+        subaccion imprimir_producto(comprobante: comprobante) es
+            esc(comprobante.producto,
+                comprobante.cantidad,
+                comprobante.subtotal
+            )
+        fin subaccion 
+
+        subaccion menu(arch:Archio de producto indexado por cod_prod,
+                tic:Archivo de TICKET indexado por nro_ticket,
+                det:Archivo de DETALLE_TICKET indexado por nro_ticket
+            ) es
+            ambiente
+                reg:producto
+                comp: comprobante
+                reg_tic: ticket
+                reg_det: detalle
+                opc:entero
+            algortimo
+                //El bucle se ejecuta por cada cliente
+                esc("Ingrese la empresa); leer(comp.empresa);
+
+                esc("Ingrese el cuit de la empresa); leer(comp.cuit);
+
+                esc("Ingrese la fecha actual en formato año, mes, dia)
+                leer(comp.fe_actual.aa)
+                leer(comp.fe_actual.mm)
+                leer(comp.fe_actual.dd)
+
+                esc('Empresa: ', comp.empresa, 
+                    'Cuit: ', comp.cuit, 
+                    'Fecha: ', comp.fe_actual.dd,
+                            '/',comp.fe_actual.mm,
+                            '/',comp.fe_actual.aa
+                    )
+
+                esc('Cliente: Consumidor final')
+
+                repetir
+                    //Aqui procesamos los productos que compra el cliente
+
+                    esc("Ingrese el codigo del producto)
+                    leer(reg.cod_prod)
+                    leer(arch, reg)
+                    si (existe) entonces
+                        comp.producto:= reg.cod_prod
+
+                        //Cantidad del producto
+                        esc("Ingrese la cantidad del producto)
+                        leer(comp.cantidad)
+
+                        //Calculamos el subtotal
+                        comp.subtotal:= reg.precio * comp.cantidad
+                        esc(aux, comp)
+
+                        //Descontamos stock
+                        reg.stock:= reg.stock - comp.cantidad
+
+                        //Guardamos los datos en TICKET
+                        reg_tic.nro_ticket:= OBTENER_TICKET()
+                        reg_tic.fecha:= dat.fe_actual
+                        reg_tic.cliente:= "Consumidor final"
+                        esc(tic, reg_tic)
+
+                        //Guardamos los detalles
+                        reg_det.nro_ticket:= reg_tic.nro_ticket
+                        esc('Ingrese la linea'); leer(reg_det.nro_linea);
+                        reg_det.cod_prod:= reg.cod_prod
+                        reg_det.cantidad:= comp.cantidad
+                        esc(det, reg_det)
+
+                        imprimir_producto(comp)
+                    sino
+                        esc('No existe el producto')
+                    fin si
+
+                    esc('Ingrese la opcion a realizar')
+                    esc('1. Ingresar otro producto, 2. salir')
+                    leer(opc)
+                hasta que (opc = 1)
+        fin subaccion
+
+    algoritmo
+        abrir e/(arch); abrir e/(TICKET); abrir e/(DETALLE_TICKET);
+
+        menu(arch, TICKET, DETALLE_TICKET)
+
+        cerrar(arch); cerrar(TICKET); cerrar(DETALLE_TICKET);
+fin accion

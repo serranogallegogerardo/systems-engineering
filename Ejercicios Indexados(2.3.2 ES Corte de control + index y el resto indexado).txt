@@ -1,0 +1,733 @@
+Archivos Indexados
+
+Ejercicio 2.3.1.a
+Dado un fichero secuencial de Facturas, ordenado por Nro. de Cliente y Nro. de Factura, con la siguiente estructura:
+
+FACTURAS Ordenado por Nro_Cliente, Nro_Factura
+Nro_ClienteNro_FacturaFechaImporte
+
+Se desea un listado con el siguiente detalle:
+
+Nro. Cliente	Nombre Cliente	Numero Factura
+
+Los datos del cliente se encuentran en un fichero indexado por Nro. de Cliente, que tiene la siguiente estructura:
+
+CLIENTES Indexado por Nro_Cliente
+
+Nro_ClienteNombreDNICUITDomicilio
+
+Accion 2.3.1.a ES
+
+	Ambiente
+
+		tFACTURAS = reg 
+
+			Nro_Cliente
+			Nro_Factura
+			Fecha
+			Importe
+
+		fr
+
+		tCLIENTES = reg
+
+			Nro_Cliente
+			Nombre
+			DNI
+			CUIT
+			Domicilio
+
+		fr
+
+		arFAC:archivo de tFACTURAS Ordenado por Nro_Cliente, Nro_Factura
+		arCLI:archivo de tCLIENTES Indexado por Nro_Cliente
+
+		rFAC:tFACTURAS
+		rCLI:tCLIENTES
+
+	Proceso
+
+		AbrirE/(arFAC)
+		AbrirE/s(arCLI)
+		Leer(arFAC,r)
+
+		Esc("Desea utilizar el programa V/F")
+		leer(op)
+
+		Si op = 'V' Entonces
+			Esc('Nro.Cliente/NombreCliente/NroFactura')
+		Fsi
+
+		Mientras op <> 'F' Hacer
+
+			rCLI.Nro_Factura:=''
+
+			Mientras NFDA(arFAC) Hacer
+
+				rCLI.Nro_Cliente:=rFAC.Nro_Cliente
+				Leer(arCLI,rCLI)
+
+					Si existe Entonces
+
+						Esc(rCLI.Nro_Cliente,'/',rCLI.Nombre,'/',rFAC.Nro_Factura)
+
+					Sino
+
+						Esc('El cliente nro : ',rCLI.Nro_Cliente,' NO EXISTE.')
+
+					Fsi
+
+				Leer(arFAC,r)
+			Fm
+
+			Esc("Desea utilizar nuevamente el programa V/F")
+			leer(op)
+
+		Fm
+
+		Cerrar(arFAC)
+		Cerrar(arCLI)
+
+FA
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+Ejercicio 2.3.1.b
+Dado un fichero secuencial de Facturas, ordenado por Nro. de Cliente y Nro. de Factura, con la siguiente estructura:
+
+FACTURAS Ordenado por Nro_Cliente, Nro_Factura
+Nro_ClienteNro_FacturaFechaImporte
+
+Los datos del cliente se encuentran en un fichero indexado por Nro. de Cliente, que tiene la siguiente estructura:
+
+CLIENTES Indexado por Nro_Cliente
+
+Nro_ClienteNombreDNICUITDomicilio
+
+Se desea un listado con el siguiente detalle:
+Nro. Cliente	Nombre Cliente	Total Facturado	Cantidad de Facturas
+
+
+Accion 2.3.1.b ES 
+
+	Ambiente
+
+		tFACTURAS = reg 
+
+			Nro_Cliente
+			Nro_Factura
+			Fecha
+			Importe
+
+		fr
+
+		tCLIENTES = reg
+
+			Nro_Cliente
+			Nombre
+			DNI
+			CUIT
+			Domicilio
+
+		fr
+
+		arFAC:archivo de tFACTURAS Ordenado por Nro_Cliente, Nro_Factura
+		arCLI:archivo de tCLIENTES Indexado por Nro_Cliente
+
+		rFAC:tFACTURAS
+		rCLI:tCLIENTES
+		
+		res_Nro_Cliente,ct,tf:entero
+
+	Proceso
+
+		AbrirE/(arFAC)
+		AbrirE/s(arCLI)
+		Leer(arFAC,r)
+
+		ct:=0
+		tf:=0
+
+		Esc("Desea utilizar el programa V/F")
+		leer(op)
+
+		Mientras op <> 'F' Hacer
+
+			Esc('Nro_Cliente	NombreCliente	TotalFacturado	Cantidad_de_Facturas')
+			rCLI.Nro_Factura:=''
+
+			Mientras NFDA(arFAC) Hacer
+
+				rCLI.Nro_Cliente:=rFAC.Nro_Cliente
+				Leer(arCLI,rCLI)
+
+					Si existe Entonces
+
+						res_Nro_Cliente:=rFAC.Nro_Cliente
+
+						Mientras NFDA(arFAC) y (res_Nro_Cliente = rFAC.Nro_Cliente) Entonces
+
+							ct:=ct+1
+							tf:=tf+rFAC.Importe
+							leer(arFAC,rFAC)
+
+						Fsi
+
+						Esc(rCLI.Nro_Cliente,'/',rCLI.Nombre,'/',tf,'/',ct)
+
+						tf:=0
+						ct:=0
+
+					Sino
+
+						Esc('El cliente nro : ',rCLI.Nro_Cliente,' NO EXISTE.')
+						Leer(arFAC,r)
+
+					Fsi
+				
+			Fm
+
+			Esc("Desea utilizar nuevamente el programa V/F")
+			leer(op)
+
+		Fm
+
+		Cerrar(arFAC)
+		Cerrar(arCLI)
+
+FA
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 2.3.2
+Una empresa dispone de un fichero secuencial con datos de sus empleados, ordenado por número de sucursal,
+ y categoría, con los siguientes datos:
+
+EMPLEADOS Ordenado por Nro_Sucursal, Categoria
+Nro_SucursalCategoria (A,B,C)Nombre_EmpleadoCod_CursoTecnico (si,no)
+
+Y un fichero con datos de cursos, indexado por código de curso:
+
+CURSO Indexado por Cod_Curso
+Cod_CursoNombreFechaCant_Horas
+
+Emitir un listado informando:
+
+Para cada empleado: sucursal, categoría, nombre del empleado y nombre del curso que debe realizar.
+Por sucursal, categoría y toda la empresa:
+Total empleados técnicos
+Total empleados no técnicos
+Total empleados
+
+Accion 2.3.2 ES 
+
+	Ambiente 
+
+		tfecha = reg
+
+			dd
+			mm 
+			yy
+
+		fr
+
+		tEMPLEADOS = reg
+
+			Cod_Curso
+			Nro_Sucursal
+			Categoria:AN(1)//('A','B','C')
+			Nombre_Empleado
+			Tecnico:AN(2)//('si','no')
+
+		fr
+
+		tCURSO = reg
+
+			Cod_Curso
+			Nombre
+			Fecha:tfecha
+			Cant_Horas
+
+		fr
+
+		arEMP:archivo de tEMPLEADOS Ordenado por Nro_Sucursal, Categoria
+		arCUR:archivo de tCURSO Indexado por Cod_Curso
+
+		rEMP:tEMPLEADOS
+		rCUR:tCURSO
+		op:logico
+
+		c_tec,c_Ntec,c_st,c_Nst,c_tec_total,c_Ntec_total:entero
+		res_nro_sucursal:entero
+		res_categoria:AN(1)
+
+		Subaccion corte_sucursal ES
+
+			corte_categoria
+
+			Esc('Sucursal:',res_nro_sucursal)
+			Esc('Cantidad de tecnicos de la sucursal',c_st)
+			Esc('Cantidad de empleados no formados de la sucursal:',c_Nst)
+
+			c_tec_total:=c_tec_total+c_st
+			c_Ntec_total:=c_tec_total+c_Nst
+
+			c_st:=0;c_Nst:=0;
+
+			res_nro_sucursal:=rEMP.Nro_Sucursal
+
+		Fs 
+
+		Subaccion corte_categoria ES 
+
+			//i'm here
+			Esc('Categoria:',res_categoria)
+			Esc('Cantidad de tecnicos de la categoria:',c_tec)
+			Esc('Cantidad de empleados no formados de la categoria:',c_Ntec)
+
+			ct_st:=ct_st+c_tec
+			ct_Nst:=ct_Nst+c_Ntec
+
+			c_tec:=0
+			c_Ntec:=0
+
+			res_categoria:=rEMP.categoria
+
+		Fs
+
+	Proceso
+
+		AbrirE/S(arCUR)
+		AbrirE/(arEMP)
+		Leer(arEMP,rEMP)
+
+		c_tec:=0;c_Ntec:=0
+		c_st:=0;c_Nst:=0;
+		c_tec_total:=0
+		c_Ntec_total:=0
+
+		res_nro_sucursal:=rEMP.Nro_Sucursal
+		res_categoria:=rEMP.Categoria
+
+		Esc('sucursal/categoría/nombre del empleado/nombre del curso')
+
+			Mientras NFDA(arEMP) Hacer
+
+					// trato el index
+					rCUR.Cod_Curso:=rEMP.Cod_Curso
+					Leer(arCUR,rCUR)
+
+					Si EXISTE Entonces
+							Esc(rEMP.Nro_Sucursal,'/',rEMP.Categoria,'/',rEMP.Nombre_Empleado,'/',rCUR.Nombre)
+					Sino 
+							Esc('El curso no existe.')
+					Fsi
+
+					// trato el corte
+					Si 	res_nro_sucursal <> rEMP.Nro_Sucursal Entonces
+						corte_sucursal
+					Sino
+						Si res_categoria = rEMP.categoría Entonces
+							corte_categoria
+						Fsi	
+					Fsi
+					Si rEMP.Tecnico = 'si' Entonces
+							c_tec:=c_tec+1
+					Sino
+							c_Ntec:=c_Ntec+1
+					Fsi
+
+					Leer(arEMP,rEMP)	
+
+			FM	
+
+				corte_sucursal
+
+				Esc('TOTAL TEC',c_tec_total)
+				ESC('TOTAL NO TEC:',c_Ntec_total)
+				ESC('TOTAL EMPLEADOS:' ,c_tec_total+c_Ntec_total)
+
+		Cerrar(arCUR)
+		Cerrar(arEMP)
+
+FA
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 2.3.3
+Los automovilistas pasan por el peaje del Puente Gral. Belgrano y deben pagar según su categoría,
+ pero además, 
+
+Teniendo en cuenta el archivo siguiente, construya el algoritmo que realice lo que corresponda:
+ genere el comprobante, 
+ indicando el importe a pagar o emita un mensaje indicando que ya pasó anteriormente.
+  si ya han pasado previamente dentro del día tienen pase libre.
+ Además indique cuales deberían ser los datos de entrada.
+// se debe pedir categoria, patente y fecha
+
+PEAJE Indexado por Patente, Fecha
+
+Patente XXX-NNNFecha N(8)Ult_Hora N(4)Costo XXX,XX
+
+
+
+Costo por categoria
+
+Categoria	Costo
+1	1,20
+2	2,50
+3	4,00
+4	5,00
+
+Accion 2.2.3 ES
+
+	Ambiente
+
+		tfecha = reg
+
+			dd 
+			mm 
+			yy
+
+		fr
+
+		tPEAJE = reg 
+
+			Patente:AN(7)
+			Fecha:tfecha
+			Ult_Hora:N(4)
+			Costo:N(3,2)
+
+		fr
+
+		arPEA:archivo de tPEAJE Indexado por Patente, Fecha
+		r:tPEAJE
+		op,pase:logico
+		rescategoria,resfecha,res
+
+	Proceso
+
+		AbrirE/S(arPEA)
+
+		pase:=F
+
+		Esc("Desea utilizar el programa v/f")
+		leer(op)
+
+		Mientras op <> 'f' Hacer// se debe pedir categoria, patente y fecha
+
+			Esc('Ingrese la patente':)
+			leer(r.Patente)
+
+			Leer(arPEA,r)
+
+			Si existe Entonces
+
+				Esc('Ingrese la fecha')
+				leer(resfecha)
+				Esc('Ingrese la categoria')
+				leer(rescat)
+
+				Si resfecha <> r.fecha Entonces
+
+					r.fecha:=resfecha
+
+					Segun r.categoria Hacer
+						1:
+							r.Costo:=1.2
+						2:
+							r.Costo:=2,5
+						3:
+							r.Costo:=4
+						4:
+							r.Costo:=5
+					Fs
+
+				Sino
+					pase:=V
+				Fsi
+
+				Esc('Ingrese la hora:')
+				leer(r.Ult_Hora)
+
+				Esc('Patente:', r.patente)
+				Esc('Fecha:',r.fecha)
+				Esc('Categoria:', r.categoria)
+				Esc('Ultima hora:', r.Ult_Hora)
+				Si pase = 'V' Entonces
+					Esc('Costo: 0')
+					r.costo:=0
+				Sino
+					Esc('Costo:',r.Costo)
+				Fsi
+
+				RE-ESCRIBIR(arPEA,r)
+
+				pase:=F
+
+			Sino
+				Esc("La patente del auto no existe.")
+			Fsi
+
+			Esc("Desea utilizar nuevamente el programa v/f")
+			leer(op)
+
+		fm
+
+		Cerrar(arPEA)
+
+FA
+
+//CODIGO EN:24M 
+//DESK TEST llevo:15M, el 62% del tiempo me llevaria hacer una DESK TEST de este codigo
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// PD: ME PARECE QUE ESTA MAL EL CODIGO
+
+Ejercicio 2.3.4
+Crear un algoritmo que simule el trabajo de una caja de supermercado.
+
+ El algoritmo debe permitir imprimir el ticket de compra y 
+ realizar el descuento de stock del producto. 
+
+ Al generar el comprobante del ticket debe guardar los datos en
+  los archivos TICKET y DETALLE_TICKET
+
+  (el cliente es: "consumidor final" y el NroTicket se genera automáticamente,
+   mediante la función OBTENER_TICKET).
+
+Archivos:
+
+PRODUCTOS Indexado por Cod_Prod
+Cod_ProdNombreStockPrecio
+
+TICKET Indexado por Nro_Ticket
+Nro_TicketFechaCliente
+
+DETALLE_TICKET Indexado por Nro_Ticket
+Nro_TicketNro_LineaCod_ProdCantidad
+
+Comprobante:
+
+Empresa:	......................................	CUIT:	.... - ............ - ...	Fecha:	... / ... / ...
+Cliente	.................................................................................................................................
+Producto	Cantidad	Subtotal
+..............................	..............................	..............................
+..............................	..............................	..............................
+..............................	..............................	..............................
+Total	..............................
+
+Accion 2.3.4 ES
+
+	Ambiente
+
+		tfecha = reg 
+
+			dd
+			mm 	
+			yy
+
+		fr
+
+		tPRODUCTOS = reg
+
+			Cod_Prod
+			Nombre
+			Stock
+			Precio
+
+		fr
+
+		tTICKET = reg 
+
+			Nro_Ticket
+			Fecha:tfecha
+			Cliente
+
+		fr
+
+		tDETALLE_TICKET = reg 
+
+			Nro_Ticket
+			Nro_Linea
+			Cod_Prod
+			Cantidad
+
+		fr
+
+		tAUX = reg 
+
+			nombreprod:
+			cantidad:
+			subtotal:
+
+		fr
+
+		arDET:archivo de tDETALLE_TICKET Indexado por Nro_Ticket
+		arTIC:archivo de tTICKET Indexado por Nro_Ticket
+		arPRO:archivo de tPRODUCTOS Indexado por Cod_Prod
+		arAUX:archivo de tAUX
+
+		rDET:tDETALLE_TICKET
+		rTIC:tTICKET
+		rPRO:tPRODUCTOS
+		rAUX:tAUX
+
+		resempresa:AN
+		rescuit:entero
+		subtotal:entero
+		total:=real
+
+	Proceso
+
+		AbrirE/S(arDET);
+		AbrirE/S(arTIC);
+		AbrirE/S(arPRO);
+		AbrirS/(arAUX,rAUX)
+
+		Esc("Desea utilizar el programa: V/F")
+		leer(op)
+
+		total:=0
+
+		Mientras op <> 'f' Hacer
+
+			Esc('Ingrese el nombre de la empresa')
+			leer(resempresa)
+
+			Esc('Ingrese el CUIT')
+			leer(rescuit)
+
+			Esc('Ingrese el codigo del producto')
+			Leer(rPRO.Cod_Prod)
+
+			Leer(arPRO,rPRO)
+
+			Si Existe Entonces
+
+				Si rPRO.stock > 0 Entonces
+
+					rTIC.fecha:=fechaACTUAL()
+
+					Esc("ingrese el nro de linea")
+					leer(rDET.Nro_Linea)
+
+					Esc('Ingrese la cantidad')
+					leer(rDET.Cantidad)
+
+					Si rDET.cantidad > rPRO.stock Entonces // SI LO QUE PIDO ES MAYOR A LO QUE HAY
+						
+						repetir
+							rDET.Cantidad:=NILL // ENTONCES CANTIDAD PEDIDA NULA
+							Esc('ERROR, La cantidad ingresada es mayor que la del stock disponible')
+							Esc('Ingrese la cantidad')
+							leer(rDET.Cantidad) // SE QUEDA ATRAPADO HASTA QUE LA CANT SEA = o menor a la de stock
+						hasta que (rDET.cantidad <= rPRO.stock)
+
+					Fsi					
+
+					// DESCUENTO AL STOCK DE PRODUCTOS
+					rPRO.stock:=rPRO.stock-rDET.cantidad
+					
+					// PASAR DATOS AL TICKET
+					rTIC.Cliente:='consumidor final'
+					rTIC.Nro_Ticket:=OBTENER_TICKET
+
+					// PASAR DATOS AL DETALLE
+					rDET.Nro_Ticket:=OBTENER_TICKET
+					rDET.Cod_Prod:=rPRO.Cod_Prod
+
+					// GUARDO en el auxiliar: Nombre del producto, Cantidad, Subtotal
+					rAUX.nombreprod:=rPRO.nombre
+					rAUX.cantidad:=rDET.cantidad
+					rAUX.subtotal:=rPRO.precio*rDET.cantidad 
+
+					Escribir(arAUX,rAUX)	// PASO EL PRODUCTO AL AUXILIAR P/ IMPRIMIR LUEGO
+					ESCRIBIR(arDET,rDET)	// SE CREA NEW reg DETALLE
+					ESCRIBIR(arTIC,rTIC)	// SE CREA NEW reg TICKET
+					RE-ESCRIBIR(arPRO,rPRO) // RE ESCRIBO X EL STOCK CAMBIA DEL REG
+				
+				Sino
+
+					Esc('ERROR, NO HAY STOCK DEL PROD')
+
+				Fsi
+
+			Sino
+
+				Esc('ERROR EL PROD NO EXISTE')
+
+			Fsi
+
+
+			Esc("Desea agregar otro producto?: V/F")
+			leer(op)
+
+		Fm
+
+		Cerrar(arDET);Cerrar(arTIC);Cerrar(arPRO);Cerrar(arAUX)
+
+		AbrirE/(arAUX,rAUX) // IMPRIMO TODO EN EL ORDEN SOLICITADO
+
+		Esc('Empresa: ',resempresa ,' CUIT: ', rescuit,' Fecha: ', fechaACTUAL())
+		Esc('Cliente: CONSUMIDOR FINAL')
+		Esc('Producto:			Cantidad:			 Subtotal:')
+
+		Mientras NFDA(arAUX) Hacer
+
+			
+			Esc(rAUX.nombreprod,'		',rAUX.Cantidad,'		',rAUX.subtotal)
+			total:=total+subtotal
+			Leer(arAUX,rAUX)
+
+		Fm
+
+		Esc('						Total:',total)
+
+
+		Cerrar(arAUX)
+
+FA
+
+//CODIGO: 54m
+//DESK TEST: 33m
+
+// PD: ME PARECE QUE ESTA MAL EL CODIGO
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 2.3.5
+Para poder comprar dólares en una entidad bancaria al precio oficial ($9,40), el beneficiario, debe tener un ingreso promedio en los últimos 12 meses equivalente a dos veces el sueldo mínimo vital y móvil (el cual en la actualidad es de $5000 por mes). Luego, con el sueldo del mes actual, solo se permite comprar por un importe no superior al 30% del mismo.
+Por ej.: si una persona tiene un sueldo de $10.000, desde septiembre del año pasado, al dia de hoy esa persona cumple la condición para comprar y puede comprar dólares por un monto máximo de $3.000 (equivalente a U$S 319).
+Para ello se cuenta con dos archivos indexados:
+
+CABECERA_SUELDO Indexado por DNI, Periodo, Nro_Recibo
+
+DNI N(8)Periodo N(6)Nro_Recibo N(15)ApyNom AN(50)Empresa AN(50)
+El periodo está representado por 6 caracteres numéricos dispuestos de forma de año/mes (aaaamm). El número de recibo (Nro_Recibo) es único. Una persona puede tener varios recibos de sueldo. La clave de este archivo es DNI, Periodo y Nro_Recibo.
+
+RECIBO Indexado por Nro_Recibo
+
+Nro_Recibo N(15)Concepto N(8)Tipo (0..2)Monto N(15,2)
+El campo tipo puede contener los siguientes valores: 0 - Sueldo básico, 1 – Otros Ingresos, 2 – Descuentos. Para calcular el sueldo mínimo se suman el sueldo (tipo 0), y los otros ingresos (tipo 1), NO se restan los descuentos. La clave es Nro_Recibo.
+
+Dado el escenario descripto, se pide escribir dos algoritmos:
+
+Que el empleado del Banco ingrese un número de documento de algún interesado en comprar dólares, y le devuelva si está habilitado o no para comprar y, en caso positivo, cuál es el monto máximo en pesos que se le autoriza.
+Si el interesado desea comprar, solicite el monto en pesos que destinará a la compra, el cual deberá ser descontado de su cuenta. Los datos de la cuenta están en un archivo indexado con la siguiente estructura (indexado por DNI):
+
+DNI N(8)Nro_Cuenta N(25)Saldo N(15,2)
+Los puntos a) y b) se repiten hasta que el operador (empleado del Banco) indique que desea finalizar.
+
+Procesar peticiones de compra, de acuerdo a un archivo de entrada de peticiones, evaluando si es posible realizar la operación o no. Si no es posible, indicar cual es el motivo: 1 – No tiene el ingreso promedio suficiente, o 2 – Pide más del 30 % de su sueldo actual.
+
+PETICIONES
+
+DNI N(8)Cant_Soli N(15,2)
+El resultado de la evaluación se debe grabar en un nuevo archivo de salida con el siguiente formato:
+
+SALIDA
+
+DNI N(8)Cant_Soli N(15,2)Pudo (si,no)Error 1..2
