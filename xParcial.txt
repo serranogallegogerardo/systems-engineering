@@ -1,0 +1,125 @@
+POLENTOSO PARCIAL 3.28
+La Municipalidad de Resistencia desea actualizar los valores de los terrenos luego de una rezonificacion de los mismos. El valor final de cada terreno se calcula de la siguiente manera
+Valor del Terreno = Superficie terreno (en M2) * valor del M2 * coeficiente de incremento
+
+Para ello cuenta con la siguiente información:
+Un archivo maestro de los terrenos con los siguientes datos:
+MAESTRO Ordenado por Nro_Terreno
+Nro_Terreno Zona Ubicacion Superficie Valor
+
+Zona: codificadas de A a F
+Ubicación: codificada de 1 a 10
+    Un arreglo V que contiene los valores del M2 por zona.
+Un archivo de movimientos
+
+MOVIMIENTO Ordenado por Nro_Terreno
+Nro_Terreno Zona Ubicacion Superficie Cod_Mov
+
+Se solicita actualizar (Alta Baja y Modificacion) los valores del archivo maestro, teniendo en cuenta que los unicos valores que se pueden actualizar es la zona y su valor.
+
+ACCION PARCIAL ES 
+    AMBIENTE
+        valorm2: arreglo de [1..6] de N(3,2)
+        MAESTRO: REGISTRO
+            Nro_Terreno: N(7)
+            Zona: A..F
+            Ubicacion: 1..10
+            Superficie: N(7)
+            Valor: N(10,2)
+        FR 
+        A_Maestro: archivo de MAESTRO ordenado por Nro_Terreno
+        S_Maestro: archivo de MAESTRO ordenado por Nro_Terreno
+        s_Mae: MAESTRO
+        Mae: MAESTRO 
+        MOVIMIENTO: REGISTRO
+            Nro_Terreno: N(7)
+            Zona: A..F
+            Ubicacion: 1..10
+            Superficie: N(7)
+            Cod_Mov: ('A', 'B', 'C')
+        FR 
+        A_Mov: archivo de MOVIMIENTO ordenado por Nro_Terreno
+        Mov: MOVIMIENTO
+
+        Subaccion Leer_Mae ES
+            Leer(A_Maestro,Mae)
+            SI FDA(A_Maestro) ENTONCES
+                mae.Nro_Terreno:= HV
+            FS
+        FSUB
+
+        Subaccion Leer_Mov ES
+            Leer(A_Mov, Mov)
+            SI FDA(A_Mov) ENTONCES
+                mov.Nro_Terreno:= HV
+            FS
+        FSUB        
+PROCESO 
+    Abrir E/ (A_Maestro)
+    Abrir /S (S_Maestro)
+    Abrir E/ (A_Mov)
+    Leer_Mae
+    Leer_Mov
+
+    //hacemos un tratamiento como cualquier actualizacion secuencial 
+    MIENTRAS (mae.Nro_Terreno <> HV o  mov.Nro_Terreno <> HV) HACER
+        i:= 0
+
+        //en el caso q el maestro sea menor, solo es necesario copiar lo q esta en el maestro a la salida
+        SI (mae.Nro_Terreno < mov.Nro_Terreno) ENTONCES
+            s_Mae:= Mae
+            Escribir(S_Maestro, s_Mae)
+            Leer_Mae
+
+        SINO 
+        //como son iguales, sabemos q solo pueden existir bajas y modificaciones
+            SI (mae.Nro_Terreno = mov.Nro_Terreno) ENTONCES
+
+            //evaluamos que es lo q dice q hay q hacer en el de movimientos 
+                SEGUN mov.Cod_Mov HACER 
+                    = 'A': Esc('Error alta, el archivo ya existe')
+                    = 'B': Leer_Mae
+
+                    //como explica el ejercicio, si hay modificaciones solo hay q cambiar la zona y su valor. Sabiendo que en el arreglo q nos dan se encuentra EL PRECIO INDIVIDUAL del m2 segun la ZONA, buscamos en el arreglo// 
+                    = 'M':  mae.zona:= mov.zona // hacemos esto para poder comparar en la busqueda
+
+                            SEGUN mov.zona HACER 
+                                = 'A': nzona:= 1
+                                = 'B': nzona:= 2
+                                = 'C': nzona:= 3
+                                = 'D': nzona:= 4
+                                = 'E': nzona:= 5
+                                = 'F': nzona:= 6
+                            FS
+                                
+                            MIENTRAS (i<6) y (i<> nzona) HACER //hacemos la busqueda con centinela
+                                i:= i+1
+                            FM 
+                            SI (i= nzona) ENTONCES 
+                                Importe:= mov.superficie * valorm2[i]
+                                s_Mae.valor:= Importe
+                            FSI 
+                            s_Mae.Nro_Terreno:= mae.Nro_Terreno
+                            s_Mae.Ubicacion:= mae.Ubicacion
+                            Escribir(S_Maestro, s_Mae)
+                FS 
+                Leer_Mov
+                Leer_Mae
+            //a este sino, entraria solo si el archivo maestro es menor al de movimientos, donde solamente puede existir un alta
+            SINO 
+                SEGUN Cod_Mov HACER 
+                    = 'A': s_Mae.Nro_Terreno:= mov.Nro_Terreno
+                        s_Mae.zona:= mov.zona
+                        s_Mae.ubicacion:= mov.ubicacion
+                        s_Mae.superficie:= mov.superficie
+                        s_Mae.valor:= mov.superficie * valorm2[mov.zona]
+                        Escribir(s_Maestro,s_Mae)
+                    = 'B': Esc('Error baja inexistente')
+                    = 'M': Esc('Eror modificacion')
+                FS 
+                Leer_Mov
+            FSI 
+        FSI 
+    FM 
+    Cerrar_Archivos
+FIn_ACCION

@@ -1,0 +1,68 @@
+Se dispone de un archivo secuencial de facturas de una empresa de energía eléctrica, correspondientes a un año, con el siguiente formato:
+Nro_Factura Nro_Usuario Zona Fecha Consumo
+
+Se desea obtener un cuadro estadístico que informe los consumos y los importes totales facturados por mes discriminados por zona, con el siguiente formato:  
+'Ver excel'
+
+La ciudad está dividida en 4 Zonas (A,B,C,D), la tarifa por Kw. que cobra la empresa en cada una de ellas es: Zona A: $ 0,05, Zona B: $ 0,07, Zona C: $ 0,09 y Zona D: $ 0,13.
+
+ACCION 3.26 ES 
+    AMBIENTE}
+        r_arr= REGISTRO
+            Consumo: N(6)
+            ImporteTF: N(6)
+        arr: arreglo de [1..13, 1..5] de r_arr
+        FECHA = REGISTRO
+            dia: 1..31
+            mes: 1..12
+            año: N(4)
+        Facturas= REGISTRO
+            Nro_Factura: N(8)
+            Nro_Usuario: N(7)
+            Zona: ('A', 'B', 'C', 'D')
+            Fecha: FECHA 
+            Consumo: N(6)
+        FR 
+        A_fac: archivo de Facturas 
+        f: Facturas
+        i,j,nzona: entero
+        importe: real
+    PROCESO
+    Abrir E/ (A_Fac)
+    Leer(A_Fac, f)
+        //inicializamos
+        PARA i:= 1 HASTA 13 HACER
+            PARA j:= 1 HASTA 5 HACER
+                arr[i,j]:= 0 
+            FP 
+        FP 
+        //cargamos
+        MIENTRAS NFA(A_Fac) HACER 
+            SEGUN f.zona HACER
+                = 'A': nzona:= 1
+                    importe:= 0,05                 
+                = 'B': nzona:= 2
+                    importe:= 0,07
+                = 'C': nzona:= 3
+                    importe:= 0,09
+                = 'D': nzona:= 4
+                    importe:= 0,13
+            FS 
+
+            arr[f.Fecha.mes, nzona].Consumo:= arr[f.Fecha.mes, nzona].Consumo + f.Consumo
+            arr[f.Fecha.mes, nzona].ImporteTF:= arr[f.Fecha.mes, nzona].Consumo * Importe
+            arr[13, nzona].Consumo:= arr[f.Fecha.mes, nzona].Consumo + f.Consumo 
+            arr[13, nzona].ImporteTF:= arr[f.Fecha.mes, nzona].Consumo * Importe
+            arr[f.Fecha.mes, 5].Consumo:= arr[f.Fecha.mes, nzona].Consumo + f.Consumo 
+            arr[f.Fecha.mes, 5].ImporteTF:= arr[f.Fecha.mes, 5].Consumo * Importe
+            Leer(A_Fac,f)
+        FM 
+        //informamos 
+        PARA i:= 1 HASTA 12 HACER 
+            PARA j:=1 HASTA 4 HACER
+                Esc('El consumo del mes ', i, 'y zona ', j, 'Fue de ', arr[i,j].Consumo)
+                Esc('El importe total facturado del mes ', i, 'y zona ', j, 'fue de ', arr[i,j].ImporteTF)
+            FP
+        FP
+        Cerrar_Archivos
+    Fin_Accion

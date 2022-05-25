@@ -1,0 +1,37 @@
+Ejercicio 4.1
+Diseñar un algoritmo para acceder, para mostrar el k-ésimo elemento de una lista
+ (siendo k una posición dada). Si la lista está vacía o
+  si el valor de k esta fuera del rango del índice de la lista,
+   invocar al procedimiento de ERROR. En cualquier otro caso, 
+   efectuar el procedimiento solicitado.
+
+Accion 4.1 ES
+
+	Ambiente
+
+		nodo = reg
+
+			nro:entero
+			sig:Puntero a nodo
+
+		freg
+
+		prim,p:puntero a nodo
+		pos:entero
+
+	Proceso
+
+		Esc("Ingrese una posicion:")
+		leer(pos)
+		p:=prim
+		Mientras p<>NILL y pos>0 Hacer
+		P:=*p.sig
+		pos:=pos-1
+		Fm
+		Si p == NULL Entonces
+				Esc("La posicion es mas grande q la lista")// INSERTAR
+		Sino 
+				Esc("El k-esimo es:", *p.nro) 
+		Fsi 
+
+FA

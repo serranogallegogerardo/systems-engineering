@@ -1,0 +1,52 @@
+ACCION 2.3.2 ES
+AMBIENTE
+    FECHA = REGISTRO
+        año: N(4)
+        mes: (1..12)
+        dia: (1..31)
+    FR
+    peaje= REGISTRO    
+        Patente: AN(6)
+        Fecha: FECHA
+        Ult_Hora: N(4)
+        Costo: N(3,2)
+    FR
+
+    peaje: archivo de peaje indexado por Patente,Fecha
+    r_peaje: peaje
+    r_fecha: FECHA
+PROCESO
+    Abrir E/S (peaje)
+    Esc('Ingrese su categoria: ')
+    Leer(Cat)
+    Esc('Ingrese su patente: ')
+    Leer(Pat)
+    Esc('Ingrese la fecha de hoy: ')
+    Leer(r_fecha)
+    Esc('quiere comenzar el la busqueda? S/N')
+    Leer(op)
+    MIENTRAS op=S HACER
+        r_peaje.Fecha:= r_fecha
+        r_peaje.Patente;= Pat
+        Leer(peaje, r_peaje)
+        SI EXISTE ENTONCES
+            Esc('Puede pasar, tiene pase libre')
+        SINO
+            SEGUN Cat HACER
+                1: cost:= 1,20
+                2: cost:= 2,50
+                3: cost:= 4,00
+                4: cost:= 5,00
+            FSegun
+            r_peaje.Patente:= Pat
+            r_peaje.Fecha:= r_fecha
+            Ult_Hora:= Hora_sistema()
+            Costo:= cost
+            Grabar(Peaje, r_peaje)
+        FS
+        Esc('Quiere ver otro vehiculo? S/N')
+        Leer(op)
+    FMientras
+    Esc('El vehiculo de patente', Pat 'Tiene que pagar un costo de', cost )
+    Cerrar(peaje)
+FinACCION

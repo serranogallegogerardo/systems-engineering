@@ -1,0 +1,68 @@
+
+ACCION 2.3.1.b ES
+
+	AMBIENTE
+
+		FECH=REGISTRO
+			D: N(2)
+			M: N(2)
+			A: N(4)
+		F_R
+
+		FAC = REGISTRO
+			Nro_Cliente: N(5)
+			Nro_Factura: N(10)
+			Fecha = FECH
+			Importe: N(8)
+		F_R
+
+		FACTURAS: archivo de FAC ordenado por Nro_Cliente, Nro_Factura
+		F:FAC
+
+		CL = REGISTRO
+			Nro_Cliente: N(5)
+			Nombre: AN(30)
+			DNI: N(8)
+			CUIT: N(12)
+			Domicilio: AN(15)
+		F_R
+
+		CLIENTES: archivo de CL ordenado por Nro_Cliente
+		C:CL
+
+		CantFacturas, Nro: entero
+		Imp: real
+
+	PROCESO
+
+		ABRIR E/(FACTURAS)
+		ABRIR E/(CLIENTES)
+		LEER(FACTURAS, F)
+		ESC("Nro. Cliente | Nombre Cliente | Total Facturado | Cantidad de Facturas")
+
+		MIENTRAS NFDA(FACTURAS) HACER
+			Nro:= F.Nro_Cliente
+			C.Nro_Cliente:= F.Nro_Cliente
+			LEER(CLIENTES, C)
+
+			SI EXISTE ENTONCES
+				CantFacturas:= 0
+				Imp:= F.Importe
+				MIENTRAS NFDA(FACTURAS) Y (Nro = F.Nro_Cliente) HACER
+					CantFacturas:= CantFacturas+1
+					Imp:= Imp+F.Importe
+					LEER(FACTURAS, F)
+				F_M	
+				ESC(C.Nro_Cliente, " | ",C.Nombre, " | ", Imp, " | ", CantFacturas)
+			SINO
+				ESC("ERROR - El cliente buscado no existe")
+				MIENTRAS NFDA(FACTURAS) Y (Nro = F.Nro_Cliente) HACER
+					LEER(FACTURAS, F)
+				F_M		
+			F_
+		F_M
+
+		CRR(FACTURAS)
+		CRR(CLIENTES)
+
+F_A

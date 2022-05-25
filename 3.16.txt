@@ -1,0 +1,43 @@
+Una empresa que comercializa una cierta cantidad de artículos diferentes desea confeccionar un ranking de ventas de los mismos, a partir de una secuencia ordenada por articulo que contiene:
+
+NRO_ARTICULO	TIPO	CANT_VENDIDA
+Escribir un algoritmo que emita el ranking deseado en orden decreciente por cantidad.
+
+ACCION 3.16 ES
+    AMBIENTE
+        articulos = REGISTRO
+            NRO_ARTICULO
+            TIPO
+            CANT_VENDIDA
+        FR 
+        Art: archivo de articulos ordenado por NRO_ARTICULO
+        a: articulos
+        arr[1..n] de enteros //puse hasta n porque el ejercicio no te dice el tamaño del arreglo
+    
+    PROCESO
+        //cargamos el arreglo 
+        i:=0
+        MIENTRAS NFA(Art) HACER
+            arr[a.NRO_ARTICULO]:= CANT_VENDIDA
+            Leer(Art,a)
+        FM 
+        //ordenamos el arreglo, ocuparemos seleccion directa
+        PARA i:= 1 HASTA n-1 HACER 
+            x:= arr[i]
+            max:= i 
+            PARA j:= i+1 HASTA n HACER
+                SI (x < arr[j]) ENTONCES
+                    max:= j 
+                    x:= arr[j]
+                FSI 
+            FP 
+            a[max]:= a[i]
+            a[i]:=x 
+        FP 
+        //emitimos el ranking 
+        Esc('El ranking por orden decrenciente es ')
+        PARA i:= 1 HASTA n HACER 
+            Esc(arr[i])
+        FP 
+        Cerrar(art)
+    Fin_ACCION

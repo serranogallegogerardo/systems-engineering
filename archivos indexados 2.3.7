@@ -1,0 +1,154 @@
+archivos indexados 2.3.7
+
+Crear un algoritmo que imprima un reporte como el que se indica, incluyendo totales por Obra Social y Clínica de liquidaciones a médicos. Los archivos que intervienen son:
+
+LIQUIDACIONES Ordenado por O.S. y Clinica
+O.S. Clinica Nro_Leg  Mes Anio Bruto Descuento_AFIP Descuento_DGR
+
+****Neto = Bruto – (Desc_AFIP + Desc_DGR)
+
+OBRAS_SOCIALES Indexado por Cod_Os
+Cod_OS Nombre
+
+CLÍNICAS Indexado por Cod_Cli
+Cod_Cli Nombre
+
+MÉDICOS Indexado por Nro_Leg
+Nro_Leg ApyNom Especialidad DNI
+
+Accion 2.2.5 es
+
+	Ambiente
+
+	Sueldos=registro
+		O.S: 
+		Clinica: 
+		Nro_Leg: 
+		Mes:
+		Anio: 
+		Bruto: 
+		Descuento_AFIP: 
+		Descuento_DGR:
+	finreg
+
+	sociales=registro
+		Cod_OS 
+		Nombre
+	finreg
+
+	sucursales=registro 
+		Cod_Cli: 
+		Nombre:
+	finreg
+
+	doctores=registro
+		Nro_Leg 
+		ApyNom 
+		Especialidad 
+		DNI
+	finreg
+
+	LIQUIDACIONES:archivo de Sueldos Ordenado por O.S y Clinica
+	reg_LIQUIDACIONES:Sueldos
+
+	OBRAS_SOCIALES:archivo de sociales Indexado por Cod_Os
+	reg_OBRAS_SOCIALES:sociales
+	
+	CLÍNICAS:archivo de sucursales Indexado por Cod_Cli
+	reg_CLÍNICAS:sucursales
+
+	MÉDICOS:archivo de doctores Indexado por Nro_Leg
+	reg_MÉDICOS:doctores
+
+	res_OS
+	res_Clinica
+
+	tot_OS
+	tot_Clinica
+	neto
+
+	subaccion corte_clinica es
+		esc("Total Clínica: ", tot_Clinica)
+		reg_CLÍNICAS.Cod_Cli:=reg_LIQUIDACIONES.Clinica
+		leer(CLÍNICAS,reg_CLÍNICAS)
+		esc("Clinica: ", reg_CLÍNICAS.Nombre)
+		esc("Medicos")
+		esc("Nro Legajo	     		Nombre					Neto")
+		tot_OS:=tot_OS+tot_Clinica
+		tot_Clinica:=0
+		res_Clinica:=reg_LIQUIDACIONES.Clinica
+	finsubaccion
+
+	subaccion corte_Obra es
+		esc("Total Clínica: ", tot_Clinica)
+		esc("Total Obra Social ", tot_OS)
+		reg_OBRAS_SOCIALES.Cod_OS:=reg_LIQUIDACIONES.Cod_OS
+		leer(OBRAS_SOCIALES,reg_OBRAS_SOCIALES)
+		esc("Obra Social: ", reg_OBRAS_SOCIALES.Nombre)
+		reg_CLÍNICAS.Cod_Cli:=reg_LIQUIDACIONES.Clinica
+		leer(CLÍNICAS,reg_CLÍNICAS)
+		esc("Clinica: ", reg_CLÍNICAS.Nombre)
+		esc("Medicos")
+		esc("Nro Legajo	     		Nombre					Neto")
+		tot_OS:=0
+		tot_Clinica:=0
+		res_Clinica:=reg_LIQUIDACIONES.Clinica
+		res_OS:=reg_LIQUIDACIONES.O.S
+	finsubaccion
+
+Proceso	
+	Abrir e/(LIQUIDACIONES)
+	Leer(LIQUIDACIONES,reg_LIQUIDACIONES)
+	
+	Abrir e/(OBRAS_SOCIALES)
+	Abrir e/(CLÍNICAS)
+	Abrir e/(MÉDICOS)
+
+	res_OS:=reg_LIQUIDACIONES.O.S
+	res_Clinica:=reg_LIQUIDACIONES.Clinica
+
+	tot_OS:=0
+	tot_Clinica:=0
+
+	reg_OBRAS_SOCIALES.Cod_OS:=reg_LIQUIDACIONES.Cod_OS
+	leer(OBRAS_SOCIALES,reg_OBRAS_SOCIALES)
+
+	reg_CLÍNICAS.Cod_Cli:=reg_LIQUIDACIONES.Clinica
+	leer(CLÍNICAS,reg_CLÍNICAS)
+
+	esc("Obra Social: ", reg_OBRAS_SOCIALES.Nombre)
+	esc("Clinica: ", reg_CLÍNICAS.Nombre)
+	esc("Medicos")
+	esc("Nro Legajo	     		Nombre					Neto")
+
+	Mientras NFDA(LIQUIDACIONES) hacer
+		Si res_OS <> reg_LIQUIDACIONES.O.S entonces
+			corte_Obra
+		Sino
+			Si res_Clinica<>reg_LIQUIDACIONES.Clinica entonces
+				corte_clinica
+			finsi
+		finsi
+
+		reg_MÉDICOS.Nro_Leg:=LIQUIDACIONES.Nro_Leg
+		leer(MÉDICOS,reg_MÉDICOS)
+
+		neto:=reg_LIQUIDACIONES.Bruto-(reg_LIQUIDACIONES.Descuento_AFIP+reg_LIQUIDACIONES.Descuento_DGR)
+		tot_Clinica:=tot_Clinica+neto
+		
+		esc(reg_LIQUIDACIONES.Nro_Leg, reg_MÉDICOS.ApyNom, neto)
+
+		Leer(LIQUIDACIONES,reg_LIQUIDACIONES)
+	
+	finmientras
+
+	esc("Total Clínica: ", tot_Clinica)
+	tot_OS:=tot_OS+tot_Clinica
+	esc("Total Obra Social ", tot_OS)
+
+	cerrar(LIQUIDACIONES)
+	cerrar(OBRAS_SOCIALES)
+	cerrar(CLÍNICAS)
+	cerrar(MÉDICOS)
+
+finaccion

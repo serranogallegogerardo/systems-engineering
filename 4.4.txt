@@ -1,0 +1,47 @@
+// 4.4 Se dispone de una lista simplemente encadenada cuyos registros están 
+//ordenados en forma ascendente por una clave de tipo entero;
+//diseñar un algoritmo que invierta el orden de la lista.
+    Accion 4.4 (prim: Puntero a Nodo) ES
+        
+        Ambiente
+      
+            nodo = reg
+                nro:entero
+                sig:puntero a nodo
+            freg
+                    
+            p,q,res,prim2:puntero a nodo
+    
+        Proceso
+        //p:=prim;
+     Mientras (Prim <> Nil) hacer
+        p := prim;
+        Mientras (P <> NILL) hacer
+           res := p
+           p := *p.sig 
+        F-M
+        nuevo(q) // 1 2 3 4
+        q:=p;   // 
+        *res.sig:=NILL 
+        Disponer(p);
+                  
+        Si prim2 = NILL ENTONCES
+            *q.sig:=NILL
+            prim2:=q
+            resB:=q;
+        Sino
+            /*Mientras (*P.sig <> Nil) hacer
+               res := p
+               p := *p.sig 
+            F-M*/
+            /*
+            nuevo(q)
+            q:=p; */
+            q.sig:=NILL;
+            // 3
+            *resB.sig:=Q // 4 -> 3 -> 2 -> 1 -> NILL
+            resB:=q;
+        Fsi
+            
+     Fin-Mientras      
+FA

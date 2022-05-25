@@ -1,0 +1,130 @@
+archivos indexados 2.3.2
+
+La empresa CISCO dispone de un fichero secuencial con datos de sus empleados, ordenado por número de sucursal, y categoría, con los siguientes datos:
+
+EMPLEADOS Ordenado por Nro_Sucursal, Categoria
+Nro_Sucursal Categoria (A,B,C) Nombre_Empleado Cod_Curso Tecnico (si,no)
+
+Y un fichero con datos de cursos, indexado por código de curso:
+
+CURSO Indexado por Cod_Curso
+Cod_Curso Nombre Fecha Cant_Horas
+
+Emitir un listado informando:
+
+1*Para cada empleado: sucursal, categoría, nombre del empleado y nombre del curso que debe realizar.
+
+2*Por sucursal, categoría y toda la empresa:
+	Total empleados técnicos
+	Total empleados no técnicos
+	Total empleados
+
+Accion 2.3.2 es
+	
+	Ambiente
+	
+	f_empleados=registro
+		Nro_Sucursal 
+		Categoria (A,B,C) 
+		Nombre_Empleado 
+		Cod_Curso 
+		Tecnico (si,no)
+	finreg
+
+	f_curso=registro
+		Cod_Curso 
+		Nombre 
+		Fecha 
+		Cant_Horas
+	finreg
+
+	EMPLEADOS:archivo de f_empleados ordenado por Nro_Sucursal y Categoria
+	reg_empleados:f_empleados
+
+	CURSO:archivo de f_curso indexado por Cod_Curso
+	reg_curso:f_curso
+
+	tot_empleados_tecnicos
+	tot_empleados_notecnicos
+	tot_empleados
+	tot_empleados_suc
+	tot_empleados_notecnicos_suc
+	tot_empleados_tecnicos_suc
+	tot_empleados_tecnicos_emp
+	tot_empleados_notecnicos_emp
+	tot_empleados_emp
+	
+	res_sucursal
+	res_categoria
+
+	subaccion cortecategoria es
+		esc("SUCURSAL:",res_sucursal)
+		esc("CATEGORIA DE EMPLEADOS:",res_categoria)
+		esc("CANTIDAD EMPLEADOS TECNICOS:",tot_empleados_tecnicos)
+		esc("CANTIDAD EMPLEADOS NO TECNICOS:",tot_empleados_notecnicos)
+		esc("CANTIDAD TOTAL DE EMPLEADOS DE ESTA CATEGORIA:",tot_empleados)
+		tot_empleados_tecnicos_suc:=tot_empleados_tecnicos_suc+tot_empleados_tecnicos
+		tot_empleados_notecnicos_suc:=tot_empleados_notecnicos_suc+tot_empleados_notecnicos
+		tot_empleados_suc:=tot_empleados_suc+tot_empleados
+		res_categoria:=reg_empleados.Categoria
+		tot_empleados_tecnicos,tot_empleados_notecnicos,tot_empleados:=0
+	finsubaccion
+
+	subaccion cortesucursal es
+		cortecategoria
+		esc("SUCURSAL:",res_sucursal)
+		esc("CANTIDAD EMPLEADOS TECNICOS:",tot_empleados_tecnicos_suc)
+		esc("CANTIDAD EMPLEADOS NO TECNICOS:",tot_empleados_notecnicos_suc)
+		esc("CANTIDAD TOTAL DE EMPLEADOS EN ESTA SUCURSAL:",tot_empleados_suc)
+		tot_empleados_tecnicos_emp:=tot_empleados_tecnicos_emp+tot_empleados_tecnicos_suc
+		tot_empleados_notecnicos_emp:=tot_empleados_notecnicos_emp+tot_empleados_notecnicos_suc
+		tot_empleados_emp:=tot_empleados_emp+tot_empleados_suc
+		res_sucursal:=reg_empleados.Nro_Sucursal
+		tot_empleados_tecnicos_suc,tot_empleados_notecnicos_suc,tot_empleados_suc:=0
+	finsubaccion
+
+Proceso
+
+Abrir e/(EMPLEADOS)
+Abrir e/(CURSO)
+Leer(EMPLEADOS,reg_empleados)
+
+res_sucursal:=reg_empleados.Nro_Sucursal
+res_categoria:=reg_empleados.Categoria
+
+Mientras NFDA(EMPLEADOS) hacer
+	Si res_sucursal <> reg_empleados.Nro_Sucursal entonces
+		cortesucursal
+	sino	
+		Si res_categoria <> reg_empleados.Categoria entonces
+			cortecategoria
+		finsi
+	finsi
+
+	reg_curso.Cod_Curso:=reg_empleados.Cod_Curso
+	Leer(CURSO,reg_curso)
+
+	esc("Sucursal---Categoría---Nombre del empleado---Curso a realizar")
+	esc(reg_empleados.Nro_Sucursal,"---",reg_empleados.Categoria,"---",reg_empleados.Nombre_Empleado,"---",reg_curso.Nombre)
+
+	Si reg_empleados.Tecnico="SI" entonces
+		tot_empleados_tecnicos:=tot_empleados_tecnicos+1
+	Sino
+		tot_empleados_notecnicos:=tot_empleados_notecnicos+1
+	finsi
+
+	tot_empleados:=tot_empleados+1
+
+finmientras
+
+cortesucursal
+
+esc("LA EMPRESA CISCO")
+esc("CANTIDAD EMPLEADOS TECNICOS:",tot_empleados_tecnicos_emp)
+esc("CANTIDAD EMPLEADOS NO TECNICOS:",tot_empleados_notecnicos_emp)
+esc("CANTIDAD TOTAL DE EMPLEADOS EN LA EMPRESA:",tot_empleados_emp)
+
+Cerrar(EMPLEADOS)
+Cerrar(CURSO)
+
+finaccion

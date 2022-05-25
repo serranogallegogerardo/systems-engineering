@@ -1,0 +1,65 @@
+Se lleva a cabo una encuesta a fin de anticipar los posibles porcentajes de votos que obtendrán cada uno de los 4 partidos políticos de mayor peso en las elecciones. Los datos solicitados a los encuestados son: partido al que Algoritmos y Estructuras de Datos 2019 votara, edad, sexo y partido al que votó en las elecciones anteriores. Las respuestas se tabulan de acuerdo a los siguientes criterios:
+
+Partidos: P1, P2, P3, P4, Otro, En Blanco, Indeciso
+Edad: 18-25, 26-35, 36-45, 46-55, 56-65, +65
+Sexo: Femenino, Masculino
+Diseñe un algoritmo que, utilizando un arreglo de 4 dimensiones (partido al que votara, edad, sexo , partido al que votó), permita responder a las siguientes consultas:
+
+Cantidad de personas de cierta edad que votarán a un Partido dado.
+Cantidad de personas de un sexo dado que votarán a un determinado Partido.
+Cantidad de personas de cierta edad que votaron a un determinado Partido y actualmente votarán a otro Partido dado.
+Cantidad de personas de un sexo dado que votaron a un determinado Partido y actualmente votarán a otro Partido dado.
+
+ACCION 3.31 ES 
+AMBIENTE
+    encuesta: arreglo de [1..8, 1..7, 1..3, 1..8] de enteros
+    FUNCION Partido(TipoP:entero):entero 
+        SEGUN TipoP HACER
+            = 'P1': Partido:= 1
+            = 'P2': Partido:= 2
+            = 'P4': Partido:= 3
+            = 'Otro': Partido:= 4
+            = 'En Blanco': Partido:= 5
+            = 'Indeciso': Partido:= 6
+        FS 
+    FF 
+
+PROCESO 
+    //carga 
+    PARA i:= 1 HASTA 7 HACER
+        PARA j:= 1 HASTA 6 HACER
+            PARA k:= 1 HASTA 2 HACER 
+                PARA l:= 1 HASTA 7 HACER 
+                    Esc('ingrese a que partido votara')
+                    Leer(TipoP)
+                    PartidoV:=Partido(TipoP)
+                    Esc('Ingrese su edad')
+                    Leer(TipoE)
+                    SEGUN TipoE HACER
+                        <=25: Edad:= 1
+                        <=35: Edad:= 2
+                        <=45: Edad:= 3
+                        <=55: Edad:= 4
+                        <=65: Edad:= 5
+                        >65: Edad:= 6
+                    FS 
+                    eSC('Ingrese su sexo')
+                    Leer(TipoS)
+                    SEGUN TipoS HACER 
+                        = 'Femenino': sexo:= 1
+                        = 'Masculino': sexo:= 2
+                    FS                   
+                    Esc('Ingrese al partido que voto el año anterior')
+                    Leer(TipoPA) 
+                    PartidoA:=Partido(TipoPA)
+
+                    encuesta[PartidoV,Edad,sexo,PartidoA]:= encuesta[PartidoV,Edad,sexo,PartidoA] + 1
+                    encuesta[8,Edad,sexo,PartidoA]:= encuesta[PartidoV,Edad,sexo,PartidoA] + 1
+                    encuesta[PartidoV,7,sexo,PartidoA]:= encuesta[PartidoV,Edad,sexo,PartidoA] + 1
+                    encuesta[PartidoV,Edad,3,PartidoA]:= encuesta[PartidoV,Edad,sexo,PartidoA] + 1
+                    encuesta[PartidoV,Edad,sexo,8]:= encuesta[PartidoV,Edad,sexo,PartidoA] + 1
+                FP 
+            FP
+        FP 
+    FP
+FIn_ACCION 

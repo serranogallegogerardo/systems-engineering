@@ -1,0 +1,134 @@
+Ejercicio 1)    
+La Universidad Tecnológica Nacional contiene información de los alumnos almacenada en una secuencia de caracteres. 
+    Estos datos son código de carrera, nombre y apellido del alumno,
+año que cursa actualmente, de la siguiente forma: 
+1GuillermoFernandez|4#3MicaelaLopez|1#3CarlosGomez|5#.....*
+ Además se cuenta con un arreglo de 10 posiciones cuyo contenido es el nombre de cada carrera (alfanumérico de 40). 
+Se pide:
+
+a. Generar como salida una lista con los alumnos (guardar como máximo 40 caracteres) 
+    y la carrera a cual pertenece, ordenada por nombre de carrera.
+        
+b. Emitir un listado de los alumnos que se encuentran en quinto año.
+        
+Al finalizar mostrar por pantalla la cantidad de alumnos por carrera.
+
+Acción parcial(ncarreras:arreglo [1..10] de AN(40)) ES
+ AMBIENTE
+        
+     alum: Secuencia de caracter
+     v:caracter
+   
+     nodo = reg 
+         carrera:AN(40)
+         nalum:arreglo [1..40] de caracter
+         sig:puntero a nodo
+     fr
+             
+     prim,p,res:puntero
+     
+     i,j:entero    
+         
+     Procedimiento tratarcarrera(v:caracter)
+     
+         Segun v Hacer
+           
+             = '1':
+                 *p.carrera:=ncarreras[1]
+             = '2':
+                 *p.carrera:=ncarreras[2]
+             = '3':
+                 *p.carrera:=ncarreras[3]
+             = '4':
+                 *p.carrera:=ncarreras[4]
+             = '5':
+                 *p.carrera:=ncarreras[5]
+                     
+             = '6':
+                 *p.carrera:=ncarreras[6]
+             = '7':
+                 *p.carrera:=ncarreras[7]
+             = '8':
+                 *p.carrera:=ncarreras[8]
+             = '9':
+                 *p.carrera:=ncarreras[9]
+             = '10':
+                 *p.carrera:=ncarreras[10]
+
+         Fs
+     
+     FF
+      
+ PROCESO
+                     
+     prim:=NIL
+     ARR(alumn)
+     AVZ(alumn,v)
+             
+     Mientras NFDS(alum) Hacer
+         
+         Mientras v <> '#' Hacer
+         nuevo(p) // nuevo nodo, nuevo alumno
+         *p.sig:=NIL
+             
+         tratarcarrera(v) // le paso la carrera al nodo
+         
+         AVZ(alumn,v)
+             
+         Mientras v <> '|' Hacer
+             
+             *p.nalum[i]:=v
+             i:=i+1
+             AVZ(alumn,v)
+                 
+         Fm
+         
+         AVZ(alumn,v) // avanzo '|'
+                 
+         i:=1
+         Si v = '5' Entonces
+             Para i:=1 hasta 40 hacer
+                 esc("ALUMNO DE 5to")
+                 esc(*p.nalum[i])
+                 esc("")
+             fp
+         Fsi
+         
+         AVZ(alumn,v)
+                 
+         Fm
+                 
+         Mientras v = '#' Hacer
+           
+             AVZ(alumn,v)
+                 
+         FM 
+         
+         // resuelvo consigna "a"
+                 
+         res:=p
+             
+         Si prim = NIL Entonces
+             
+             prim:=p 
+             
+         Sino 
+             
+             Si *res.carrera < *p.carrera Entonces // 1 < 2 
+                
+                  *res.sig:=p
+             Sino
+
+                 prim:=p
+                 p:=res
+                 prim:=res
+                     
+             Fsi
+             
+         Fsi
+             
+     Fm
+             
+     CERR(alumn)
+         
+Fin_acción

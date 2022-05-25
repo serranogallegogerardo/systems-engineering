@@ -1,0 +1,90 @@
+ACCION 2.2.21 ES
+AMBIENTE
+    F_Clave= REGISTRO
+        C_Usuario: AN(15)
+        C_Amigo: AN(15)
+    FR
+    Amigos= REGISTRO
+        clave: F_Clave
+        F_Amistad: FECHA
+        Mns_Muro: AN(60)
+    FR
+    Notificaciones= REGISTRO
+        claven: F_Clave
+        Cod_Mov: ('A', 'B', 'C')
+        F_Amistad: FECHA
+        Mns_Muro: AN(60)
+    FR
+    FECHA = REGISTRO    
+    dia : N(2)
+    mes: N(2)
+    año: N(4)
+FR
+    Amigos, Amigos_sal: archivo de Amigos ordenado por clave
+    ramigos, ramigos_sal: Amigos
+    Not: archivo de Notificaciones ordenado por claven 
+    rnot: Notificaciones
+
+    Subaccion Leer_Not ES
+        Leer(Not,rnot)
+        SI FDA(Not) ENTONCES
+            rnot.claven:= HV
+        FS
+    FSUB
+
+    Subaccion Leer_Amigos ES
+        Leer(Amigos, ramigos)
+        SI FDA(Amigos) ENTONCES
+            ramigos.clave:= HV
+        FS
+    FSUB
+
+    Subaccion Ag_Amigo ES
+        SI rnot.Cod_Mov := 'A' ENTONCES
+            ramigos_sal.clave:= rnot.claven
+            ramigos_sal.F_Amistad:= rnot.F_Amistad
+            Escribir(Amigos_sal,ramigos_sal)
+        FS
+    FSUB
+
+    Subaccion Modf_Amigo ES
+        SI rnot.Cod_Mov := 'M' ENTONCES
+            ramigos_sal.Mns_Muro:= rnot.Mns_Muro
+            Escribir(Amigos_sal,ramigos_sal)
+        FS
+    FSUB
+
+PROCESO
+    Abrir E/ (Amigos); Abrir E/ (Not)
+    Abrir /S (Amigos_sal)
+    Leer_Amigos
+    Leer_Not
+    MIENTRAS (ramigos.clave <> HV) o (rnot.claven <> HV) HACER
+        SI (r.Amigos.clave < rnot.claven) ENTONCES
+            ramigos_sal := ramigos
+            Escribir(Amigos_sal, ramigos_sal)
+            Leer_Amigos
+        FS
+        SI (r.Amigos.clave = rnot.claven) ENTONCES
+            SEGUN (rnot.Cod_Mov) HACER
+                'A': Esc('Error mov de alta invalido')
+                    ramigos_sal:= ramigos
+                    Escribir(Amigos_sal, ramigos_sal)
+                'M': Modf_Amigo
+            F_Segun
+            Leer_Amigos
+            Leer_Not
+        FS
+        SI (r.Amigos.clave > rnot.claven) ENTONCES
+            SEGUN (rnot.Cod_Mov) HACER
+                'A': Ag_Amigo
+                'B': Esc('Error mov de baja invalido')
+                'M': Esc('Error mov de Modificacion invalido')
+            F_Segun
+            Leer_Not
+        FS
+    F_Mientras
+    Cerrar(Amigos)
+    Cerrar(Amigos_sal)
+    Cerrar(Not)
+F_Accion

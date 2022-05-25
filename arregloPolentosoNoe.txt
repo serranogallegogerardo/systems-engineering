@@ -1,0 +1,59 @@
+Dado un archivo secuencial con informacion de pagos de cuotas de los socios de un club (200 en total) durante 2019, con el siguiente formato de registro:
+    NroSocio N(4)
+    MesCuota N(2)
+    MontoPagado  N(5,2)
+
+Informar:
+Socios que están al día (tienen todas las cuotas pagadas).
+El mes que menos se recaudó y cuántos socios faltaron abonar su cuota ese mes.
+Recaudación total. 
+
+ACCION repaso ES 
+    AMBIENTE
+        socios= REGISTRO 
+            NroSocio N(4)
+            MesCuota N(2)
+            MontoPagado  N(5,2)
+        FR 
+        A_socios: archivo de socios 
+        s: socios
+        arr: arreglo de [1..201, 1..13] de reales 
+        i,j cantnp, nopago, posm: enteros
+        menor: real
+    PROCESO
+    //inicializamos
+        PARA i:= 1 HASTA 201 HACER 
+            PARA j:= 1 HASTA 13 HACER 
+                arr[i,j]:= 0 
+            FP 
+        FP 
+    //cargamos
+        MIENTRAS NFA(A_Socios) HACER
+            arr[s.NroSocio, s.MesCuota]:= s.MontoPagado
+            aar[201, s.MesCuota]:= arr[201, s.MesCuota] + arr[s.NroSocio, s.MesCuota]
+            arr[s.NroSocio, 13]:= arr[s.NroSocio, 13] + arr[s.NroSocio, s.MesCuota]
+            arr[201,13]:= arr[201,13]+ arr[s.NroSocio, s.MesCuota]
+            Leer(A_socios, s)
+        FM
+    //informamos 
+        PARA i:= 1 HASTA 200 HACER
+            Menor:= HV
+            SI (arr[i,posm] = 0) ENTONCES
+                cantnp:= cantnp + 1
+            PARA j:=1 HASTA 12 HACER 
+                SI (arr[i,j] <> 0) ENTONCES
+                    nopago:= nopago + 1
+                FSI 
+                SI (nopago = 12) ENTONCES
+                    Esc('El socio numero ', i, 'tiene todas las cuotas del año pagas')
+                FSI
+                SI (arr[201,j] > menor) ENTONCES
+                    menor:= arr[201,j]
+                    posm:= j 
+                FSI 
+            FP
+            Esc('El mes q menos se recaudo fue ', posm) 
+        FP
+        Esc('La cantidad de socios q no abonaron en el mes q menos se recaudo fue ', cantnp)
+        Esc('La recaudacion total fue ' arr[201,13])
+Fin_Accion

@@ -1,0 +1,57 @@
+ACCION 2.3.1.b ES
+AMBIENTE
+
+    FECHA = REGISTRO
+        año: N(4)
+        mes: (1..12)
+        dia: (1..31)
+    FR
+
+    facturas = REGISTRO
+        Nro_Cliente: N(4)
+        Nro_Factura:_N(6)
+        FechaImporte: FECHA
+        Fecha: FECHA
+        Importe: N(6)
+    FR
+    
+    clientes = REGISTRO
+        Nro_Cliente: N(4)
+        Nombre: AN(20)
+        DNI: N(8)
+        CUIT: N(11)
+        Dom: AN(20)
+    FR
+
+    fact: archivo de facturas ordenado por Nro_Cliente, Nro_Factura
+    r_fact: facturas
+    Clien: archivo de clientes indexado por Nro_Cliente 
+    r_clien: clientes
+
+
+
+PROCESO
+    Abrir /E (fact) Abrir /E(Clien)
+    Leer(fact, r_fact)
+    Escribir("Nro. Cliente | Nombre Cliente | Total facturado. | Cantidad de facturas");
+    MIENTRAS NFA(fact) HACER
+        res_Nro_Cliente:= r_fact.Nro_Cliente
+        r_clien.Nro_Cliente:=r_fact.Nro_Cliente
+        Leer(Clien, r_clien)
+        SI EXISTE ENTONCES
+            Total_Facturas:=0
+            Importe_Total:= 0 
+            MIENTRAS (r_fact.Nro_Cliente = res_Nro_Cliente) HACER 
+                Total_Facturas:= Total_Facturas + 1
+                Importe_Total:= Importe_Total + r_fact.Importe
+                Leer(fact, r_fact)
+            FinMientras
+            Esc(res_Nro_Cliente ! r_clien.Nombre ! Total_Facturas ! Importe_Total)
+        SINO
+            Esc('Error, datos del cliente no encontrados')
+            Leer(fact, r_fact)
+        FS
+    FinMientras
+    Cerrar(arch_Fact)
+    Cerrar(arch_Clientes)
+FinAccion

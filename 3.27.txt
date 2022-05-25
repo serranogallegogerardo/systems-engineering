@@ -1,0 +1,52 @@
+Se desea efectuar una estadística de ventas. Se cuenta para ello con una secuencia de las facturas emitidas, las cuales son identificadas por un Número; dicha secuencia contiene información relativa al cliente: su Número y Zona a la cual pertenece, como así también el Tipo de mercadería entregada, la Cantidad de unidades, el total gravado, el total exento de IVA y el valor del IVA. Construya un algoritmo que emita por zona, y dentro de la zona por tipo de mercadería el total de unidades vendidas, el total gravado, el total exento y el total de IVA, y además un total general con la misma información. Hay 9 zonas y 4 tipos de mercadería.
+
+ACCION 3.27 ES 
+    AMBIENTE
+        F_Emi = REGISTRO
+            Nro_Cliente:= N(5)
+            zona:= N(1)
+            T_Mercad:= N(1)
+            C_Unidades:= N(5)
+            T_Gravado:= N(5)
+            T_Exento:= N(5)
+            V_iva:= N(2)
+        FR
+        A_Fac:= archivo de F_Emi ordenado por Nro_Cliente
+        f:= F_Emi
+
+        r_arr = REGISTRO
+            T_UnidadVen:= N(5)
+            T_Gravado:= N(5)
+            T_Exento:= N(5)
+            T_Iva:= N(5)
+        FR
+        arr: arreglo de [1..10, 1..5] de r_arr
+        i,j: entero
+    PROCESO
+        Abrir E/ (A_Fac)
+        Leer( A_Fac, f)
+        //inicializamos
+        PARA i:= 1 HASTA 10 HACER
+            PARA i= 1 HASTA 5 HACER
+                arr[i,j]:= 0
+            FP 
+        FP
+        //cargamos  
+        MIENTRAS NFA(A_Fac) HACER 
+            arr[f.zona, f.T_Mercad].T_UnidadVen:= arr[f.zona, f.T_Mercad].T_UnidadVen + f.C_Unidades 
+            arr[f.zona, f.T_Mercad].T_Gravado:= arr[f.zona, f.T_Mercad].T_Gravado + f.T_Gravado
+            arr[f.zona, f.T_Mercad].T_Exento:= arr[f.zona, f.T_Mercad].T_Exento + f.T_Exento 
+            //Al referirse al valor del iva, nose si en el archivo en campo: V_Iva, se guardaria cuanto es porcentaje el porcentaje de Iva sobre el total. Yo lo tome como q ahi se encuentra el valor numerico q se tendria q pagar de iva en la factura//
+            arr[f.zona, f.T_Mercad].T_Iva:= arr[f.zona, f.T_Mercad].T_Iva + f.V_Iva 
+            Arr[10,5]:= arr[10,5] + arr[f.zona, f.T_Mercad]
+            Leer(A_Fac, f)
+        FM 
+        //informamos
+        PARA i:= 1 HASTA 9 HACER
+            PARA i:= 1 HASTA 4 HACER 
+                Esc('En la zona ', i, ', del tipo de mercaderia ', j, ', El Total de unidades vendidas es ', arr[i,j].T_UnidadVen, ', el total gravado es ', arr[i,j].T_Gravado, ', El total de exento ', arr[i,j].T_Exento, ' y el total de iva ', arr[i,j],T_Iva)
+            FP
+        FP 
+        Esc('El total general: de unidades vendidas ', arr[10,5].T_UnidadVen, ', de gravado ', arr[10,5].T_Gravado, ', de exento ', arr[i,j].T_Exento, 'y el total de iva ', arr[10,5].T_Iva)
+        Cerrar_Archivos
+    FIn_ACCION

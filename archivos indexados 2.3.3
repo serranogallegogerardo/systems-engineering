@@ -1,0 +1,60 @@
+archivos indexados 2.3.3
+
+Los automovilistas pasan por el peaje del Puente Gral. Belgrano y deben pagar según su categoría, pero además, si ya han pasado previamente dentro del día tienen pase libre.
+Teniendo en cuenta el archivo siguiente, construya el algoritmo que realice lo que corresponda: genere el comprobante, indicando el importe a pagar o emita un mensaje indicando que ya pasó anteriormente. Además indique cuales deberían ser los datos de entrada.
+
+PEAJE Indexado por Patente, Fecha
+
+Patente XXX-NNN Fecha N(8) Ult_Hora N(4) Costo XXX,XX
+Costo por categoria
+
+Categoria	Costo
+	1		1,20
+	2		2,50
+	3		4,00
+	4		5,00
+
+Accion 2.3.3 es
+	Ambiente
+	f_peaje=registro
+		Patente 
+		Fecha 
+		Ult_Hora 
+		Costo
+	finreg
+
+	PEAJE:archivo de f_peaje indexado por Patente, Fecha
+	reg_peaje:f_peaje
+
+	fecha_actual:fecha
+	patente_actual:
+
+Proceso
+
+abrir e/(PEAJE)
+
+esc("Ingrese la fecha actual")
+leer(fecha_actual)
+esc("Ingrese la patente del vehiculo actual")
+Leer(patente_actual)
+Leer(categoria_vehiculo)
+
+reg_peaje.Patente:=patente_actual
+Leer(PEAJE,reg_peaje)
+
+Si fecha_actual = reg_peaje.Fecha entonces
+	esc("Usted ya paso anteriormente, disfrute del viaje")
+sino
+	esc("Patente:",reg_peaje.Patente)
+	esc("Fecha actual",fecha_actual)
+	esc("Categoria del vehiculo",categoria_vehiculo)
+	segun categoria_vehiculo hacer
+		1:esc("Total a pagar:$1,20")
+		2:esc("Total a pagar:$2,50")
+		3:esc("Total a pagar:$4,00")
+		4:esc("Total a pagar:$5,00")
+	finsegun
+finsi
+
+
+finaccion

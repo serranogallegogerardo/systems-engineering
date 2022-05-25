@@ -1,0 +1,128 @@
+archivos indexados 2.3.5
+
+Para poder comprar dólares en una entidad bancaria al precio oficial ($9,40), el beneficiario, debe tener un ingreso promedio en los últimos 12 meses equivalente a dos veces el sueldo mínimo vital y móvil (el cual en la actualidad es de $5000 por mes). Luego, con el sueldo del mes actual, solo se permite comprar por un importe no superior al 30% del mismo.
+Por ej.: si una persona tiene un sueldo de $10.000, desde septiembre del año pasado, al dia de hoy esa persona cumple la condición para comprar y puede comprar dólares por un monto máximo de $3.000 (equivalente a U$S 319).
+Para ello se cuenta con dos archivos indexados:
+
+CABECERA_SUELDO Indexado por DNI, Periodo, Nro_Recibo
+
+DNI N(8)Periodo N(6)Nro_Recibo N(15)ApyNom AN(50)Empresa AN(50)
+El periodo está representado por 6 caracteres numéricos dispuestos de forma de año/mes (aaaamm). El número de recibo (Nro_Recibo) es único. Una persona puede tener varios recibos de sueldo. La clave de este archivo es DNI, Periodo y Nro_Recibo.
+
+RECIBO Indexado por Nro_Recibo
+
+Nro_Recibo N(15)Concepto N(8)Tipo (0..2)Monto N(15,2)
+El campo tipo puede contener los siguientes valores: 0 - Sueldo básico, 1 – Otros Ingresos, 2 – Descuentos. Para calcular el sueldo mínimo se suman el sueldo (tipo 0), y los otros ingresos (tipo 1), NO se restan los descuentos. La clave es Nro_Recibo.
+
+Dado el escenario descripto, se pide escribir dos algoritmos:
+
+Procesar peticiones de compra, de acuerdo a un archivo de entrada de peticiones, evaluando si es posible realizar la operación o no. Si no es posible, indicar cual es el motivo: 1 – No tiene el ingreso promedio suficiente, o 2 – Pide más del 30 % de su sueldo actual.
+
+PETICIONES
+
+DNI N(8)Cant_Soli N(15,2)
+El resultado de la evaluación se debe grabar en un nuevo archivo de salida con el siguiente formato:
+
+SALIDA
+
+DNI N(8)Cant_Soli N(15,2)Pudo (si,no)Error 1..2
+
+
+accion 2.3.5 es
+	
+	Ambiente
+
+	f_CABECERA_SUELDO=registro
+		DNI N(8)
+		Periodo N(6)
+		Nro_Recibo N(15)
+		ApyNom AN(50)
+		Empresa AN(50)
+	finreg
+
+	f_RECIBO=registro
+		Nro_Recibo N(15)
+		Concepto N(8)
+		Tipo (0..2)
+		Monto N(15,2)
+	finreg
+
+	f_PETICIONES=registro
+		DNI N(8)
+		Cant_Soli N(15,2)
+	finreg
+
+	f_SALIDA=registro
+		DNI N(8)
+		Cant_Soli N(15,2)
+		Pudo (si,no)
+		Error 1..2
+	finreg
+
+	CABECERA_SUELDO:archivo de f_CABECERA_SUELDO indexado por DNI, Periodo, Nro_Recibo
+	reg_SUELDO:f_CABECERA_SUELDO
+
+	RECIBO:archivo de f_RECIBO indexado por Nro_Recibo
+	reg_RECIBO:f_RECIBO
+
+	PETICIONES:archivo de f_PETICIONES ordenado por DNI
+	reg_peticiones:f_PETICIONES
+
+	SALIDA:archivo de f_SALIDA ordenado por DNI
+	reg_salida:f_SALIDA
+	
+	Sueldo
+	res_DNI
+	monto_max
+
+Proceso
+
+abrir_archivos
+
+Mientras NFDA(PETICIONES) hacer
+
+	reg_salida.DNI:=reg_peticiones.DNI
+	reg_salida.Cant_Soli:=reg_peticiones.Cant_Soli
+
+	reg_SUELDO.DNI:=reg_peticiones.DNI
+	Leer(CABECERA_SUELDO,reg_SUELDO)
+
+	res_DNI:=reg_SUELDO.DNI
+	Sueldo:=0
+	Mientras res_DNI=reg_SUELDO.DNI hacer
+		
+		reg_RECIBO.Nro_Recibo:=reg_SUELDO.Nro_Recibo
+		leer(RECIBO,reg_RECIBO)
+
+		Si reg_RECIBO.Tipo=0 o reg_RECIBO.Tipo=1 entonces
+			Sueldo:=Sueldo+reg_RECIBO.Monto
+		finsi	
+
+		Leer(CABECERA_SUELDO,reg_SUELDO)
+
+	finmientras
+
+	Sueldo:=Sueldo/12
+
+	Si Sueldo > 10000 entonces
+		esc("el usuario esta habilitado para comprar dolares")
+		monto_max:=Sueldo*0.30
+		esc("Podra comprar dolares por un valor en pesos de hasta: ",monto_max)
+		Si monto_max >= reg_peticiones.Cant_Soli entonces
+			reg_salida.Pudo:="SI"
+			reg_salida.Error:="No hubo errores"
+		Sino
+			reg_salida.Pudo:="NO"
+			reg_salida.Error:="2"
+		finsi
+	sino
+		esc("el usuario no se encuentra habilitado para comprar dolares, el promedio de su sueldo durante los ultimos 12 meses no supera los 2 salarios minimos")
+		reg_salida.Pudo:="NO"
+		reg_salida.Error:="1"	
+	finsi	
+
+	esc(SALIDA,reg_salida)
+
+	Leer(PETICIONES,reg_peticiones)
+
+finmientras

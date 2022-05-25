@@ -1,0 +1,36 @@
+Para  las consignas siguientes, genere un algoritmo que permita solucionarla usando un arreglo de 100 números enteros:
+
+Almacenar 100 números.
+Localizar el número de mayor valor y el de menor valor, informar sus valores y sus posiciones.
+Contar y sumar todos los números pares.
+--------------
+ACCION 3.2 ES 
+AMBIENTE 
+    vector: arreglo de [1..100] enteros
+    i,c,ac,Menor,Mayor,PosMen,posMay: entero
+
+PROCESO
+    PARA i:=1 HASTA 100 HACER
+        Esc('Ingrese los 100 numeros:')
+        Leer(vector[i])
+    FP
+    Mayor:= LV
+    Menor:= HV
+    PARA i:=1 HASTA 100 HACER
+        SI vector[i]< Menor ENTONCES
+            Menor:= vector[i]
+            posMen:= i 
+        FSI 
+        SI vector[i]> Mayor ENTONCES
+            Mayor:= vector[i]
+            posMay:= i
+        FSI 
+        SI (vector[i] MOD 2 = 0) ENTONCES
+            c:= c+1
+            ac:= ac+1
+        FSI
+    FP 
+    Esc('El numero de mayor valor es ', Mayor, 'y su posicion es ', posMay)
+    ESC('El numero de menor valor es ', Menor, 'y su posicion es ', PosMen)
+    Esc('La cantidad de numeros pares es ', c, 'y su suma total es ', ac)
+Fin_ACCION

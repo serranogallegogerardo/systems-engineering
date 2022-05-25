@@ -1,0 +1,108 @@
+archivos indexados 2.3.4
+
+Crear un algoritmo que simule el trabajo de una caja de supermercado. El algoritmo debe permitir imprimir el ticket de compra y realizar el descuento de stock del producto. Al generar el comprobante del ticket debe guardar los datos en los archivos TICKET y DETALLE_TICKET (el cliente es: "consumidor final" y el NroTicket se genera automáticamente, mediante la función OBTENER_TICKET). Archivos:
+
+PRODUCTOS Indexado por Cod_Prod
+Cod_ProdNombreStockPrecio
+
+TICKET Indexado por Nro_Ticket
+Nro_TicketFechaCliente
+
+DETALLE_TICKET Indexado por Nro_Ticket
+Nro_TicketNro_LineaCod_ProdCantidad
+
+
+accion 2.3.4 es
+
+	Ambiente
+
+	f_productos=registro 
+		Cod_Prod
+		Nombre
+		Stock
+		Precio
+	finreg
+
+	f_ticket=registro
+		Nro_Ticket
+		Fecha
+		Cliente
+	finreg
+
+	f_detalleticket=registro
+		Nro_Ticket
+		Nro_Linea
+		Cod_Prod
+		Cantidad
+	finreg
+
+	PRODUCTOS:archivo de f_productos indexado por Cod_Prod
+	reg_productos:f_productos
+	
+	c_prod
+	cantidad
+	total
+	respuesta
+	fecha_actual
+	
+	TICKET:archivo de f_ticket indexado por Nro_Ticket
+	reg_ticket:f_ticket
+
+	DETALLE_TICKET:archivo de f_detalleticket indexado por Nro_Ticket
+	Reg_detalle:f_detalleticket
+
+Proceso
+
+abrir e/s(PRODUCTOS)
+abrir /s(TICKET)
+abrir /s(DETALLE_TICKET)
+leer(fecha_actual)
+
+esc("EMPRESA:SUPERMERCADOS BARATO----------CUIT:25-45785963-5----------FECHA:",fecha_actual)
+esc("CLIENTE:CONSUMIDOR FINAL")
+esc("PRODUCTOS----------CANTIDAD----------SUBTOTALES)
+
+respuesta:="SI"
+total:=0
+Mientras respuesta:="SI" hacer
+	
+	esc("ingrese el codigo de producto actual")
+	leer(c_prod)
+	esc("ingrese la cantidad a llevar")
+	leer(cantidad)
+
+	reg_productos.Cod_Prod:=c_prod
+	leer(PRODUCTOS,reg_productos)
+
+	
+	reg_productos.Stock:=reg_productos.Stock-cantidad
+	esc(reg_productos,reg_productos)
+	
+	total:=total+reg_productos.Precio X cantidad
+	
+	esc(reg_productos.Nombre,cantidad,reg_productos.Precio X cantidad)	
+
+	OBTENER_TICKET(reg_ticket.Nro_Ticket)
+	reg_ticket.Fecha:=fecha_actual
+	reg_ticket.Cliente:="CONSUMIDOR FINAL"
+	esc(TICKET,reg_ticket)
+
+	Reg_detalle.Nro_Ticket:=reg_ticket.Nro_Ticket
+	esc("ingrese numero de linea")
+	leer(Reg_detalle.Nro_Linea)
+	Reg_detalle.Cod_Prod:=c_prod
+	Reg_detalle.Cantidad:=cantidad
+	esc(DETALLE_TICKET,Reg_detalle)
+
+	esc("Desea cargar mas articulos.SI/NO")
+	leer(respuesta)
+
+finmientras
+
+esc("-------------------TOTAL:",total)
+
+cerrar(PRODUCTOS)
+cerrar(TICKET)
+cerrar(DETALLE_TICKET)
+
+finaccion

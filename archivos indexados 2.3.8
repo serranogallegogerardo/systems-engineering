@@ -1,0 +1,89 @@
+archivos indexados 2.3.8
+
+Los alumnos que desarrollaban el proyecto UTNBook (ejercicio 2.23) han decidido modificar parte de la aplicación para que esta tenga mayor interacción con el usuario. Es así que decidieron eliminar el archivo de Notificaciones, provocando así que la inserción nuevos amigos, la eliminación de amistades y la escritura en los muros de otras personas esté a cargo del usuario.
+
+Con estas consideraciones trabajaron con el siguiente archivo:
+
+AMIGOS Indexado por Cod_Usuario y Cod_Amigo
+Cod_UsuarioCod_AmigoFecha_AmistadMensaje_Muro
+
+El proceso para agregar o eliminar amigos y escribir en los muros de estos es ahora el siguiente:
+El usuario, al iniciar la sesión, ingresa su Código de Usuario y el Código del amigo. Luego, puede seleccionar tres opciones distintas: Agregar Amigo; Eliminar Amigo y Escribir en el Muro.
+
+Si selecciona Agregar Amigo se realizan las acciones necesarias para incorporar esta nueva amistad al usuario, y en caso de no poder realizarse, se muestra un mensaje por pantalla explicando el motivo que imposibilita la amistad. (por ej. Cod_Usuario inexistente, Amistad entre Usuario y Amigo ya existente, etc.). En cambio, si selecciona Eliminar Amigo el algoritmo deberá eliminar la amistad en caso de existir, en caso contrario informar el error por pantalla.
+
+Por último, al seleccionar Escribir en el Muro el usuario debe ingresar el mensaje que desea escribir a su amigo y luego el algoritmo deberá registrar este mensaje. De ser necesario informar algún error que pueda ocurrir (por ej. Amistad entre el Usuario y Amigo inexistente, etc).
+
+Accion 2.3.8 es
+	
+	Ambiente
+
+	f_amigos=registro
+		Cod_Usuario
+		Cod_Amigo
+		Fecha_Amistad
+		Mensaje_Muro
+	finreg
+
+	AMIGOS:archivo de f_amigos indexado por Cod_Usuario y Cod_Amigo
+	reg_amigos:f_amigos
+
+	cod_mov:("A","B","M")
+	mensaje
+Proceso
+
+Abrir E/S (AMIGOS)
+
+Escribir (‘Por favor ingrese codigo de usuario y codigo de amigo a procesar y el código de movimiento (A: Agregar Amigo, B: Eliminar Amigo, M: Escribir en el Muro) Para finalizar ingrese cualquier otra letra.’) 
+
+Leer(cod_usuario, cod_amigo, cod_mov)
+
+MIENTRAS (cod_mov en valido) HACER
+	reg_amigos.Cod_Usuario := cod_usuario
+	reg_amigos.Cod_Amigo := cod_amigo
+	LEER (AMIGOS, reg_amigos)
+
+	SI no existe ENTONCES 
+		SI cod_mov = 'B' ENTONCES 
+			ESCRIBIR(‘Error baja no existe, el contacto no esta en su lista de amigos’)
+		SINO 
+			SI cod_mov = 'M' ENTONCES
+				ESCRIBIR(‘Error modificación no existe, el contacto no esta en su lista de amigos’)
+			SINO  
+				esc("ingrese el codigo de usuario")
+				LEER(reg_amigos.Cod_Usuario)
+				esc("inrgese el codigo de amigo")
+				LEER(reg_amigos.Cod_Amigo)
+				esc("ingrese la fecha actual")
+				LEER(reg_amigos.Fecha_Amistad)
+				esc("ingrese el mensaje que desea dejarle a su nuevo contacto")
+				LEER(reg_amigos.Mensaje_Muro)
+				ESCRIBIR(AMIGOS, reg_amigos)
+			FSI
+		FSI 
+	SINO 
+		SI cod_mov = 'A' ENTONCES
+			ESCRIBIR(‘Error clave existe, alta no es posible, el contacto ya existe en su lista de amigos’)
+		SINO 
+			SI cod_mov = 'M' ENTONCES 
+				esc("Por favor, ingrese el mensaje que desea dejarle a su amigo")
+				LEER(mensaje)
+				SI mensaje <> '' ENTONCES 
+					reg_amigos.Mensaje_Muro := mensaje
+				FSI
+			finsi	
+			RE-ESCRIBIR(AMIGOS, reg_amigos)
+		SINO   
+			BORRAR(AMIGOS, reg_amigos)
+		FSI
+	FSI
+
+	Escribir (‘Por favor ingrese codigo de usuario y codigo de amigo a procesar y el código de movimiento (A: Agregar Amigo, B: Eliminar Amigo, M: Escribir en el Muro) Para finalizar ingrese cualquier otra letra.’)
+
+	Leer(cod_usuario, cod_amigo, cod_mov)
+
+FIN MIENTRAS
+
+CERRAR(AMIGOS)
+
+finaccion

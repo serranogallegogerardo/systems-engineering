@@ -1,0 +1,41 @@
+ACCION hospital ES
+AMBIENTE
+    paciente: arreglo de [1..4, 1..7, 1..50] de entero
+    prom: arreglo de [1..7, 1..50] de N(2,2)
+    tempmenor, tempmayor, dia, lec, dia1, lec1, total:= entero
+
+PROCESO
+    
+
+    PARA I:=1 HASTA 7 HACER
+        PARA J:=1 HASTA 4 HACER
+            PARA Z:=1 HASTA 50 HACER 
+                m[i,j,z]:= 0
+            FP
+        FP
+    FP
+    tempmenor:= HV
+    tempmayor:= 1
+
+    PARA k:=1 hasta 50 HACER
+        PARA j:=1 hasta 7 HACER
+            PARA i:=1 hasta 4 HACER
+                SI tempmenor > paciente[i,j,k] entonces
+                    tempmenor:= paciente[i,j,k]
+                    dia:=J
+                    lec:=I 
+                FSI
+                SI tempmayor < paciente[i,j,k] entonces
+                    tempmayor:= paciente[i,j,k]
+                    dia1:=J
+                    lec1:=I 
+                FSI
+                total:= total + paciente[i,j,k]
+                FP
+            prom[j,k]:= total / 4
+        FP
+        Esc('La temperatura minima del paciente:', k,'es', tempmenor, 'el dia', dia, ' y numero de lectura',lec)
+        Esc('La temperatura maxima del paciente:', k,'es', tempmayor, 'el dia', dia1, ' y numero de lectura',lec1) 
+    FP
+FA
+            

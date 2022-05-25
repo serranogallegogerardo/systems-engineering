@@ -1,0 +1,131 @@
+archivos indexados 2.3.9
+
+Pepsico S.A.I.C. desea que Ud. realice el algoritmo para poner al corriente los saldos de sus clientes y el stock de la empresa. Para ello cuentan con:
+
+CLIENTES Indexado por ClienteID
+ClienteIDCliente_NombreCliente_CUITCliente_Saldo
+
+DETALLE_CLIENTES Indexado por Nro_Operacion
+Nro_OperacionFecha_OperacionClienteIDImporteFactura_Numero
+
+VENTAS Ordenado por Venta_Numero
+Venta_NumeroVenta_FechaFactura_NumeroProductoIDCantidad_VendidaClienteID
+
+PRODUCTOS Indexado por ProductoID
+ProductoIDStockProducto_DetalleCosto_Unitario
+
+Se debe actualizar el saldo del cliente y además agregar el detalle de la compra que figura en el archivo de Ventas al archivo Detalle_Clientes, por cada venta realizada se deberá descontar la cantidad vendida del stock.
+Por final del proceso se desea saber el total de productos vendidos, y un listado de los clientes con su saldo actualizado.
+
+Accion 2.3.9 es
+	
+	Ambiente
+
+	f_clientes=registro
+		ClienteID
+		Cliente_Nombre
+		Cliente_CUIT
+		Cliente_Saldo
+	finreg
+
+	f_detalles=registro
+		Nro_Operacion
+		Fecha_Operacion
+		ClienteID
+		Importe
+		Factura_Numero
+	finreg
+
+	f_ventas=registro
+		Venta_Numero
+		Venta_Fecha
+		Factura_Numero
+		ProductoID
+		Cantidad_Vendida
+		ClienteID
+	finreg
+
+	f_productos=registro
+		ProductoID
+		Stock
+		Producto_Detalle
+		Costo_Unitario
+	finreg
+
+	CLIENTES:archivo de f_clientes indexado por ClienteID
+	reg_clientes:f_clientes
+
+	DETALLE_CLIENTES:archivo de f_detalles indexado por Nro_Operacion
+	reg_detalles:f_detalles
+
+	VENTAS:archivo de f_ventas ordenado por Venta_Numero
+	reg_ventas:f_ventas
+
+	PRODUCTOS:archivo de f_productos indexado por ProductoID
+	reg_productos:f_productos
+
+	tot_productos
+
+Proceso
+abrir e/s(CLIENTES)
+abrir /s(DETALLE_CLIENTES)
+abrir e/(VENTAS)
+abrir e/s(PRODUCTOS)
+leer(VENTAS,reg_ventas)
+
+tot_productos:=0
+
+esc("ClienteID--------Cliente_Nombre--------Cliente_CUIT--------Cliente_Saldo")
+
+Mientras NFDA(VENTAS) hacer
+	
+	res_ClienteID:=reg_ventas.ClienteID
+	
+	reg_clientes.ClienteID:=reg_ventas.ClienteID
+	leer(CLIENTES,reg_clientes)
+
+	Mientras res_ClienteID = reg_ventas.ClienteID hacer
+		
+		reg_detalles.Nro_Operacion:=reg_ventas.Venta_Numero
+		reg_detalles.Fecha_Operacion:=reg_ventas.Venta_Fecha
+		reg_detalles.ClienteID:=reg_ventas.ClienteID
+		reg_detalles.Factura_Numero:=reg_ventas.Factura_Numero
+		reg_detalles.Importe:=0
+		res_factura:=reg_ventas.Factura_Numero
+
+		Mientras res_factura = reg_ventas.Factura_Numero hacer
+			
+			reg_productos.ProductoID:=reg_ventas.ProductoID
+			leer(PRODUCTOS,reg_productos)
+
+			tot_productos:=tot_productos+reg_ventas.Cantidad_Vendida
+			
+			reg_productos.stock:=reg_productos.stock-reg_ventas.Cantidad_Vendida
+			re-esc(PRODUCTOS,reg_productos)
+
+			reg_clientes.Cliente_Saldo:=reg_clientes.Cliente_Saldo-(reg_ventas.Cantidad_Vendida*reg_productos.Costo_Unitario)
+		
+			reg_detalles.Importe:=reg_detalles.Importe+(reg_ventas.Cantidad_Vendida*reg_productos.Costo_Unitario)
+			
+			leer(VENTAS,reg_ventas)
+		
+		finmientras	
+
+		Esc(DETALLE_CLIENTES,reg_detalles)
+
+	finmientras
+
+	re-esc(CLIENTES,reg_clientes)
+
+	esc(reg_clientes.ClienteID,"--------",reg_clientes.Cliente_Nombre,"--------",reg_clientes.Cliente_CUIT,"--------",reg_clientes.Cliente_Saldo)
+
+finmientras
+
+esc("La cantidad total de productos vendidos es de," tot_productos)
+
+Cerrar(DETALLE_CLIENTES)
+Cerrar(CLIENTES)
+Cerrar(VENTAS)
+Cerrar(PRODUCTOS)
+
+finaccion

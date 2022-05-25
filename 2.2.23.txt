@@ -1,0 +1,115 @@
+ACCION 2.2.23 ES
+    AMBIENTE
+        F_Clave = REGISTRO
+            Id_Casa: N(4)
+        FR
+        Cliente = REGISTRO
+            Clave: F_Clave
+            Fecha_Ult_Lectura: FECHA
+            Cant_Lecturas: N(5)
+            Prom_Lecturas: N(4,2)
+            Tipo_Consumidor: ('A', 'B', 'C')
+        FR
+        Mediciones = REGISTRO
+            Claven: F_Clave
+            Fecha_Medicion: FECHA
+            Consumo: N(6,2)
+        FR
+        FECHA = REGISTRO    
+            dia : N(1..31)
+            mes: N(1..12)
+            año: N(4)
+        FR
+
+        Cliente, Cliente_sal: archivo de Cliente ordenado por Clave
+        rcliente, rcliente_sal: Cliente
+        Med: archivo de Mediciones ordenado por Claven
+        rmed: Mediciones
+
+    Subaccion Leer_Med ES
+        Leer(Med,rmed)
+        SI FDA(Med) ENTONCES
+            rmed.claven:= HV
+        FS
+    FSUB
+
+    Subaccion Leer_Cliente ES
+        Leer(Cliente, rcliente)
+        SI FDA(Cliente) ENTONCES
+            rcliente.clave:= HV
+        FS
+    FSUB
+      
+    Subaccion Actualizar_Clientes ES
+        cantL:= 0
+        cantLA:= 0 
+        rcliente_sal.clave:= rmed.claven
+        rcliente_sal.Fecha_Ult_Lectura:= rmed.Fecha_Medicion
+
+        cantL:= rcliente.Cant_Lecturas
+        prom:= rcliente.Prom_Lecturas
+        cons:= rmed.Consumo
+
+        cantLN:= cantL + 1
+        rcliente_sal.Cant_Lecturas:= cantLN 
+        NPromedio:= ((prom*cantL)+ cons)/cantLN
+        rcliente_sal.Prom_Lecturas:= NPromedio
+
+        SEGUN rcliente.Tipo_Consumidor HACER
+            'A':  
+                SI rmed.Consumo > '20000' y rmed.Consumo < '40000' ENTONCES
+                    rcliente_sal.Tipo_Consumidor:= 'B'
+                SINO
+                    Si rmed.Consumo => '40000'  ENTONCES
+                        rcliente_sal.Tipo_Consumidor:= 'C'
+                    SINO 
+                        rcliente_sal.Tipo_Consumidor:= 'A'
+                    FS
+                FS
+            'B':
+                Si rmed.Consumo => '40000'  ENTONCES
+                    rcliente_sal.Tipo_Consumidor:= 'C'
+                SINO 
+                    rcliente_sal.Tipo_Consumidor:= 'B'
+                FS 
+            'C': rcliente_sal.Tipo_Consumidor:= 'C'               
+        F_Segun
+        Escribir(Cliente_sal, rcliente_sal)
+    FSUB
+
+    PROCESO
+        Abrir E/ (Cliente); Abrir E/ (Med)
+        Abrir /S (Cliente_sal)
+        Leer_Cliente
+        Leer_Med
+        MIENTRAS (rcliente.clave <> HV) o (rmed.claven <> HV) HACER
+            MIENTRAS (rmed.Fecha_Medicion.dia <= '31') y (rmed.Fecha_Medicion.mes <= '1') y (rmed.Fecha_Medicion.año <= '2015') HACER  
+                SI (rcliente.clave < rmed.claven) ENTONCES
+                    rcliente_sal := rclientes
+                    Escribir(Cliente_sal, rcliente_sal)
+                    Leer_Cliente
+                SINO
+                    SI (rcliente.clave = rmed.claven) ENTONCES 
+                        Actualizar_Clientes
+                        Leer_Cliente
+                        Leer_Med
+                    SINO
+                            rcliente_sal.clave:= rmed.claven
+                            rcliente_sal.Fecha_Ult_Lectura:= rmed.Fecha_Medicion
+                            rcliente_sal.Cant_Lecturas:= '1'
+                            rcliente_sal.Prom_Lecturas:=  rmed.Consumo
+                            SEGUN rmed.Consumo HACER
+                                <'20000':  rcliente_sal.Tipo_Consumidor:= 'A'
+                                > '20000' y < '40000':  rcliente_sal.Tipo_Consumidor:= 'B'
+                                >= '40000':  rcliente_sal.Tipo_Consumidor:= 'C'
+                            F_Segun
+                            Leer_Med
+                        FS
+                    FS
+                FS
+            F_Mientras
+        F_Mientras
+        Cerrar(Cliente)
+        Cerrar(Med)
+        Cerrar(Cliente_sal)
+FIN_ACCION

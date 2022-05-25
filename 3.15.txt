@@ -1,0 +1,26 @@
+Se precisa ordenar un arreglo de enteros de menor a mayor, eliminando los números repetidos
+
+ACCION 3.15 ES 
+    AMBIENTE
+        arr: arreglo de [1..n] de enteros
+
+    PROCESO
+        //como ya viene cargado, solo tenemos q ordenarlo, en este caso ocuparemos seleccion directa
+        PARA i:= 1 HASTA n HACER 
+            x:= arr[i] 
+            min:= i 
+            PARA j:= i+1 HASTA n HACER  
+                SI (x > arr[j]) ENTONCES
+                    min:= j 
+                    x:= arr[j]
+                FSI 
+            FP 
+            a[min]:= a[i]
+            a[i]:=x
+            //borramos si hay repetidos(la verdad q nunca tuve q borrar algo de un arreglo, nose si se puede)
+            SI (arr[i] = arr[j]) ENTONCES
+                Borrar(arr[j])
+            FSI 
+            //JAMAS vi q se borre algo en un arreglo, nose si esta bien
+        FP
+    Fin_ACCION

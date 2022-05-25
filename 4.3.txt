@@ -1,0 +1,41 @@
+Accion 4.3 (Prim: Puntero a Nodo) ES
+    
+    Ambiente
+  
+        P: Puntero a nodo
+                
+        nodo = reg
+            
+            nro:entero
+            sig:Puntero a nodo
+        
+        freg
+                
+        acumP,acumI:entero
+
+      Proceso
+            
+            acumP:=0;acumI:=0
+ 
+            // Recorrer
+            P:=Prim
+            Mientras (P<>NILL) Hacer // asterisco p/ acceder a dato de puntero
+              
+                SI (*p.nro MOD 2 = 0) Entonces
+                    acumP:=*p.nro+acumP;
+                Sino
+                    acumI:=*p.nro + acumI; 
+                Fsi
+                P:= *P.sig;
+
+            Fm
+                
+            Esc("La suma de los pares es:" acumP)
+            Esc("La suma de los impares es:" acumI)
+                        
+             
+                
+
+            
+        
+                

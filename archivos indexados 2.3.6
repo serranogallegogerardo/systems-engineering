@@ -1,0 +1,187 @@
+archivos indexados 2.3.6
+
+Una Municipalidad debe liquidar las patentes de su parque automotor para el cuarto trimestre del año e imprimir un padrón de cobros y deudas, con cortes de importe por grupo, categoría y año de fabricación.
+
+Los archivos son:
+
+AUTOS Ordenado por CLAVE
+Grupo N(2)Categoria 1..50Anio_Fab N(4)Nro_Patente N(8)DNI AN(8)ApyNom AN(25)Domicilio AN(30)
+
+DEUDAS Indexado por CLAVED
+Nro_Patente N(8)Anio_Deuda N(4)Trimestre N(1)Importe N(5,2)
+
+Para el trimestre actual, la cuota a abonar viene en el siguiente archivo:
+
+CUOTAS Indexado por CLAVEC
+Grupo N(2)Categoria 1..50Anio_Fab N(4)Importe N(5,2)
+
+Antes de imprimir el renglón correspondiente a cada nro de patente se debe verificar si existen deudas pendientes, en cuyo caso se sumaran todos los importes adeudados y se consignarán en la columna de deudas.
+
+accion 2.3.6 es
+	
+	Ambiente
+
+	f_autos=registro
+		CLAVE:registro
+			Grupo N(2)
+			Categoria 1..50
+			Anio_Fab N(4)
+			Nro_Patente N(8)
+		finreg
+		DNI AN(8)
+		ApyNom AN(25)
+		Domicilio AN(30)
+	finreg
+
+	f_deudas=registro
+		CLAVED:registro
+			Nro_Patente N(8)
+			Anio_Deuda N(4)
+			Trimestre N(1)
+		finreg	
+		Importe N(5,2)
+	finreg
+	
+	f_cuotas=registro
+		CLAVEC=registro	
+			Grupo N(2)
+			Categoria 1..50
+			Anio_Fab N(4)
+		finreg
+		Importe N(5,2)
+	finreg
+
+	AUTOS:archivo de f_autos ordenado por CLAVE
+	reg_autos:f_autos
+
+	DEUDAS:archivo de f_deudas indexado por CLAVED
+	reg_deudas:f_deudas
+
+	CUOTAS:archivo de f_cuotas indexado por CLAVEC
+	reg_cuotas:f_cuotas
+
+	res_grupo
+	res_categoria
+	res_fabricacion
+
+	tot_deudas
+	tot_cuota_fab
+	tot_deudas_fab
+	tot_cuotas_cat
+	tot_deudas_cat
+	tot_cuotas_grupo
+	tot_deudas_grupo
+
+	subaccion cortefab es
+		esc("AÑO DE FABRICACION:"res_fabricacion)
+		esc("TOTAL DEUDAS:"tot_deudas_fab)
+		esc("TOTAL CUOTAS:"tot_cuota_fab)
+		res_fabricacion:=reg_autos.CLAVE.Anio_Fab
+		tot_cuotas_cat:=tot_cuotas_cat+tot_cuota_fab
+		tot_deudas_cat:=tot_deudas_cat+tot_deudas_fab
+		tot_cuota_fab:=0
+		tot_deudas_fab:=0
+	finsubaccion
+
+	subaccion cortecategoria es
+		cortefab
+ 		tot_cuotas_grupo:=tot_cuotas_grupo+tot_cuotas_cat
+ 		tot_deudas_grupo:=tot_deudas_grupo+tot_deudas_cat
+		esc("CATEGORIA:"res_categoria)
+		esc("TOTAL DEUDAS:"tot_deudas_cat)
+		esc("TOTAL CUOTAS:"tot_cuotas_cat)
+		tot_cuotas_cat:=0
+		tot_deudas_cat:=0
+		res_categoria:=reg_autos.CLAVE.Categoria
+	finsubaccion
+
+	subaccion cortegrupo es
+		cortecategoria
+		esc("GRUPO:"res_grupo)
+		esc("TOTAL DEUDAS:"tot_deudas_grupo)
+		esc("TOTAL CUOTAS:"tot_cuotas_grupo)
+		tot_cuotas_grupo:=0
+		tot_deudas_grupo:=0
+		res_grupo:=reg_autos.CLAVE.Grupo
+	finsubaccion
+
+Proceso
+
+Abrir_archivos
+Leer_archivos
+
+res_grupo
+res_categoria
+res_fabricacion
+
+tot_cuota_fab:=0
+tot_deudas_fab:=0
+tot_cuotas_cat:=0
+tot_deudas_cat:=0
+tot_cuotas_grupo:=0
+tot_deudas_grupo:=0
+
+esc("GRUPO------",res_grupo)
+esc("CATEGORIA------",res_categoria)
+esc("AÑO DE FABRICACION------",res_fabricacion)
+esc("CLAVE--------DNI--------APYNOM--------DOMIC--------DEUDA--------4to TRIMESTRE")
+
+
+Mientras NFDA(AUTOS) hacer
+	
+	Si res_grupo <> reg_autos.CLAVE.Grupo entonces
+		cortegrupo
+		esc("GRUPO------",res_grupo)
+		esc("CATEGORIA------",res_categoria)
+		esc("AÑO DE FABRICACION------",res_fabricacion)
+		esc("CLAVE--------DNI--------APYNOM--------DOMIC--------DEUDA--------4to TRIMESTRE")
+	sino
+		Si res_categoria <> reg_autos.CLAVE.Categoria entonces
+			cortecategoria
+			esc("CATEGORIA------",res_categoria)
+			esc("AÑO DE FABRICACION------",res_fabricacion)
+			esc("CLAVE--------DNI--------APYNOM--------DOMIC--------DEUDA--------4to TRIMESTRE")
+		sino
+			Si res_fabricacion <> reg_autos.CLAVE.Anio_Fab entocnes
+				cortefab
+				esc("AÑO DE FABRICACION------",res_fabricacion)
+				esc("CLAVE--------DNI--------APYNOM--------DOMIC--------DEUDA--------4to TRIMESTRE")
+			finsi
+		finsi
+	finsi
+
+	reg_deudas.CLAVED.Nro_Patente:=reg_autos.CLAVE.Nro_Patente
+	leer(DEUDAS,reg_deudas)
+
+	tot_deudas:=0
+	
+	Mientras reg_deudas.CLAVED.Nro_Patente = reg_autos.CLAVE.Nro_Patente hacer
+		tot_deudas:=tot_deudas+reg_deudas.Importe
+		leer(DEUDAS,reg_deudas)
+	finmientras
+
+	tot_deudas_fab:=tot_deudas_fab+tot_deudas
+
+	reg_cuotas.CLAVEC.Grupo:=reg_autos.CLAVE.Grupo
+	reg_cuotas.CLAVEC.Categoria:=reg_autos.CLAVE.Categoria
+	reg_cuotas.CLAVEC.Anio_Fab:=reg_autos.CLAVE.Anio_Fab
+	Leer(CUOTAS,reg_cuotas)
+
+	tot_cuota_fab:=tot_cuota_fab+reg_cuotas.Importe
+
+	Si tot_deudas <> 0 entonces
+		esc(reg_autos.CLAVE.Anio_Fab,"--------",reg_autos.DNI,"--------",reg_autos.ApyNom,"--------",reg_autos.Domicilio,"--------",tot_deudas,"--------",reg_cuotas.Importe)
+	sino
+		esc(reg_autos.CLAVE.Anio_Fab,"--------",reg_autos.DNI,"--------",reg_autos.ApyNom,"--------",reg_autos.Domicilio,"--------NO POSEE DEUDAS--------",reg_cuotas.Importe)
+
+	finsi
+
+	leer(AUTOS,reg_autos)
+
+finmientras
+
+cortegrupo
+
+Cerrar_archivos
+
+finaccion

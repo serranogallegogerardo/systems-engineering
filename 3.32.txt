@@ -1,0 +1,107 @@
+La municipalidad posee un archivo secuencial con los datos de todos los estacionamientos realizados en el mes de Octubre de 2018
+
+ESTACIONAMIENTOS
+FECHA: fecha	PATENTE: AN(7)	HoraDesde: N(2)	HoraHasta: N(2)	Posta: 1..100
+
+El costo es por multiplos de 1 hora. El costo por hora se calcula considerando la franja horaria del estacionamiento (siempre tomar el mayor costo), las franjas horarias son:
+    de 00 a 06: costo por hora $9
+    de 07 a 13: costo por hora $14
+    de 14 a 19: costo por hora $12
+    de 20 a 23: costo por hora $6
+Ejemplo: si una persona estaciona desde las 5 hasta las 10, son 6 horas de estacionamiento (10 - 5 + 1) y como se encuentra en dos franajas horarias se tiene que tomar la de mayor costo ($14 por hora). Por lo tanto el importe generado es 14 x 6 = 84. (NOTA a efectos de simplificar los calculos, solo calcular el costo de la franja horaria con respecto a la hora desde y la hora hasta).
+
+Se pide realizar un algoritmo que permita determinar:
+    Posta con mayor importe generado
+    Día con mayor cantidad de estacionamientos.
+    En qué día y en que posta se generó la mayor cantidad de estacionamientos
+
+ACCION 3.32 ES 
+AMBIENTE 
+    ESTACIONAMIENTOS = REGISTRO
+        fecha: FECHA 
+        patente: AN(7)
+        HoraD: n(2)
+        HoraH: N(2)
+        Posta: 1..100
+    FR 
+    Arch: archivo de ESTACIONAMIENTOS
+    PosD= REGISTRO 
+        CantidadE:= N(2)
+        Importe: N(4)
+    FR 
+    Sal: arreglo de [1..101, 1..32] de PosD
+    s: ESTACIONAMIENTOS
+    Precio,TotHoras,MayorT,MayorE,MayorI,PosPosta,PosPT,PostDT,PosDia:= entero 
+PROCESO 
+    Abrir /E(Arch)
+    Leer(Arch,s)
+
+    //inicializamos
+    PARA i:= 0 HASTA 101 HACER
+        PARA i:= 0 HASTA 32 HACER
+            Sal[i,j].CantidadE:=0
+            Sal[i,j].Importe:=0  
+        FP 
+    FP
+    Precio:= 0 
+    TotHoras:= 0  
+    MIENTRAS NDFA(Arch) HACER
+        TotHoras:= (s.HoraH - s.HoraD) + 1
+        SEGUN s.HoraH HACER 
+            =<6: PrecioH:=  9 
+            =<13: PrecioH:= 14 
+            =<19: PrecioH:= 12
+            =<23: PrecioH:= 6
+        FS
+        SEGUN s.HoraD HACER 
+            =<6: PrecioD:=  9 
+            =<13: PrecioD:= 14 
+            =<19: PrecioD:= 12
+            =<23: PrecioD:= 6
+        FS
+        SI PrecioD > PrecioH ENTONCES
+            Precio:= TotHoras * PrecioD
+        SINO 
+            Precio:= TotHoras * PrecioH
+        FSI 
+
+        //cargamos
+        Sal[s.Posta,s.fecha.dia].CantidadE:= Sal[s.Posta,S,fecha.dia] + 1
+        Sal[s.Posta,32].Importe:= Sal[s.Posta,32].Importe + Precio 
+        Sal[101,s.fecha.dia].CantidadE:= sal[s.Posta,s.fecha.dia] + 1 
+        Leer(Arch,s)  
+    FM
+    //Mostramos lo solicitado 
+    //posta con mayor importe generado
+    MayorI:= LV 
+    PARA i:= 1 HASTA 100 HACER
+         SI (Sal[i,32].Importe > MayorI) ENTONCES
+            MayorI:= Sal[i,32]
+            PosPosta:= i 
+        FSI 
+    FP 
+    //Dia con mayor cantidad de estacionamientos
+    MayorE:= LV
+    PARA j:= 1 HASTA 31 HACER 
+        SI (Sal[101,j].CantidadE > MayorE) ENTONCES
+            MayorE:= Sal[101,j].CantidadE 
+            PosDia:= j 
+        FSI 
+    FP 
+    //En que dia y en que posta se genero la mayor cantidad de estacionamientos
+    MayorT:= LV
+    PARA i:=1 HASTA 100 HACER
+        PARA j:= 1 HASTA 31 HACER 
+            SI (Sal[i,j].CantidadE > MayorT) ENTONCES
+                MayorT:= Sal[i,j].CantidadE 
+                PosPT:= i 
+                PostDT:= j 
+            FSI 
+        FP 
+    FP 
+    //Escribimos 
+    Esc('la posta con mayor importe generado es ', PosPosta)
+    Esc('El dia con mayor cantidad de estacionados es ', PosDia)
+    Esc('El dia ', PostDT, 'y posta ', PosPT, 'fue en donde se genero la mayor cantidad de estacionamientos')
+    Cerrar(Arch)
+Fin_Accion 
