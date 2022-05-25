@@ -1,0 +1,70 @@
+Ejercicio 3.24
+Se cuenta con información acerca de los cajeros de un Supermercado, 
+el cual se halla estructurado en 10 cajas registradoras.
+ Dicha información está registrada en una secuencia
+ que contiene Apellido y Nombre del empleado, número de caja que tiene asignada, importe facturado y horario de facturación; 
+ la secuencia está ordenada alfabéticamente por Apellido y Nombre. 
+////////////////////////////////////////////////////////////////////////////
+ Se solicita una estadística de los importes facturados, //////////////////////////
+ discriminado por número de caja y franja de horas y además los montos totales,////
+///////////////////////////////////////////////////////////////////////////////////
+Según el siguiente formato:
+
+Cajas	8-10	10-12	12-16	16-18	18-20	Total x Cajas
+1		...	...	...	...	...	...
+..	...	...	...	...	...	...
+10	...	...	...	...	...	...
+Total x horas	...	...	...	...	...	...
+
+Accion 3.24 ES
+
+	Ambiente
+
+		cajeros = reg de
+
+			NyA:an(20) // nombre y apellido
+			nrocaja:n(3)
+			importe:n(6,2)
+			hf:n(4)
+
+		freg
+
+		array:arreglo de [1..10,1..5] de cajeros
+		acum:entero
+		arch:archivo de cajeros ordenado por NyA
+		reg:cajeros
+
+	PROCESO
+		acum:=0
+		//ABRIR LEER
+		AbrirE/(arch)
+		Leer(arch,reg)
+
+		// MATRIZ A 0
+		Para i:=1 hasta 11 hacer
+			Para j:=1 hasta 6 hacer
+				array[i,j]:=0
+			fp
+		fp
+
+		// CARGAR CUADRO ESTADISTICO
+		Mientras NFDA(arch) Hacer
+
+			array[reg.nrocaja,reg.hf]:=reg.importe+array[reg.caja,reg.hf //			
+			acum:=reg.importe+acum
+			Leer(arch,reg)
+
+		Fm
+
+
+		//RESOLVER TAREAS
+
+		Para i:=1 hasta 10 hacer
+			Para j:=1 hasta 5 hacer
+				Esc("El importe de la caja nro:",i,"En el horario de ",j," fue de :", array[i,j])
+			fp
+		fp
+
+		esc("El monto total es de:", acum)
+
+FA

@@ -1,0 +1,92 @@
+Accion Ejerc3.25 es
+	Ambiente
+		Compras = Registro
+			Nro_Factura: N(8);
+			Proveedor: ('A','B','C');
+			FechaC: Fecha;
+			Nro_Planta: 1..4;
+			Importe: real;
+		Fin Registro
+
+		Fecha = Registro
+			DD: N(2);
+			MM: N(2);
+			AAAA: N(4);
+		Fin Registro
+
+		Planta1: Arreglo [1..3,1..12] de reales;
+		Planta2: Arreglo [1..3,1..12] de reales;
+		Planta3: Arreglo [1..3,1..12] de reales;
+		Planta4: Arreglo [1..3,1..12] de reales;
+		Arch_Compras: Archivo de Compras;
+		Reg_Compras: Compras;
+		i,j: entero;
+
+	Ambiente
+		Abrir E/ (Arch_Compras);
+		Leer (Arch_Compras, Reg_Compras);
+		Para i:= 1 a 4 hacer
+			Para j:= 1 a 13 hacer
+				Planta1[i,j]:= 0;
+				Planta2[i,j]:= 0;
+				Planta3[i,j]:= 0;
+				Planta4[i,j]:= 0;
+			Fin Para
+		Fin Para
+		
+		Mientras NFDA (Arch_Compras) hacer
+			Si (Reg_Compras.FechaC.AAAA = 2020) entonces
+				Segun (Reg_Compras.Nro_Planta) hacer
+					1:
+						Segun (Reg_Compras.Proveedor) hacer
+							'A': i:= 1;
+							'B': i:= 2;
+							'C': i:= 3;
+						Fin Segun
+						Planta1[i,Reg_Compras.FechaC.MM]:= Reg_Compras.Importe;
+					2:
+						Segun (Reg_Compras.Proveedor) hacer
+							'A': i:= 1;
+							'B': i:= 2;
+							'C': i:= 3;
+						Fin Segun
+						Planta2[i,Reg_Compras.FechaC.MM]:= Reg_Compras.Importe;
+					3:
+						Segun (Reg_Compras.Proveedor) hacer
+							'A': i:= 1;
+							'B': i:= 2;
+							'C': i:= 3;
+						Fin Segun
+						Planta3[i,Reg_Compras.FechaC.MM]:= Reg_Compras.Importe;
+					4:
+						Segun (Reg_Compras.Proveedor) hacer
+							'A': i:= 1;
+							'B': i:= 2;
+							'C': i:= 3;
+						Fin Segun
+						Planta4[i,Reg_Compras.FechaC.MM]:= Reg_Compras.Importe;
+				Fin Segun
+			Fin Si
+			Leer (Arch_Compras, Reg_Compras);
+		Fin Mientras
+
+		Cerrar (Arch_Compras);
+
+		Para i:= 1 a 3 hacer
+			Para j:= 1 a 12 hacer
+				Planta1[i,13]:= Planta1[i,13] + Planta1[i,j];
+				Planta1[4,j]:= Planta1[4,j] + Planta1[i,j];
+				Planta1[4,13]:= Planta1[4,13] + Planta1[i,j];
+				Planta2[i,13]:= Planta2[i,13] + Planta2[i,j];
+				Planta2[4,j]:= Planta2[4,j] + Planta2[i,j];
+				Planta2[4,13]:= Planta2[4,13] + Planta2[i,j];
+				Planta3[i,13]:= Planta3[i,13] + Planta3[i,j];
+				Planta3[4,j]:= Planta3[4,j] + Planta3[i,j];
+				Planta3[4,13]:= Planta3[4,13] + Planta3[i,j];
+				Planta4[i,13]:= Planta4[i,13] + Planta4[i,j];
+				Planta4[4,j]:= Planta4[4,j] + Planta4[i,j];
+				Planta4[4,13]:= Planta4[4,13] + Planta4[i,j];
+			Fin Para
+		Fin Para
+Fin Accion
+		

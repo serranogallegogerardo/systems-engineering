@@ -1,115 +1,162 @@
-ACCION 2.2.23 ES
-    AMBIENTE
-        F_Clave = REGISTRO
-            Id_Casa: N(4)
-        FR
-        Cliente = REGISTRO
-            Clave: F_Clave
-            Fecha_Ult_Lectura: FECHA
-            Cant_Lecturas: N(5)
-            Prom_Lecturas: N(4,2)
-            Tipo_Consumidor: ('A', 'B', 'C')
-        FR
-        Mediciones = REGISTRO
-            Claven: F_Clave
-            Fecha_Medicion: FECHA
-            Consumo: N(6,2)
-        FR
-        FECHA = REGISTRO    
-            dia : N(1..31)
-            mes: N(1..12)
-            año: N(4)
-        FR
+Ejercicio 2.2.23 NO SE SABE SI ESTA BIEN
+Una empresa de distribución de energía eléctrica posee un archivo maestro con los siguientes 
+datos de sus clientes
+ (la fecha de última lectura son las mediciones realizadas hasta el mes de mayo del 2014):
 
-        Cliente, Cliente_sal: archivo de Cliente ordenado por Clave
-        rcliente, rcliente_sal: Cliente
-        Med: archivo de Mediciones ordenado por Claven
-        rmed: Mediciones
+CLIENTE Ordenado por Id_Casa
 
-    Subaccion Leer_Med ES
-        Leer(Med,rmed)
-        SI FDA(Med) ENTONCES
-            rmed.claven:= HV
-        FS
-    FSUB
+Id_Casa/Fecha_Ult_Lectura/Cant_Lecturas/Prom_Lecturas/Tipo_Consumidor
+									
+El campo tipo de consumidor puede ser:
 
-    Subaccion Leer_Cliente ES
-        Leer(Cliente, rcliente)
-        SI FDA(Cliente) ENTONCES
-            rcliente.clave:= HV
-        FS
-    FSUB
-      
-    Subaccion Actualizar_Clientes ES
-        cantL:= 0
-        cantLA:= 0 
-        rcliente_sal.clave:= rmed.claven
-        rcliente_sal.Fecha_Ult_Lectura:= rmed.Fecha_Medicion
+A (cuando el promedio de lectura es menor a 20K)
+B (cuando el promedio de lectura es menor a 40K)
+C (cuando el promedio de lectura es igual o supera los 40K)
 
-        cantL:= rcliente.Cant_Lecturas
-        prom:= rcliente.Prom_Lecturas
-        cons:= rmed.Consumo
+Cuenta además con el siguiente archivo con datos de las mediciones realizadas en los dos últimos años 
+desde junio del 2014 hasta junio del 2016)
 
-        cantLN:= cantL + 1
-        rcliente_sal.Cant_Lecturas:= cantLN 
-        NPromedio:= ((prom*cantL)+ cons)/cantLN
-        rcliente_sal.Prom_Lecturas:= NPromedio
+Mediciones Ordenado por Id_Casa
+Id_CasaFecha_MedicionConsumo
 
-        SEGUN rcliente.Tipo_Consumidor HACER
-            'A':  
-                SI rmed.Consumo > '20000' y rmed.Consumo < '40000' ENTONCES
-                    rcliente_sal.Tipo_Consumidor:= 'B'
-                SINO
-                    Si rmed.Consumo => '40000'  ENTONCES
-                        rcliente_sal.Tipo_Consumidor:= 'C'
-                    SINO 
-                        rcliente_sal.Tipo_Consumidor:= 'A'
-                    FS
-                FS
-            'B':
-                Si rmed.Consumo => '40000'  ENTONCES
-                    rcliente_sal.Tipo_Consumidor:= 'C'
-                SINO 
-                    rcliente_sal.Tipo_Consumidor:= 'B'
-                FS 
-            'C': rcliente_sal.Tipo_Consumidor:= 'C'               
-        F_Segun
-        Escribir(Cliente_sal, rcliente_sal)
-    FSUB
+Se pide actualizar el archivo maestro con la información de las lecturas hasta el mes de enero
+ del año 2015 inclusive. Los campos que se deben actualizar son: la fecha de ultima lectura,
+  cantidad de lecturas, el promedio y modificar (en caso de ser necesario) el tipo de consumidor.
+   En caso en que no exista el ID casa (una conexión nueva) se tiene que crear en el maestro y 
+   actualizar los otros campos.
 
-    PROCESO
-        Abrir E/ (Cliente); Abrir E/ (Med)
-        Abrir /S (Cliente_sal)
-        Leer_Cliente
-        Leer_Med
-        MIENTRAS (rcliente.clave <> HV) o (rmed.claven <> HV) HACER
-            MIENTRAS (rmed.Fecha_Medicion.dia <= '31') y (rmed.Fecha_Medicion.mes <= '1') y (rmed.Fecha_Medicion.año <= '2015') HACER  
-                SI (rcliente.clave < rmed.claven) ENTONCES
-                    rcliente_sal := rclientes
-                    Escribir(Cliente_sal, rcliente_sal)
-                    Leer_Cliente
-                SINO
-                    SI (rcliente.clave = rmed.claven) ENTONCES 
-                        Actualizar_Clientes
-                        Leer_Cliente
-                        Leer_Med
-                    SINO
-                            rcliente_sal.clave:= rmed.claven
-                            rcliente_sal.Fecha_Ult_Lectura:= rmed.Fecha_Medicion
-                            rcliente_sal.Cant_Lecturas:= '1'
-                            rcliente_sal.Prom_Lecturas:=  rmed.Consumo
-                            SEGUN rmed.Consumo HACER
-                                <'20000':  rcliente_sal.Tipo_Consumidor:= 'A'
-                                > '20000' y < '40000':  rcliente_sal.Tipo_Consumidor:= 'B'
-                                >= '40000':  rcliente_sal.Tipo_Consumidor:= 'C'
-                            F_Segun
-                            Leer_Med
-                        FS
-                    FS
-                FS
-            F_Mientras
-        F_Mientras
-        Cerrar(Cliente)
-        Cerrar(Med)
-        Cerrar(Cliente_sal)
-FIN_ACCION
+Accion 2.2.13 ES
+
+	Ambiente
+
+	fecha = reg de
+
+		dd:n(2) // 01 Si rMOV.Fecha_Medicion.dd <> 01 y rMOV.Fecha_Medicion.mm <> 02 y rMOV.Fecha_Medicion.yy <> 2015
+		mm:n(2) // 02
+		yy:n(4) // 2015
+
+	freg
+
+	clavef = reg
+
+		Id_Casa
+
+	freg
+
+	mediciones = reg de
+
+		clave:clavef
+		Fecha_Medicion:fecha
+		Consumo
+
+	freg
+
+	cliente = reg de
+		clave:clavef
+		Cant_Lecturas
+		Prom_Lecturas
+		Tipo_Consumidor
+	freg
+
+	arMAE,arACTMAE: Ordenado por clave // archivos
+	arMOV: ordenado por clave
+	rMAE,rACT:clave // registros
+	rMOV:clave
+
+	Procedimiento LEERMAE;
+
+		leer(arMAE,rMAE)
+
+		Si FDA (arMAE) Entonces
+
+			rmae.clave:=HV
+
+		Fsi
+
+	fp
+
+	Procedimiento LEERMOV;
+
+		leer(arMOV,rMOV)
+
+		Si FDA (arMOV) Entonces
+
+			rMOV.clave:=HV
+
+		Fsi
+
+	fp
+
+	Proceso
+
+		AbrirE/(arMAE)
+		AbrirE/(arMOV)
+		AbrirS/(arACT)
+
+		LEERMAE();
+		LEERMOV();
+
+		Mientras rMAE.clave <> HV o rMOV.clave <> HV hacer
+
+			Si rMAE.clave < rMOV.clave Entonces
+
+				GRABAR(arACT,rMAE)
+				LEERMAE;
+
+			Sino
+				/*
+				Cuenta además con el siguiente archivo con datos de las mediciones
+				realizadas en los dos últimos años 
+				desde junio del 2014 hasta junio del 2016)
+				*/
+				Si rMAE.clave = rMOV.clave Entonces
+				 Mientras rMAE.clave = rMOV.clave Hacer
+
+					Si rMOV.Fecha_Medicion.dd <> 01 y rMOV.Fecha_Medicion.mm <> 02 y rMOV.Fecha_Medicion.yy <> 2015
+
+						rACT.Cant_Lecturas:=rACT.Cant_Lecturas+1
+						rACT.Fecha_Ult_Lectura:=rMOV.Fecha_Medicion
+						rACT.Cant_Lecturas:=(rMAE.Cant_Lecturas*rMAE.Prom_Lecturas)+rMOV.Consumo/rMAE.Cant_Lecturas
+
+				 	Fsi
+
+				 	LEERMOV
+
+				 Fin Mientras
+
+				 	Segun rMAE.Prom_Lecturas hacer
+
+						<20000: rACT.Tipo_Consumidor:='A'
+						<40000: rACT.Tipo_Consumidor:='B'
+						>=40000: rACT.Tipo_Consumidor:='C'
+
+					Fsegun
+
+				 Grabar(arACT,rACT)
+
+				 LEERMAE
+				 
+				Sino // rMAE.clave > rMOV.clave
+
+					rACT.Id_Casa:=rMOV.Id_Casa
+					rACT.Cant_Lecturas:=arCLI.Cant_Lecturas
+					rACT.Prom_Lecturas:=arCLI.promLecturas
+					rACT.Tipo_Consumidor:=
+
+					   En caso en que no exista el ID casa (una conexión nueva) 
+					   se tiene que crear en el maestro y 
+  					   actualizar los otros campos.
+
+					LEERMOV
+				 
+				Fsi
+
+			Fsi
+
+		Fmientras
+
+		Cerrar(arMAE)
+		Cerrar(arMOV)
+		Cerrar(arACT)
+
+Fin Accion

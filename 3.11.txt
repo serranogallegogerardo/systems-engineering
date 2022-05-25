@@ -1,0 +1,22 @@
+Accion Ejerc3.11 es
+	Ambiente
+		Peliculas = Registro
+			Titulo: AN(50);
+			Director: AN(50);
+			Categoria: AN(50);
+			Cant_Personas: entero;
+			Alquilado: ('Si','No');
+		Fin Registro
+
+		Arreglo: Arreglo [1..100] de Peliculas;
+		i: entero;
+		Categoria: AN(50);
+
+		Escribir ('Ingrese una Categoria');
+		Leer (Categoría);
+		Para i:= 1 a 100 hacer
+			Si (Arreglo[i].Categoria = Categoria) entonces
+				Escribir (Arreglo[i].Titulo, Arreglo[i].Director, Arreglo[i].Cant_Personas, Arreglo[i].Alquilado);
+			Fin Si
+		Fin Para
+Fin Accion

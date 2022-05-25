@@ -1,0 +1,34 @@
+<Ejercicio 3.13
+Se precisa ordenar un arreglo de N alumnos de mayor a menor
+, de acuerdo a la cantidad de materias aprobadas. 
+Cada elemento del arreglo contiene Nro. de Legajo y Cantidad de materias aprobadas.
+Escriba por lo menos dos algoritmos que permitan solucionar el problema;
+especifique cuál de las formas considera más eficiente y por qué.
+
+Accion 3.13 Es
+
+	Ambiente
+  
+  dato = reg
+  
+  	legajo:n(4)
+    cmaterias:n(2)
+  
+  freg
+  
+  array:arreglo [1...N] de dato						5 8	2	6     ---   x= 6 / j= 1 / array[j]= 2 / array[j+1]= 6
+  																			//8 6 5 2
+  Proceso
+  
+  	Para i:= 2 a N hacer
+      x:= array[i].cmaterias;
+      j:=i-1;
+      Mientras((j > 0) y (x < array[j].cmaterias)) hacer
+        array[j+1].cmaterias:= array[j].cmaterias
+        j:= j-1 
+      Fin Mientras
+      array[j+1].cmaterias:=x
+    Fin para
+  	
+  
+FA

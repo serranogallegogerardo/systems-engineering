@@ -1,0 +1,111 @@
+Accion Ejerc2.2.19 es
+	Ambiente
+		Remedios = Registro
+			Clave = Registro
+				Farmacia: AN(50);
+				Medicamento: AN(25):
+			Fin Registro
+			Cant_Actual: N(5);
+			Fecha_Vence = Registro
+				DD: N(2);
+				MM: N(2);
+				AA: N(4);
+		Fin Registro
+		
+		Movimientos = Registro
+			ClaveM = Registro
+				Farmacia: AN(50);
+				Medicamento: AN(25);
+			Fin Registro
+			CodMov: N(1);
+			Cant_Recibida: N(5);
+		Fin Registro
+		
+		Rem_Venc = Registro
+			Medicamento: AN(25);
+			Cant_Vencida: N(5);
+		Fin Registro
+		
+		Arch_Mae_Remedios, Arch_Mae_Actual: Archivo de Remedios ordenado por Clave;
+		Arch_Movimientos: Archivo de Movimientos ordenado por ClaveM;
+		Arch_Rem_Venc: Archivo de Rem_Venc;
+		Reg_Mae_Remedios, Reg_Mae_Actual: Remedios;
+		Reg_Movimientos: Movimientos;
+		Reg_Rem_Venc: Rem_Venc;
+		
+		Accion Leer_Movimiento es
+			Leer (Arch_Movimientos, Reg_Movimientos);
+			Si FDA (Arch_Movimientos) entonces
+				Reg_Movimientos.ClaveM:= HV;
+			Fin Si
+		Fin Accion
+
+		Accion Leer_Maestro es
+			Leer (Arch_Mae_Remedios, Reg_Mae_Remedios);
+			Si FDA (Arch_Mae_Remedios) entonces
+				Reg_Mae_Remedios.Clave:= HV;
+			Fin Si
+		Fin Accion
+
+		Accion Procesos_Iguales es
+			Si (Reg_Movimientos.CodMov = '1') entonces		*alta*
+				Escribir ('Error, alta no existe');
+				Reg_Mae_Actual:= Reg_Mae_Remedios;
+				Escribir (Arch_Mae_Actual, Reg_Mae_Actual;
+			Sino
+				Si (Reg_Movimientos.CodMov = '3') entonces		*modificacion*
+					Reg_Mae_Remedios.Cant_Actual:= Reg_Mae_Remedios.Cant_Actual + Reg_Movimientos.Cant_Recibida;
+					Reg_Mae_Actual:= Reg_Mae_Remedios;
+					Escribir (Arch_Mae_Actual, Reg_Mae_Actual);
+				Sino
+					Reg_Rem_Venc.Medicamento:= Reg_Mae_Remedios.Medicamento;
+					Reg_Rem_Venc.Cant_Vencida:= Reg_Mae_Remedios.Cant_Actual;
+					Escribir (Reg_Rem_Venc, Reg_Venc);
+				Fin Si
+			Fin Si
+			Leer_Maestro; Leer_Movimiento;
+		Fin Accion
+
+		Accion Procesos_Distintos es
+			Si (Reg_Movimiento.CodMov = '2') es
+				Escribir ('Error, baja no existe');
+			Sino
+				Si (Reg_Movimiento.CodMov = '3') entonces
+					Escribir ('Error, modificacion no existe');
+				Sino
+					Reg_Mae_Actual.Clave:= Reg_Movimiento.ClaveM;
+					Reg_Mae_Actual.Cant_Actual:= Reg_Movimiento.Cant_Recibida;
+					Reg_Mae_Actual.Fecha_Vence:= Fecha_Actual + 30 dias *ver como se resuelve*
+					Escribir (Arch_Mae_Actual, Reg_Mae_Actual);
+				Fin Si
+			Fin Si
+			Leer_Movimiento;
+		Fin Accion
+
+		Algoritmo
+			Abrir (Arch_Amigos);
+			Abrir (Arch_Notificaciones);
+			Crear (Arch_Amigos_Actual);
+			Leer_Maestro;
+			Leer_Movimiento;
+			Mientras (Reg_Amigos.Cod_Usuario <> HV) o (Reg_Notificaciones.Cod_Usuario <> HV) hacer
+				Si (Reg_Amigos.Cod_Usuario = Reg_Notificaciones.Cod_Usuario) entonces
+					Si (Reg_Amigo.Cod_Amigos = Reg_Notificaciones.Cod_Amigo) entonces
+						Procesos_Iguales
+					Sino
+						Si (Reg_Amigo.Cod_Amigo < Reg_Notificaciones.Cod_Amigo) entonces
+							
+				Sino
+					Si (Reg_Mae_Remedio.Clave < Reg_Movimientos.ClaveM) entonces
+						Reg_Mae_Actual:= Reg_Mae_Remedios;
+						Escribir (Arch_Mae_Actual, Reg_Mae_Actual);
+						Leer_Maestro;
+					Sino
+						Procesos_Distintos;
+					Fin Si
+				Fin Si
+			Fin Mientras
+			Cerrar (Arch_Mae_Remedios);
+			Cerrar (Arch_Movimientos);
+			Cerrar (Arch_Mae_Actual);
+			Cerrar (Arch_Rem_Venc);

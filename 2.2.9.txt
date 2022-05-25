@@ -1,0 +1,70 @@
+2.2.9
+Una casa deportiva dispone de un archivo de productos, ordenado por código de producto, que contiene los siguientes datos:
+PRODUCTOS Ordenado por Cod_Producto
+Cod_ProductoTipo (1,2,3)MarcaModeloDescripciónCantidad_ExistentePrecio_Unitario
+Se ha registrado en el mercado un aumento de precios, el cual no es uniforme para todos los artículos, sino que varía según el tipo de los mismos de 
+la siguiente manera: tipo 1- Calzados: 10%, tipo 2 – Indumentaria: 25%, tipo 3 - Accesorios (pelotas, raquetas, etc.): 50%. Por este motivo el gerente
+ de la empresa solicitó al Departamento de Informática que modifique los precios de acuerdo a los porcentajes antes mencionados.
+Generar un nuevo fichero de productos para cumplir con la solicitud del gerente.
+Al terminar el proceso informar cantidad total de artículos de cada tipo hay y total general.
+Accion deportivo ES
+
+	Ambiente
+
+		Producto = Registro de
+
+			COD:N(6)
+			tipo:('1','2','3')
+			marca:AN(20)
+			modelo:AN(10)
+			descripcion:AN(20)
+			cantidad:n(5)
+			precio:N(10,2)
+
+		Fin registro
+
+		p : Producto
+		ArP : Archivo de Producto ordenado por COD 
+		Arsal: Archivo de Producto Ordenado por COD
+		c1,c2,c3:entero
+
+	Proceso
+
+		c1:=0
+		c2:=0
+		c3:=0
+		ABRIR E/(ArP)
+		ABRIR S/(Arsal)
+		Leer(ArP,p)
+
+		Mientras NFDA(ArP) hacer
+
+			Segun p.tipo hacer
+
+				= 1 :
+					p.precio := (p.precio*1.10)
+					c1:=c1+1
+				= 2 :
+					p.precio := (p.precio*1.25)
+					c2:=c2+1
+				= 3 :
+					p.precio := (p.precio*1.50)
+					c3:=c3+1
+
+			Fin Segun
+
+			GRABAR(Arsal,p)
+			Leer(ArP,p)
+
+		Fin Mientras
+
+		Esc('TOTAL    | Tipo 1 | Tipo 2 | Tipo 3')
+		Esc(c1+c2+c3,'|',c1,'  |',c2,'  |',c3)
+
+		CERRAR(ArP)
+		CERRAR(Arsal)
+
+Fin Accion
+// generar secuencia con los nuevos precios modificados:
+//tipo 1- Calzados: 10%, tipo 2 – Indumentaria: 25%, tipo 3 -
+ //Accesorios (pelotas, raquetas, etc.): 50%. 									

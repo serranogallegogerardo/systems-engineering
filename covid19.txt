@@ -1,0 +1,73 @@
+Se cuenta con una secuencia de caracteres que almacena los datos de usuarios que han twiteado en las ultimas 24hs algún mensaje con el hashtag COVID19. La secuencia se estructura como sigue:
+cod(1 caracter) usuario$mensaje$cantidad_retweets(hasta 3 dig)#cod(1 caracter) usuario$mensaje$cantidad_retweets (hasta 3 dig).......*
+Los datos del usuario finalizan en #, y cada dato se separa entre sì con un $. El usuario se caracteriza con un código (V-Verificado/ N - No verificado) que se ubica al inicio de sus datos.
+
+Se te pide que muestres por pantalla los mensajes de los usuarios Verificados. Y además informes el porcentaje de usuarios que han publicado mensajes obteniendo más de 300 retweets.
+
+N noe$hola como estas$307#N juan$bien y vos$212#....
+
+ACCION covid ES
+AMBIENTE
+ 
+ mayora4 = ('4','5','6','7','8','9')
+ Procedimiento analizar_retweets()
+ 	Si v en mayor4 entonces
+ 		cont:=cont+1
+ 		Para i:=1 hasta 3 hacer
+ 			avz(sec,v)
+ 	    FinPara
+ 	Contrario
+ 		Si v = '3' entonces
+ 			avz(sec,v)
+ 			Si v <> '0' entonces
+ 				cont:=cont+1
+ 				Para 1:=1 hasta 2 hacer
+ 					avz(sec,v)
+ 				FinPara
+ 			contrario
+ 				avz(sec,v)
+ 				Si v <> '0' entonces
+ 				    cont:=cont+1
+ 				FinSi
+ 			FinSi
+ 		FinSi
+ 	FinSi
+ 	AVZ(sec,v)
+ FinProcedimiento 
+
+ Procedimiento TRATAR_ELEMENTOS()
+ 	Mientras v <> '$' hacer
+     		avz(sec,v)
+    FinMientras
+    avz(sec,v)
+ FinProcedimiento
+
+PROCESO
+    ARR(sec)
+    AVZ(sec,v)
+
+    MIENTRAS v <> '*' HACER
+     total:=total+1
+
+     Si v = "V" entonces
+     	TRATAR_ELEMENTOS()
+
+ 		Mientras v <> "$" hacer
+ 			Esc(v)
+ 			avz(sec,v)
+ 		FinMientras
+ 		avz(sec,v)
+ 		analizar_retweets()
+
+     contrario
+     	
+     	TRATAR_ELEMENTOS()
+     	TRATAR_ELEMENTOS()
+
+     	analizar_retweets()
+     FinSi
+
+   FinMientras
+
+   Esc('Porcentaje de usuarios que tuvieron mas de 300 rt', (cont*100)/total)
+FinAccion

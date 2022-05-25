@@ -1,0 +1,47 @@
+Con la secuencia del problema anterior (2.2.1) se desea generar otra secuencia con los alumnos de la carrera de Ingenieria en Sistemas de
+Informacion cuyo último exámen aprobado corresponde a una materia dada, y lo hayan rendido este año. Se debe ingresar el código de la materia.
+
+Accion Ejerc2.2.2 es
+	Ambiente
+		Fecha = Registro
+			DD: N(2);
+			MM: N(2);
+			AA: N(4);
+		Fin Registro
+		
+		Alumno = Registro
+			NroLegajo: N(5);
+			ApeYNom: AN (50);
+			FechaIngreso: Fecha;
+			Sexo: ('M', 'F');
+			Carrera: ('ISI', 'IEM', 'IQ');
+			FechaNacimiento: Fecha;
+			DNI: N(8);
+			FechaUltExamenAprob: Fecha;
+			CodMat: N(8);
+			Nota: N(2);
+		Fin Registro
+		
+		Arch_Alu, Arch_ISI: archivo de Alumno;
+		Reg_Alu: Alumno;
+		materia: entero;
+		año_actual: entero;
+	
+	Algoritmo
+		Abrir S/ (Arch_Alu);
+		Leer (Arch_Alu, Reg_Alu);
+		Crear (Arch_ISI);
+		Escribir ('Ingrese el codigo de la materia');
+		Leer (materia);
+		Escribir ('Ingrese el año actual');
+		Leer (año_actual);
+		Mientras NFDA (Arch_Alu) hacer
+			Si (CodMat = materia) y (FechaUltExamenAprob = fecha_actual) y (Carrera = 'ISI') entonces
+				Escribir (Alu_ISI, Reg_Alu);
+			Fin Si
+			Leer (Arch_Alu, Reg_Alu);
+		Fin Mientras
+		Cerrar (Arch_Alu); 
+		Cerrar (Arch_ISI);
+Fin Accion
+		

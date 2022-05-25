@@ -1,0 +1,124 @@
+Accion Ejerc2.2.21 es
+	Ambiente
+		Amigos = Registro
+			Cod_Usuario: N(8);
+			Cod_Amigo: N(8);
+			Fecha_Amistad: Fecha
+			Mensaje_Muro: AN(250);
+		Fin Registro
+
+		Notificaciones = Registro
+			Cod_Usuario: N(8);
+			Cod_Amigo: N(8);
+			Cod_Movimiento: ('A', 'B', 'C');
+			Fecha_Amistad: Fecha;
+			Mensaje_Foro: AN(250);
+		Fin Registro
+
+		Fecha = Registro
+			DD: N(2);
+			MM: N(2);
+			AA: N(4);
+		Fin Registro
+
+		Arch_Amigos: Archivo ordenado por Cod_Usuario y Cod_Amigo;
+		Arch_Amigos_Actual: Archivo ordenado por Cod_Usuario y Cod_Amigo;
+		Arch_Notificaciones: Archivo ordenado por Cod_Usuario y Cod_Amigo;
+		Reg_Amigos: Amigos;
+		Reg_Amigos_Actual: Amigos;
+		Reg_Notificaciones: Notificaciones;
+
+		Accion Leer_Movimiento es
+			Leer (Arch_Notificaciones, Reg_Notificaciones);
+			Si FDA (Arch_Notificaciones) entonces
+				Reg_Notificaciones.Cod_Usuario:= HV;
+				Reg_Notificaciones.Cod_Amigo:= HV;
+			Fin Si
+		Fin Accion
+
+		Accion Leer_Maestro es
+			Leer (Arch_Amigos, Reg_Amigos);
+			Si FDA (Arch_Amigos) entonces
+				Reg_Amigos.Cod_Usuario:= HV;
+				Reg_Amigos.Cod_Amigo:= HV;
+			Fin Si
+		Fin Accion
+
+		Accion Procesos_Iguales es
+			Si (Reg_Notificaciones.Cod_Movimiento = 'A') entonces		*alta*
+				Escribir ('Error, alta no existe');
+				Reg_Amigos_Actual:= Reg_Amigos;
+				Escribir (Arch_Amigos_Actual, Reg_Amigos_Actual;
+			Sino
+				Si (Reg_Notificaciones.Cod_Movimiento = 'M') entonces		*modificacion*
+					Reg_Amigos.Mensaje_Muro:= Reg_Notificacion.Mensaje_Muro;
+					Reg_Amigos_Actual:= Reg_Amigos;
+					Escribir (Arch_Amigos_Actual, Reg_Amigos_Actual);
+				Fin Si
+			Fin Si
+			Leer_Maestro; Leer_Movimiento;
+		Fin Accion
+
+		Accion Procesos_Distintos es
+			Si (Reg_Notificaciones.Cod_Movimiento = 'B') es		*baja*
+				Escribir ('Error, baja no existe');
+			Sino
+				Si (Reg_Notificaciones.Cod_Movimiento = 'M') entonces		*midificacion*
+					Escribir ('Error, modificacion no existe');
+				Sino
+					Reg_Amigos_Actual.Cod_Usuario:= Reg_Notificacion.Cod_Usuario;		*alta*
+					Reg_Amigos_Actual.Cod_Amigo:= Reg_Notificacion.Cod_Amigo;
+					Reg_Amigos_Actual.Fecha_Amistad:= Fecha_Actual;
+					Escribir (Arch_Amigos_Actual, Reg_Amigos_Actual);
+				Fin Si
+			Fin Si
+			Leer_Movimiento;
+		Fin Accion
+
+	Algoritmo
+	Abrir (Arch_Amigos);
+	Abrir (Arch_Notificaciones);
+	Crear (Arch_Amigos_Actual);
+	Leer_Maestro;
+	Leer_Movimiento;
+	Mientras (Reg_Amigos.Cod_Usuario <> HV) o (Reg_Notificaciones.Cod_Usuario <> HV) hacer
+		Si (Reg_Amigos.Cod_Usuario = Reg_Notificaciones.Cod_Usuario) entonces
+			Si (Reg_Amigo.Cod_Amigos = Reg_Notificaciones.Cod_Amigos) entonces
+				Procesos_Iguales;
+			Sino
+				Si (Reg_Amigo.Cod_Amigos < Reg_Notificaciones.Cod_Amigos) entonces
+					Reg_Amigos_Actual:= Reg_Amigos;
+					Escribir (Arch_Amigos_Actual, Reg_Amigos_Actual);
+					Leer_Maestro;
+				Sino
+					Procesos_Distintos;
+			Fin Si
+		Sino
+			Si (Reg_Amigos.Cod_Usuario < Reg_Notificaciones.Cod_Usuario) entonces
+				Reg_Amigos_Actual:= Reg_Amigos;
+				Escribir (Arch_Amigos_Actual, Reg_Amigos_Actual);
+				Leer_Maestro;
+			Sino
+				Si (Reg_Notificaciones.Cod_Movimiento = 'A') entonces		*alta*
+					Reg_Amigos_Actual.Cod_Usuario:= Reg_Notificaciones.Cod_Usuario;
+					Reg_Amigos_Actual.Cod_Amigo:= Reg_Notificaciones.Cod_Amigo;
+					Reg_Amigos_Actual.Fecha_Amigo:= Fecha_Actual;
+					Escribir (Arch_Amigos_Actual, Reg_Amigos_Actual);
+					Leer_Movimiento;
+				Sino
+					Si (Reg_Notificaciones.Cod_Movimiento = 'M') entonces		*modificacion*
+						Escribir ('Error, modificacion no existe');
+						Leer_Movimiento;
+					Sino
+						Escribir ('Error, baja no existe'); 		*baja*
+						Leer_Movimiento;
+					Fin Si
+				Fin Si
+						
+			Fin Si
+		Fin Si
+	Fin Mientras
+	Cerrar (Arch_Amigos);
+	Cerrar (Arch_Notificaciones);
+	Cerrar (Arch_Amigos_Actual);
+Fin Accion

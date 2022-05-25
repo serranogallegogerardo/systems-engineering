@@ -1,0 +1,168 @@
+La empresa Game Virtual cuenta con información respecto al uso de sus juegos de realidad
+ virtual.
+Posee una secuencia de caracteres donde almacena datos de los juegos y versiones que comercializa, con la siguiente estructura: Disponibilidad(caracter que indica si está vigente o no S/N)Nombre del juego-Autor-Version(digito de 0 al 4)
+La secuencia finaliza con un *. Veamos un ejemplo
+SFight Virtual-Equipo Rojo-0SWarriors-Equipo Del Norte-0NSkyBlue-Argentina-1*
+ 
+Se te pide crear un algoritmo que permita:
+
+Crear una secuencia que incluya los datos correspondiente al nombre del juego y sus autores, siempre y cuando esté vigente
+
+Obtener la cantidad de juegos por tipo de versión (0-1-2).
+
+Hay juegos que no estén vigentes hoy y ya tengan una versión superior a 1? Qué porcentaje representan sobre el total de juegos? 
+
+
+Accion virtual ES
+
+	Ambiente
+
+	 dj:secuencia de caracter // datos de juego
+	 j:caracter			//  ventana
+	 djsal:secuencia de caracter // datos de salida de los juego/s.
+	 cont_juegos0:entero // cantidad de juegos por tipo 0 1 2
+	 cont_juegos1:entero 
+	 cont_juegos2:entero 
+	 cont_novigente:entero
+	 total:entero
+
+	Proceso
+		cont_juego0:=0
+		cont_juego1:=0
+		cont_juego2:=0
+		cont_novigente:=0
+		ARR(dj)			// arranco la secuencia
+		AVZ(dj,j)
+		CREAR(djsal)
+
+		Mientras j <> '*' hacer
+
+			Si j = 'S' 
+
+				AVZ(dj,j)
+
+					Mientras j <> '-' hacer
+
+						ESCRIBIR(djsal,j)
+						AVZ(dj,j)
+
+					Fin Mientras
+
+					ESCRIBIR(djsal,j) // avanzo y pongo un -
+					AVZ(dj,j)
+
+					Mientras j = '-' hacer // esto esta demas para cubrir bugs
+
+						AVZ(dj,j)
+
+					Fin Mientras
+
+					Mientras j <> '-' hacer // 
+
+						ESCRIBIR(djsal,j)
+						AVZ(dj,j)
+
+					Fin Mientras
+
+					Mientras j = '-' hacer
+
+						AVZ(dj,j)
+
+					Fin mientras
+
+					Segun j hacer
+
+						='0' :
+
+							cont_juegos0:=cont_juegos0+1
+
+						='1' :
+
+							cont_juegos1:=cont_juegos1+1
+
+						='2' :
+
+							cont_juegos2:=cont_juegos2+1
+
+					Fin Segun
+
+					AVZ(dj,j)
+
+			Sino 
+
+				AVZ(dj,j)
+
+					// NOMBRE DEL JUEGO
+
+					Mientras j <> '-' hacer
+
+						AVZ(dj,j)
+
+					Fin Mientras
+
+					// PALITO QUE SEPARA
+
+					Mientras j = '-' hacer
+
+						AVZ(dj,j)
+
+					Fin Mientras
+
+					//AUTOR
+
+					Mientras j <> '-' hacer
+
+						AVZ(dj,j)
+
+					Fin Mientras
+
+					Mientras j = '-' hacer
+
+						AVZ(dj,j)
+
+					Fin Mientras
+
+					Segun j hacer
+
+						='0' :
+
+							cont_juegos0:=cont_juegos0+1
+
+						='1' :
+
+							cont_juegos1:=cont_juegos1+1
+
+						='2' :
+
+							cont_juegos2:=cont_juegos2+1
+
+					Fin Segun
+
+					Si j = '2' o j = '3' o j = '4' Entonces // JUEGOS NO VIGENTES MAYORES A 1
+
+						cont_novigente:=cont_novigente+1 
+
+					Fin Si
+
+					total:= cont_juegos0+cont_juegos1+cont_novigente /* saco cuanto es el porcentaje de no vigentes en el total de juegos que contiene la sumatoria de vigentes y no vigentes*/
+					total:= (novigentes*100) DIV total     
+
+			Fin Si
+
+			AVZ(dj,j)
+
+		Fin Mientras
+
+				/*Obtener la cantidad de juegos por tipo de versión (0-1-2).
+				Hay juegos que no estén vigentes hoy y ya tengan una versión superior a 1? Qué porcentaje representan sobre el total de juegos? */
+
+		
+		ESC('Juegos con version 0: ', cont_juegos0)
+		ESC('Juegos con version 1: ', cont_juegos1)
+		ESC('Juegos con version 2: ', cont_juegos2)
+		ESC('Juegos no vigentes con version superior a 1: ' , cont_novigentes , ' el porcentaje que representan es del : ', total , '%')
+
+		CERRAR(dj)
+		CERRAR(djn)
+		
+Fin Accion

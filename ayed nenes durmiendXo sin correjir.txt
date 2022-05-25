@@ -1,0 +1,91 @@
+// SERRANO GALLEGO GERARDO JUAN MARTIN ISI A
+// Comentario: pd profe tengo dudas con las secuencias 
+
+Diseña un algoritmo que determine, dados 20 niños, si están durmiendo las horas suficientes de acuerdo a su edad. Considera la siguiente información:
+ Niños pequeños (desde 1 año y menores que 3): lo que se aconseja es que descansen desde 11 y hasta 14 horas. 
+Niños en edad preescolar (desde 3 años y menores que 6): desde 10 y hasta 13 horas sería lo adecuado. 
+Niños en edad escolar (desde 6 hasta 13): lo recomendable es dormir 11 horas. 
+El algoritmo debe identificar cuando no se trate de un niño, en cuyo caso no valida nada
+
+ACCIÓN NIÑOSDURMIENDOS ES:
+
+	AMBIENTE
+
+		Variables
+
+			hs,edad:entero
+
+		Procedimiento Duerme_nene(hs:entero)
+
+				Si hs>10 y hs<=14 Entonces
+
+					Esc('El nene duerme bien')
+
+				Sino 
+
+					Esc('El nene duerme mal')
+
+				Fin Si
+
+		Fin Procedimiento
+
+		Procedimiento Duerme_preescolar(hs:entero)
+
+				Si hs>=10 y hs<=13 Entonces
+
+					Esc('El nene duerme bien')
+
+				Sino 
+
+					Esc('El nene duerme mal')
+
+				Fin Si
+
+		Fin Procedimiento
+
+		Procedimiento Duerme_escolar(hs:entero)
+
+				Si hs = 11 Entonces
+
+					Esc('El nene duerme bien')
+
+				Sino 
+
+					Esc('El nene duerme mal')
+
+				Fin Si
+
+		Fin Procedimiento
+
+	Proceso
+
+		Para i=1 hasta 20 hacer
+
+			Esc('Ingrese la edad del nene: ')
+			Leer(edad)
+			Esc('Cuantas horas duerme?')
+			Leer(hs)
+
+			Segun edad hacer
+
+				>1 y edad<3 :
+
+					Duerme_nene(hs)
+
+				>2 y edad<6 :
+
+					Duerme_preescolar(hs)
+
+				>5 y edad<=13 :
+
+					Duerme_escolar(hs)
+
+				Otros : 
+
+					Esc('No se puede utilizar el programa en mayores.')
+
+			Fin Segun
+
+		FinPara
+
+Fin Accion

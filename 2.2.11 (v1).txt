@@ -1,0 +1,167 @@
+2.2.11
+Se dispone de un archivo con datos de los alumnos de la U.T.N.
+ con la siguiente información para cada alumno:
+
+PRODUCTOS Ordenado por Sexo, Carrera, Nro_Legajo
+
+Sexo|Carrera|LEGAJO|Fecha_Ingreso|Total_Materias_Aprobadas
+M  	| ISI   | 1	   | 23-12-2009  | 13
+M  	| ISI   | 2	   | 23-12-2009	 | 25
+M  	| ISI   | 3	   |23-12-2008	 | 28
+F  	| IQ    | 4	   |23-12-2009	 | 12
+F  	| IEM   | 5	   |23-12-2010	 | 39
+F  	| IEM   | 6	   |23-12-2009	 | 36
+
+Se desea un listado con el siguiente detalle por:
+sexo| carrera | total general // primero hago esto
+
+Total de alumnos que ingresaron en el año 2009 con más de 
+20 materias aprobadas. // segundo hago esto
+
+Total de alumnos que ingresaron en el año 2009 con menos de 
+20 materias aprobadas
+
+Accion
+
+	Ambiente
+
+		Fecha = registro de
+
+			dia:n(2)
+			mes:n(2)
+			año:n(4)
+
+		Fin registro
+
+		alumno = registro de
+
+			sexo:('M','F')
+			carrera:('ISI','IEM','IQ')
+			legajo:N(10)
+			fecha:Fecha
+			TMA:n(2)
+
+		fin registro
+
+		a:alumno
+		ArAL:archivo de alumno ordenado por sexo,carrera,legajo
+		tsexo : AN(1)
+		tcarrera : AN(3)
+		tmayor,tmenor:entero
+		tot_carrera,tot_sexo,tmayor,tmenor:entero
+
+//*
+Se desea un listado con el siguiente detalle por:
+sexo| carrera | total general // primero hago esto
+
+Total de alumnos que ingresaron en el año 2009 con más de 
+20 materias aprobadas. // segundo hago esto
+*//
+
+	// Subacciones
+
+	Subaccion corte_carrera ES
+
+		// imprimo todo hasta el estado momento
+
+			Esc('sexo   | carrera       | total mayor por carrera | total menor por carrera')
+			Esc(a.sexo,'|',a.carrera,'|',totmayorcarrera,'|',totmenorcarrera)
+	
+		// acumulo para el nivel superior mas inmediato
+
+		tot_sexomayor:= tot_sexomayor + totmayorcarrera
+		tot_sexomenor:= tot_sexomenor + totmenorcarrera
+
+		// inicializo los contadores del nivel a 0
+
+		totmayorcarrera := 0
+		totmenorcarrera := 0
+
+		// Actualizo la variable testigo del nivel Actual 
+
+		tcarrera := a.carrera
+
+	Fin Subaccion
+
+	Subaccion corte_sexo ES
+
+		// corte de nivel inferior
+
+		corte_carrera
+
+		// imprimo todo hasta el momento
+
+		Esc('sexo   | carrera | total mayor por sexo| total menor por sexo'
+		Esc(a.sexo,'|',a.carrera,'|',tot_sexomayor,'|',tot_sexomenor)
+
+		// acumulo en el nivel superior inmediato 
+		tmayor:=tmayor+tot_sexomayor
+		tmenor:=tmenor+tot_sexomenor
+
+		// inicializo en 0 los cont del nivel Actual
+
+		tot_sexomenor:=0
+		tot_sexomayor:=0
+
+		// actualizo la variable testigo del nivel actual
+
+		tsexo := a.sexo
+
+	Fin Subaccion
+
+	Proceso
+
+		tmayor:=0
+		tmenor:=0
+		tot_mayorcarrera:=0
+		tot_menorcarrera:=0
+		tot_sexomayor:=0
+		tot_sexomenor:=0
+		tsexo := a.sexo
+		tcarrera := a.carrera
+
+		Abrir E/(ArAL)
+		Leer(ArAL,a)
+
+		Mientras NFDA(ArAL) hacer 
+
+			Si a.sexo <> tsexo Entonces // CORTE DE CONTROL
+
+				corte_sexo
+
+			Sino 
+
+				Si a.carrera <> tcarrera Entonces
+
+					corte_carrera
+
+				Fin Si
+
+			Fin Si
+
+			Si a.fecha.año = 2009 Entonces
+
+				Si a.TMA > 20 Entonces
+
+					totmayorcarrera:=totmayorcarrera+1
+
+				Sino
+
+					totmenorcarrera:=totmenorcarrera+1
+
+				Fin Si
+
+			Fin Si
+
+		Leer(ArAl,a)
+
+		Fin Mientras
+
+		corte_sexo
+
+		Esc('Alumnos que ingresaron en 2009 y aprobaron mas de 20 materias: ',tmayor)
+		Esc('Alumnos que ingresaron en 2009 y aprobaron mas de 20 materias: ',tmenor)	
+
+		Cerrar(ArAL)
+
+Fin Accion

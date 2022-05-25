@@ -1,41 +1,56 @@
-ACCION hospital ES
-AMBIENTE
-    paciente: arreglo de [1..4, 1..7, 1..50] de entero
-    prom: arreglo de [1..7, 1..50] de N(2,2)
-    tempmenor, tempmayor, dia, lec, dia1, lec1, total:= entero
+Ejercicio 3.23¶
+En un sector de un hospital, donde se encuentran internados 50 pacientes, 
+se toma la temperatura de cada paciente 4 veces al día durante una semana. [1..50,1..7,1..4]
 
-PROCESO
-    
+Lectura	Dom	Lun	Mar	Mie	Jue	Vie	Sab DOM
+1	XX	XX	XX	XX	XX	XX	XX  XX  XX
+2	XX	XX	XX	XX	XX	XX	XX  XX  XX
+3	XX	XX	XX	XX	XX	XX	XX  XX  XX
+4	XX	XX	XX	XX	XX	XX	XX  XX  XX
+Se dispone de un arreglo con la información recopilada de todos los pacientes.
 
-    PARA I:=1 HASTA 7 HACER
-        PARA J:=1 HASTA 4 HACER
-            PARA Z:=1 HASTA 50 HACER 
-                m[i,j,z]:= 0
-            FP
-        FP
-    FP
-    tempmenor:= HV
-    tempmayor:= 1
+Construir un algoritmo que:
 
-    PARA k:=1 hasta 50 HACER
-        PARA j:=1 hasta 7 HACER
-            PARA i:=1 hasta 4 HACER
-                SI tempmenor > paciente[i,j,k] entonces
-                    tempmenor:= paciente[i,j,k]
-                    dia:=J
-                    lec:=I 
-                FSI
-                SI tempmayor < paciente[i,j,k] entonces
-                    tempmayor:= paciente[i,j,k]
-                    dia1:=J
-                    lec1:=I 
-                FSI
-                total:= total + paciente[i,j,k]
-                FP
-            prom[j,k]:= total / 4
-        FP
-        Esc('La temperatura minima del paciente:', k,'es', tempmenor, 'el dia', dia, ' y numero de lectura',lec)
-        Esc('La temperatura maxima del paciente:', k,'es', tempmayor, 'el dia', dia1, ' y numero de lectura',lec1) 
-    FP
-FA
-            
+1Liste por pantalla las temperaturas máxima y mínima de cada paciente, indicando el día y lectura en la que ocurrieron.
+2Genere un nuevo arreglo
+que contenga la temperatura promedio
+por día de cada paciente.
+
+Accion 3.23 ES
+
+	Ambiente
+
+		array:arreglo de [1..50,1..7,1..4] de entero // [paciente,dia,temp]
+		gen:arreglo de [1..50,1..7] de entero
+		i,j,k,mayor,menor:entero
+		resdiama,reslecma,resdiame,reslecme:entero
+
+	Proceso // 1Liste por pantalla las temperaturas máxima y mínima de cada paciente, indicando el día y lectura en la que ocurrieron.
+		//1Liste por pantalla las temperaturas máxima y mínima de cada paciente, indicando el día y lectura en la que ocurrieron.
+		esc("PACIENTE//TMAX//TMIN//DIATEMPMAX//DIATEMPMIN///LECTEMPMAX//LECTEMPMIN//")
+		Para i:=1 hasta 50 hacer
+			Para j:=1 hasta 7 hacer //15-36=21
+				mayor:=array[1,1,1] // 28-52=36
+				menor:=array[1,1,1]
+				Para k:=2 hasta 4 hacer
+					Si array[i,j,k] > mayor Entonces // k=2 mayor:=array[1,1,1] > mayor:=array[1,1,2]
+				 		mayor:=array[i,j,k] // k=1 mayor:= array[1,1,1] = 53
+						resdiama:=j 
+						reslecma:=k 
+					fsi		
+					Si array[i,j,k] < menor Entonces // MINIMO
+						menor:=array[i,j,k] 
+						resdiame:=j 
+						reslecme:=k 
+					fsi 
+				fp
+				//2Genere un nuevo arreglo que contenga la temperatura promedio por día de cada paciente.
+				gen[i,j]:=(array[i,j,1]+array[i,j,2]+array[i,j,3]+array[i,j,4]) DIV 4 // promedio
+			fp
+			esc(i,'//',mayor,'//',menor,'//',resdiama,'//',resdiame,'//',reslecma,'//',reslecme)
+		fp
+		//1Liste por pantalla las temperaturas máxima y mínima de cada paciente, indicando el día y lectura en la que ocurrieron.
+		#LISTAR
+		
+
+FA 

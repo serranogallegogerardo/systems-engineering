@@ -1,0 +1,64 @@
+Ejercicio 2.2.3
+Dada la siguiente secuencia de datos con el siguiente formato:
+
+Nº de socio
+Nº de teléfono
+Apellido y Nombre
+Carrera (ISI - IEM - IQ - LAR)
+Domicilio
+Cantidad de unidades prestadas Correspondiente a los alumnos socios de la Biblioteca,
+
+generar la secuencia de los alumnos de “ISI” que tengan prestadas más de 4 unidades bibliográficas.
+
+Accion 223 ES
+
+	Ambiente
+
+		socios = registro de
+
+			nro:n(10)
+			tel:n(10)
+			ApellidoyNombre:AN(30)
+			Carrera:('ISI','IEM','IQ','LAR')
+			Domicilio:AN(10)
+			librosp:N(1)
+
+		fin registro
+
+		s : socios
+		archivoalumnos : archivo de socios
+		archivogen: archivo de socios
+
+	Proceso
+
+		Abrir E/(archivoalumnos)
+		Leer(archivoalumnos,s)
+		Abrir S/(archivogen)
+
+		escribir('Nº de socio|Nº de teléfono|Apellido y Nombre|Carrera|Domicilio|C.Libros|')
+		
+		MIENTRAS NFDA(archivoalumnos) hacer
+
+			Si s.librosp > 4 y s.Carrera = 'ISI' Entonces
+
+				grabar(archivogen,)
+			
+			Fin Si
+
+			Leer(archivoalumnos,s)
+
+		FIN MIENTRAS
+
+		CERRAR(archivoalumnos)
+		CERRAR(archivogen)
+
+Fin accion
+
+// ejemplo: 
+Nº de socio|Nº de teléfono|Apellido y Nombre|Carrera|Domicilio		 |librosp |
+23132	   | 3624932932	  | Perez Juan		| ISI   | 	call1	     |	5     |
+231322	   | 3625932932	  | Perez Rene	    | IQ    | 	calle2	  	 |	6     |
+2313232	   | 3626932932	  | Perez Fenn		| IEM   | 		 		 |	3     |
+2315232	   | 3627932932	  | Perez Pedro		| ISI   | 		 		 |	5     |
+231321	   | 3624932933	  | Perez Gerard	| ISI   |     	 		 |  3     |
+

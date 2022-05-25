@@ -1,0 +1,43 @@
+Ejercicio 3.1
+Para cada una de las consignas siguientes, genere un algoritmo que permita solucionarla (3 algoritmos) usando un arreglo de 100 números enteros:
+
+Almacenar 100 números.
+Localizar el número de mayor valor y el de menor valor, 
+informar sus valores y sus posiciones.
+Contar y sumar todos los números pares.
+
+Accion 1erARRAY ES
+
+ Ambiente
+
+ 	arr: arreglo de [1..100] de entero
+ 	i:entero
+ 	min,max:entero
+ 	posmin,posmax:entero
+ 	acumpar,contpar:entero
+
+ Proceso
+
+ 	min:=0 ; max:= 0 ; acumpar := 0;// inicializar a 0
+ 	Esc("Ingrese los valores del array")
+
+ 	Para i:=1 hasta 100 hacer // cargar array
+ 			Leer(arr[i])
+ 	Fpara
+ 	
+ 	Para i:=1 hasta 100 hacer // tratar array
+ 		si arr[i] >= max entonces
+ 			max:=arr[i]
+ 			posmax:=i
+ 		fsi
+ 		si arr[i] >= menor entonces
+ 			min:=arr[i]
+ 			posmin:=i
+ 		Fsi
+ 		si ((arr[i] MOD 2) = 0) Entonces
+ 			acumpar:=acumpar+arr[i]
+ 			contpar:=contpar+1
+ 		Fsi
+ 	Fpara
+ 	// IMPRIMIR VARIABLES EN PANTALLA PARA INFORMAR
+Faccion

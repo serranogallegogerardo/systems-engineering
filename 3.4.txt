@@ -1,28 +1,20 @@
-Considerando un arreglo de 50 números enteros, confeccione un algoritmo para resolver las siguientes consignas:
-
-Modificar el arreglo dado, de modo que todos sus elementos sean múltiplos de 3.
-Crear otro arreglo que contenga los números que no cumplieron la condición.
-Informar cuántos números cumplieron la condición.
-
-ACCION 3.4 ES
-AMBIENTE
-    vector3: arreglo de [1..50] de enteros
-    sal: arreglo de [1..50] de enteros
-    j,i,c,res: enteros
-PROCESO
-    PARA j:=1 HASTA 50 HACER
-        sal[j]:= 0
-    FP 
-    res:= 1
-    PARA i:=1 HASTA 50 HACER
-        SI (vector3[i] MOD 3 = 0) ENTONCES
-            c:= c + 1
-            vector3[res]:= vector3[i]
-            res:= res + 1
-        SINO
-            sal[j]:= vector3[i]
-            j:=j+1
-        FSI 
-    FP 
-    Esc('Los numeros que cumplieron la condicion son ', c)
-Fin_ACCION
+Acción 3.4 (arreglo : arreglo[50] de entero) ES
+Ambiente
+  i, resto, cont_cumplieron, arregloActual : entero;
+  arregloSalida : arreglo[50] de entero;
+Proceso
+  Mientras (i:=1 hasta 50) hacer
+    arregloActual := arreglo[i];
+    resto := arregloActual MOD 3;
+    Si (resto = 0) entonces
+      cont_cumplieron := cont_cumplieron + 1;
+    Sino
+      arregloSalida[i] := arregloActual;
+      Mientras (resto <> 0) hacer
+        arregloActual := arregloActual + 1;
+        resto := arregloActual MOD 3;
+      FinMientras
+    FinSi
+  FinMientras
+  ESC("Cantidad de números que cumplieron la condición: ", cont_cumplieron);
+Fin Acción.

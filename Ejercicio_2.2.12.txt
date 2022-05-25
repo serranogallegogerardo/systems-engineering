@@ -1,0 +1,90 @@
+Ejercicio 2.2.12
+//Dada una secuencia con información de población de un PAIS:
+
+POBLACION Ordenado por Provincia, Departamento, Ciudad, Barrio, ID_Casa
+
+      Provincia  Departamento  Ciudad  Barrio  ID_Casa  Cantidad_Habitantes
+
+Generar una secuencia con información de los departamentos de esa provincia, cuyo registro tenga el siguiente formato:
+
+POBLACION_SALIDA
+
+      Provincia  Departamento  Cantidad_Habitantes
+
+
+ACCION poblacion ES
+AMBIENTE
+      
+       Poblacion=REGISTRO
+          Provincia: AN(20)
+          Depart: AN(20)
+          Ciudad: AN(20)
+          Barrio: AN(20)
+          ID_Casa: N(4)
+          Cant_Habit: N(10)
+       FinRegistro
+
+       Poblacion_Sal=Registro
+          Provincia: AN(20)
+          Depart: AN(20)
+          Cant_Habit: N(10)
+       FinRegistro
+
+       arch_pob: archivo de Poblacion ordenado por Provincia, Departamento, Ciudad, Barrio, ID_Casa
+       v: Poblacion
+       arch_sal: archivo de Poblacion_Sal
+       s: Poblacion_Sal
+       Cant_Habit: entero
+       res_Provincia: AN(20)
+       res_Depart: AN(20)
+
+       Subaccion Corte_Depart Es
+           s.Provincia:= res_Provincia
+           s.Depart:= res_Depart
+           s.Cant_Habit:= Cant_Habit
+           Grabar(arch_sal, s)
+           Cant_Habit:=0
+           res_Depart:= v.Depar
+       FinSubaccion
+
+       Subaccion Corte_Provincia Es
+           Corte_Depart
+           res_Provincia:= v.Provincia
+       FinSubaccion
+
+PROCESO
+     
+      ABRIR E/(arch_pob)
+      LEER(arch_pob, v)
+      ABRIR /S(arch_sal)
+      Cant_Habit:=0
+      res_Provincia:= v.Provincia
+      res_Depart:= v.Depart
+
+      Mientras NFDA(arch_pob) Hacer
+
+         SI (res_Provincia <> v.Provincia) ENTONCES
+
+            Corte_Provincia
+
+         SINO
+
+             SI (res_Depart <> v.Depart) ENTONCES
+
+                Corte_Depart
+
+             FinSI
+
+         FinSI
+
+         Cant_Habit:= Cant_Habit + v.Cant_Habit
+         LEER(arch_pob, v)
+
+      FinMientras
+
+      Corte_Provincia
+
+      Cerrar(arch_pob)
+      Cerrar(arch_sal)
+
+FinAccion

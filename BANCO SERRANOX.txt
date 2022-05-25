@@ -1,0 +1,105 @@
+El Banco de AED tiene almacenada 2 secuencias de datos elementales con información respecto a cuentas de clientes y saldos de cada una.
+
+La secuencia de caracteres CUENTAS almacena los datos de cuentas de clientes con el siguiente formato:
+tipodecuenta('B' Basica - 'G' Gold - 'P' Premium)numerodecuenta(palabra que finaliza en un '+')
+
+Por ejemplo: B2020211122+B322K22K+G3939221111+B933920+G99999+G56565W1+P333+* 
+SALDOS EJ  : 123123     + 1231233+12312312344+222    + 111  + 3      + 0  +*
+
+La secuencia SALDOS almacena los saldos de cada cuenta. 
+
+El primer elemento de la secuencia SALDOS corresponde al saldo del primer cliente de la secuencia CUENTAS.
+Ud debe procesar ambas secuencias y:	
+
+Mostrar por pantalla los saldos de cuentas tipo PREMIUM que superen los 10millones de pesos. 
+
+Informar el total de cuentas cuyo saldo no superen los 100mil pesos.
+
+Crear una secuencia de salida incluyendo las cuentas tipo PREMIUM. Informar ademas por pantalla Cuántas son?
+
+Accion BANCO ES
+
+	Ambiente
+
+		cuenta:secuencia de caracter
+		c:caracter
+		saldos:secuencia de entero
+		s:entero
+		csal:secuencia de caracter
+		c_menor:entero
+		contPREM:entero
+
+	Proceso // cuenta: B2020211122+P322K22K+G3939221111+B933920+G99999+G56565W1+P333+*
+			// SALDOS: 10000001+10230000+90000+111+1+0+10000001+*
+		contPREM:=0
+		c_menor:=0
+		ARR(cuenta)
+		AVZ(cuenta,c)
+		ARR(saldos)
+		AVZ(saldos,s)
+		CREAR(csal)
+
+		Mientras NFDS(cuenta) y NFDS(saldos) hacer 
+
+			Si s < 100000 Entonces 
+
+				c_menor:=c_menor+1
+
+				Mientras s <> '+' hacer
+
+					AVZ(saldos,s)					
+
+				Fin Mientras
+
+				AVZ(saldos,s)
+
+			Sino
+
+				Mientras s <> '+' hacer
+
+					AVZ(saldos,s)
+
+				Fin Mientras
+
+				AVZ(saldos,s)
+
+			Fin Si
+
+				Si c <> 'P' Entonces // PREGUNTO SI ES PREMIUM O NO
+
+					Mientras c <> '+' hacer
+
+						AVZ(cuenta,c)
+
+					Fin Mientras
+
+					AVZ(cuenta,c)
+
+				Sino // solo entran 'P'
+
+					contPREM:=contPREM+1
+
+					AVZ(cuenta,c) // NO GUARDO LA P, SOLO SU CONTENIDO
+
+					Mientras c <> '+' hacer
+
+						ESCRIBIR(csal,c)
+						AVZ(cuenta,c)
+
+					Fin Mientras
+
+					AVZ(cuenta,c) 
+
+				Fin Si
+
+		Fin Mientras
+
+		ESCRIBIR('CANTIDAD MENOR A 100.000: ', c_menor)
+		ESC('Cantidad de cuentas premium: ', contPREM)
+
+		CERRAR(cuenta)
+		CERRAR(csal)
+		CERRAR(saldos)
+
+Fin Accion
+

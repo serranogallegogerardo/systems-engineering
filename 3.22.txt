@@ -1,0 +1,15 @@
+Accion Ejerc3.22 es
+	Ambiente
+		A: Arreglo [1..5,1..5] de enteros;
+		B: Arreglo [1..2,1..5] de enteros;
+		i,j: entero;
+
+	Algoritmo
+		x:= 1;
+		Para i:= 1 a 5 hacer
+			Para j:= 1 a 5 hacer
+				B[1,i]:= B[2,i] + A[i,j];
+				B[2,j]:= B[2,1] + A[i,j];
+			Fin Pira
+		Fin Para
+Fin Accion

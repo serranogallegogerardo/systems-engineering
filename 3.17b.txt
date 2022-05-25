@@ -1,0 +1,57 @@
+Ejercicio 3.17
+
+A partir de una secuencia de entrada de 200 registros que
+contiene el Título de la película, 
+Nombre del Director, Categoría de película, // TERROR DRAMA ACCION ETC
+Cantidad de personas que la vieron y que está ordenada // TERROR 1231232 // TERROR 127317 // TERROR 123
+por el Título de la película. 
+Se precisa generar una secuencia con los datos  
+de los 10 videos más vistos de una categoría.
+    
+// ORDENAR X 1 SOLA CATEGORIA CUALQUIERA PERO 1 SOLA POR COMO DICE LA CONSIGNA "más vistos de una categoría.
+// SACAR LOS 10 MAYORES X METODO DE SELECCION DE ESA CATEGORIA ORDENADA
+
+terror 5 - terror 8 - terror 40
+//aplico metodo de seleccion y ordeno de 1..10
+
+ACCION 3.17 ES
+    Ambiente
+        titulos = reg de
+            titulo:an(20)
+            director:an(20)
+            categoria:an(20)// 'TERROR'
+            cpersonas:n(13)
+        freg
+        
+            arreglo:arreglo de [1..200] de titulos
+            aux:arreglo de [1..200] de titulos
+            sal:arreglo de [1..10] de titulos // CANTIDAD DE VIEWS
+            x,i,j:entero
+                
+    PROCESO
+            // ELIJO LA PRIMERA CATEGORIA XQUE SI PINTO i:=1 'terror             
+            aux[1]:=arreglo[1]// PRIMER ELEM YA LE PONGO TODO
+            Para i:=2 a 200 hacer // TERROR 1231232 // TERROR 127317 // TERROR 123
+               Si (arreglo[i].categoria = arreglo[1].categoria) Entonces // TERROR ADVENTURE TERROR
+                   aux[i]:=arreglo[i]
+               Fsi
+            Fin para // VECTOR AUX:TERROR TERROR TERROR TERROR AUX AUX AUX AUX
+ 
+               //Seleccion directa:
+                    Para i:= 1 hasta (200 - 1) Hacer
+                       x:=aux[i].cpersonas
+                       max:= i
+                       Para j:=(i+1) hasta 200 Hacer
+                            Si (aux[j].cpersonas > x) Entonces // 2312
+                               max:= j
+                               x:= aux[j]
+                            Fin_Si                        
+                       Fin_Para
+                       Aux[max]:= Aux[i]
+                       Aux[i]:= x
+                    Fin_Para
+                    // TERROR 2145, TERROR 2545, TERROR 21455, TERROR 214552                 
+                    Para i:=10 hasta 1  hacer// armo el top de mayor a menor
+                       sal[i]:=aux[i] // SECUENCIA ORDENADA
+                    Fp
+FA                             

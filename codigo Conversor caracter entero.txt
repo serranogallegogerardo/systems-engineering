@@ -1,0 +1,40 @@
+k:=1;
+num:=0;
+Mientras ((v2 div k)<>0) hacer
+	num:=num+1;
+	k:=k*10;
+Fin Mientras
+k:=k/10;
+Para i:=1 hasta num hacer
+	Según ((v2 div k) mod 10) hacer			// PASAR DE ENTERO ALEATORIO A CARACTER//
+		=0:Escribir(sal,'0');
+		=1:Escribir(sal,'1');
+		=2:Escribir(sal,'2');
+		=3:Escribir(sal,'3');
+		=4:Escribir(sal,'4');
+		=5:Escribir(sal,'5');
+		=6:Escribir(sal,'6');
+		=7:Escribir(sal,'7');
+		=8:Escribir(sal,'8');
+		=9:Escribir(sal,'9');
+	Fin Según
+	k:=k div 10;
+Fin Para
+
+num:=0;
+Para i:= 1 hasta 3 hacer
+	Segun v hacer
+		='0': x:=0;
+		='1': x:=1;
+		='2': x:=2;
+		='3': x:=3;
+		='4': x:=4;						//PASAR DE CARACTER A ENTERO//
+		='5': x:=5;
+		='6': x:=6;
+		='7': x:=7;
+		='8': x:=8;
+		='9': x:=9;
+	Fin Segun
+	num:=(num*10)+x;
+	Avz(sec,v);
+Fin Para

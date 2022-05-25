@@ -1,0 +1,176 @@
+Ejercicio 2.2.12 ( ABAJO DE TODO DEJE LOS DETALLES DEL ALGORITMO )
+Dada una secuencia con información de población de un PAIS:
+
+POBLACION Ordenado por Provincia, Departamento, Ciudad, Barrio, ID_Casa
+
+Provincia`Departamento`Ciudad`Barrio`ID_Casa`Cantidad_Habitantes`
+Generar una secuencia con información de los departamentos de esa provincia, cuyo registro tenga el siguiente formato:
+
+POBLACION_SALIDA
+
+Provincia`Departamento`Cantidad_Habitantes
+
+// Generar una secuencia con información: 
+// esto lo interpreto como si fuese generar una lista? 
+// si fuese el otro caso deberia haber grabado en mi archivo todo
+
+Accion 2.2.12 ES
+
+	Ambiente
+
+		Provincia = Registro de
+
+			provincia:AN(12)
+			departamento:an(35)
+			ciudad:an(30)
+			barrio:an(30)
+			id:n(5)
+			c_habitantes:n(7)
+
+		Fin Registro
+
+		p:provincia
+		ARprov:Archivo de provincia ordenado por provincia,departamento,ciudad,barrio,id
+
+		// variables testigo
+		tprovincia:an(12)
+		tdepartamento:an(35)
+		tc_habitantes:n(7)
+		c_total:entero
+		c_prov:entero
+
+		// Cortes
+
+		Subaccion corte_departamento ES
+
+			// 1° Llamo al nivel inferior inmediato 
+			// no hay asi que no llamo nada, ya que la consigna no lo pide
+
+			// 2° Imprimo todos los estados
+
+			esc('Provincia | departamento | Cantidad de habitantes')
+			esc(tprovincia,'|',tdepartamento,'|',tc_habitantes)
+
+			// 3° Acumulo en el nivel superior
+
+			c_prov:=c_prov+tc_habitantes
+
+			// 4° Actualizo la variable testigo
+
+			tc_habitantes := p.habitantes
+
+		Fin Subaccion
+
+		Subaccion corte_provincia ES
+
+			// 1° Llamo al nivel inferior inmediato
+
+			corte_departamento
+
+			// 2° Imprimo todos los estados
+
+			esc('Provincia  | Cantidad total de la provincia')
+			esc(tprovincia,'|',c_prov)
+
+			// 3° Acumulo en el nivel superior
+
+			c_total:=c_total+c_prov
+
+			// 4° Actualizo la variable testigo
+
+			tprovincia:= p.provincia
+
+		Fin Subaccion
+
+	Proceso
+
+		AbrirE/(ARprov)
+		Leer(ARrov,p)
+		tprovincia: p.provincia
+		tdepartamento: p.departamento
+		tc_habitantes: p.c_habitantes
+		c_total:=0
+		c_prov:=0
+		// reutilizando la variable tc_habitantes no hace falta crear otro acumulador para c/u de los departamentos
+
+		Mientras NFDA(ARprov) hacernose 
+
+			Si p.provincia <> tprovincia Entonces
+
+				corte_provincia
+
+			Sino p.departamento <> tdepartamento // corte si son diferentes
+
+				corte_departamento
+
+			Sino p.departamento = tdepartamento // si son del mismo dpto voy guardando la cantidad
+
+				tc_habitantes:= tc_habitantes + p.c_habitantes
+
+			Fin Si
+
+			Leer(ARprov,p)
+
+		Fin Mientras
+
+		corte_provincia
+
+		Esc('Total general de habitantes: ', c_total)
+
+		CERRAR(ARprov)
+
+Fin accion
+
+/* INFO EXTRA: ( DATOS QUE ARME PARA COMPROBAR )
+
+POBLACION Ordenado por Provincia, Departamento, Ciudad, Barrio, ID_Casa
+
+	Provincia    |Departamento   |Ciudad	   |Barrio    |ID_Casa|Cantidad_Habitantes
+	Chaco	     | Bermejo 	     |La leonesa   |Borregos  | 148   | 4744
+	Chaco	     | Bermejo 	     |La inventada |Borrega   | 143   | 4722
+crt_dptoChaco    | Bermejo       | C_Habitant
+	Chaco        |Almirante Brown|Taco Pozo    |Almirante | 132   | 17276 // ya se que ordene mal el alfabeto de departamento
+																		  // igual creo que tendria que funcionar
+	Chaco        |Almirante Brown|Rio Muerto   |Rio       | 136   | 3257 // sin afectar al algoritmo
+        corte_provincia
+	San Luis     | Chacabuco     |Naschel      |San Martin| 198   | 430000
+	San Luis     | Chacao        |Nasc         |San Matin | 192   | 244995
+
+Generar una secuencia con informacion de los departamentos con este formato:
+
+lista: 
+Provincia|Departamento|Cantidad_Habitantes
+
+prueba de escritorio :
+
+// tc_habitantes:=9466
+esc('Provincia | departamento | Cantidad de habitantes')
+     CHACO     | Bermejo      | 9466
+
+c_prov = 9466
+
+// tc_habitantes:= 17276
+
+Sino p.departamento = tdepartamento 
+
+	 tc_habitantes:= 17276 + 3257
+	 
+Fin Si
+
+// tc_habitantes:=20533
+c_prov = 9466 + 20533
+
+//c_prov = 29999
+// tc_habitantes:=430000
+
+termina el archivo
+
+llamo al corte
+
+Esc('Total general de habitantes: ', c_total)
+
+// la verdad me confundio la consigna y no entendia si tenia que generar un archivo o una lista
+// opte por lo que termine interpretando que es seria la lista 
+
+*/
+

@@ -1,0 +1,99 @@
+Ejercicio 2.2.10
+Del archivo general de alumnos de la U.T.N. - Facultad Regional Resistencia, ordenado por carrera,
+LAR - IEM - IQ - ISI ( ORDENADO POR CARRERA )
+
+se desea emitir listador de la cantidad de alumnos correspondientes a cada carrera y el total general.
+
+Se dispone de un archivo con datos de los alumnos de la U.T.N. con la siguiente información para cada alumno:
+
+Carrera | SEXO   |Nro_Legajo|Fecha_Ingreso|Total_Materias_Aprobadas
+LAR     |   M    |1          | 12-12-1231   | 23
+LAR     |   M    |2          | 11-11-1231   | 42
+IEM     |   F    |72         | .. .. .      | 11
+IEM     |   F    |4          |              | 23
+IEM     |   M    |52         | .. . ..      | ..
+IQ      |   M    |6          |              |  . . 
+IQ      |   F    |12         |  ..          | ...
+ISI     |   F    |12         |  ..          | ...
+
+
+Accion UTN Es
+
+	Ambiente
+
+	Fecha = Registro de
+
+		dia:n(2)
+		mes:n(2)
+		año:n(4)
+
+	Fin registro
+
+	alumno = Registro de
+
+		carrera:('LAR','IEM','IQ','ISI')
+		sexo:('M','F')
+		legajo:n(5)
+		fecha : Fecha
+		TMA:n(2)
+
+	Fin registro
+
+	a:alumno
+	ArAL: Archivo de alumno ordenado por carrera
+	tcarrera:AN(3)
+	contcarrera:entero
+	total:entero
+
+	//se desea emitir la cantidad de alumnos correspondientes a cada carrera y el total general.
+
+	Subaccion corte_carrera Es
+
+		// Imprimo todos los estados hasta el momento
+
+		Esc('carrera  | cantidad ')
+		Esc(tcarrera,'|',contcarrera)   
+
+		// acumulo en el nivel superior
+
+		total:=total+contcarrera // 7
+
+		// Inicializar los contadores del nivel a 0
+
+		contcarrera:=0 
+
+		// Actualizar variables testigo del nivel
+
+		tcarrera:= a.carrera 
+
+	Fin Subaccion
+
+	Proceso
+
+		Abrir E/(ArAL)
+		Leer(ArAL,a)
+		contcarrera:=0
+		total:=0
+		tcarrera:=a.carrera
+
+		Mientras NFDA(ArAL) Hacer
+
+			Si a.carrera <> tcarrera Entonces
+
+				corte_carrera
+
+			Fin Si
+
+		    contcarrera:=contcarrera+1
+
+			Leer(ArAL,a)
+
+		Fin Mientras
+
+		corte_carrera
+
+		Escribir('TOTAL GENERAL: ', total)
+
+		Cerrar(ArAL)
+
+Fin accion

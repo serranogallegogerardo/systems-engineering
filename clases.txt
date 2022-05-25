@@ -1,0 +1,4 @@
+Ejercicio 2.2.11 - Corte de Control	may. 22, 2020 9:52 AM	22/05/2020 10:15 AM	https://youtu.be/F5KV27hLpt4	algoritmos
+Ejemplo de Corte de Control (Teoría)	may. 20, 2020 1:29 PM	20/05/2020 11:00 AM	https://youtu.be/dBomzxzCYaA	algoritmos
+Práctica de Archivos (Ej. 2.2 .3/.7/.8) (Práctica)	may. 15, 2020 10:08 AM	15/05/2020 10:15 AM	https://youtu.be/LL2nbikqDfk	algoritmos
+AyED - Procesos con Archivos (Teoría)	may. 11, 2020 12:21 PM	13/05/2020 10:55 AM	https://youtu.be/qwpKJOdGPkw	algoritmos

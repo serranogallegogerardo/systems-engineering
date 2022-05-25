@@ -1,0 +1,147 @@
+2DO PARCIAL C Y D:
+
+	1)ACTUALIZAR PRECIPITACIONES_ANUALES CON ALTA,BAJA,MODIFICACION
+
+ACCION PARCIAL ES
+	Ambiente
+		tfecha = reg de
+			dd:n(2)
+			mm:n(2)
+			yy:n(4)
+		freg
+
+		tclave = reg de
+			pmid:n(5) // pluviometroid
+			fecharegistro: tfecha
+		freg
+
+		tpa = reg de
+			clave:tclave
+			precipitaciones:N(10)
+			estadopm:('AC','MA') //estadopuvliometro
+		freg
+
+		tmed = reg de
+			clave:tclave
+			precipitaciones:N(10)
+			hsregistro:N(10)
+			estadopm:('AC','MA')//estadopuvliometro
+		freg
+
+		tind = reg
+			pmid:n(5)
+			modelo:an(10)
+			descripcion:an(30)
+			dpto:1..25
+		freg
+
+		ACT,MAE:Archivo de tpa ordenado por clave
+		ract,rmae:tpa
+		MOV:Archivo de tmed ordenado por clave
+		rmov:tmed
+		MIND:Archivo de tind indexado por pmid 
+		rmind:tind
+		ndptos:arreglo de [1..25] de AN // nombres de dptos
+		resid:entero
+
+		Procedimiento LeerMAE
+			Leer(MAE,rmae)
+			Si FDA(MAE) Entonces
+				rmae.clave:=HV
+			Fsi
+		FP
+		Procedimiento LeerMOV
+			Leer(MOV,rmov)
+			Si FDA(MOV) Entonces
+				rmov.clave:=HV
+			Fsi
+		FP
+
+	Proceso
+		ABRIRE/(MAE)
+		ABRIRE/(MOV)
+		ABRIRS/(ACT)
+		ABRIRE/S(MIND)
+		mantenimientopm:=0 // acumulador
+		LeerMAE
+		LeerMOV
+			Mientras rmae.clave <> HV y rmov.clave <> HV hacer
+				Si rmae.clave < rmov.clave Entonces
+					Si rmae.estadopm = 'AC' Entonces
+						ract:=rmae
+						GRABAR(ACT,ract)
+					Sino // pluviometro en mantenimiento
+						mantenimientopm:=mantenimientopm+1
+						Esc("PLUVIOMETRO INACTIVO")														
+						ESC("ID:",rmae.clave.pmid)
+						rmind.pmid:=rmae.clave.pmid
+						SI existe Entonces
+							ESC("DEPARTAMENTO:",ndptos[rmind.dpto])
+						Sino // NO EXISTE
+							ESC("DEPARTAMENTO: NO EXISTE")
+						Fsi
+					Fsi
+					LeerMAE
+				Sino
+					Si rmae.clave = rmov.clave Entonces
+						resid:=rmov.clave
+						Mientras rmov.clave = resid hacer
+							Si rmov.estadopm = 'AC' Entonces
+								ract:=rmae
+								ract.precipitaciones:=rmov.precipitaciones
+								ract.estadopm:=rmov.estadopm
+								GRABAR(ACT,ract)
+							Sino // pluviometro en mantenimiento 
+								pmb:=true
+							Fsi
+							LeerMOV
+						fm
+					Si pmb = true Entonces // se cuenta 1 solo porque es un puvliometro con varias mediciones 
+						mantenimientopm:=mantenimientopm+1
+						Esc("PLUVIOMETRO INACTIVO")														
+						ESC("ID:",resid)
+						rmind.pmid:=rmae.clave.pmid
+						SI existe Entonces
+							ESC("DEPARTAMENTO:",ndptos[rmind.dpto])
+						Sino // NO EXISTE
+							ESC("DEPARTAMENTO: NO EXISTE")
+						Fsi
+						pmb:=false
+					Fsi
+					LeerMAE		
+					Sino // rmae.clave > rmov.clave 
+
+					 resid:=rmov.clave
+					 Mientras rmov.clave = resid hacer
+						//pluviometro nuevo
+						Si rmov.estadopm = 'AC' Entonces
+							ract.clave:=rmov.clave
+							ract.estadopm:=rmov.estadopm
+							ract.precipitaciones:=rmov.precipitaciones
+							GRABAR(ACT,ract)
+						Sino // pluviometro en mantenimiento
+							pmb:=true
+						Fsi
+						LeerMOV
+					 Fm
+
+					Si pmb = true Entonces
+						mantenimientopm:=mantenimientopm+1
+							Esc("PLUVIOMETRO INACTIVO")														
+							ESC("ID:",rmov.clave.pmid)
+							rmind.pmid:=rmae.clave.pmid
+							SI existe Entonces
+								ESC("DEPARTAMENTO:",ndptos[rmind.dpto])
+							Sino // NO EXISTE
+								ESC("DEPARTAMENTO: NO EXISTE")
+					Fsi
+				Fsi
+			Fm
+		
+		Esc("LA CANTIDAD DE PLUVIOMETROS ES DE:", mantenimientopm)
+
+		Cerrar(MAE)
+		Cerrar(MOV)
+		Cerrar(ACT)
+		Cerrar(MIND)
+FA

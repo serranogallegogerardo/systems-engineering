@@ -1,0 +1,97 @@
+Accion Ejerc2.3.2 es
+	Ambiente
+		Empleados = Registro
+			ClaveE: Clave;
+			Nombre_Empleado: AN(50);
+			Cod_Curso: N(10);
+			Tecnico: ('Si', 'No');
+		Fin Registro
+
+		Clave = Registro
+			Nro_Sucursal: N(10);
+			Categoria: ('A', 'B', 'C');
+		Fin Registro
+
+		Cursos = Registro
+			Cod_Curso: N(10);
+			Nombre: AN (50);
+			FechaC: Fecha;
+			Cant_Horas: entero;
+		Fin Registro
+
+		Accion Corte_Categoria es
+			Escribir ('Sucursal: ', Resg_Sucursal);
+			Escribir ('Categoria: ', Resg_Categoria);
+			Escribir ('Total de empleados: ', Tot_Empleados);
+			Escribir ('De los cuales ',Tot_Empledos_Tecnicos,' son tecnicos y ',Tot_Empleados_No_Tecnicos,' no son tecnicos');
+			Tot_Empleados_Tecnicos_Sucursal:= Tot_Empleados_Tecnicos_Sucursal + Total_Empleados_Tecnicos;
+			Tot_Empleados_No_Tecnicos_Sucursal:= Tot_Empleados_No_Tecnicos_Sucursal + Tot_Empleados_No_Tecnicos;
+			Tot_Empleados_Sucursal:= Tot_Empleados_Sucursal + Tot_Empleados;
+			Resg_Categoria:= Reg_Empleados.Categoria;
+			Tot_Empleados_Tecnicos:= 0;
+			Tot_Empledos_No_Tecnicos:= 0;
+			Tot_Empleados:= 0;
+		Fin Accion
+
+		Accion Corte_Sucursal es
+			Corte_Categoria;
+			Escribir ('Sucursal: ', Resg_Sucursal);
+			Escribir ('Total de empleados: ', Tot_Empleados_Sucursal;
+			Escribir ('De los cuales ',Tot_Empleados_Tecnicos_Sucursal,' son tecnicos y ',Tot_Empleados_No_Tecnicos_Sucursal,' no son tecnicos');
+			Tot_Empleados_Tecnicos_General:= Tot_Empleados_Tecnicos_General + Total_Empleados_Tecnicos_Sucursal;
+			Tot_Empleados_No_Tecnicos_General:= Tot_Empleados_No_Tecnicos_General + Tot_Empleados_No_Tecnicos_General;
+			Tot_Empleados_General:= Tot_Empleados_General + Tot_Empleados_Sucursal;
+			Resg_Sucursal:= Reg_Empleados.Sucursal;
+			Tot_Empleados_Tecnicos_Sucursal:= 0;
+			Tot_Empleados_No_Tecnicos_Sucursal:= 0;
+			Tot_Empleados_Sucursal:= 0;
+		Fin Accion
+
+		Arch_Empledos: Archivo de Empleados ordenado por ClaveE;
+		Arch_Cursos: Archivo de Cursos indexado por Cod_Curso;
+		Reg_Empleados: Empleados;
+		Reg_Cursos: Cursos;
+		Tot_Empleados, Tot_Empleados_Tecnicos, Tot_Empleados_No_Tecnicos, Tot_Empleados_Sucursal, Tot_Empleados_Tecnicos_Susural: entero;
+		Tot_Empleados_No_Tecnicos_Sucursal, Tot_Empleados_General, Tot_Empleados_Tecnicos_General, Tot_Empleados_No_Tecnicos_General: entero;
+
+	Algoritmo
+		Abrir E/ (Arch_Empleados);
+		Abrir E/ (Arch_Cursos);
+		Leer (Arch_Empleados, Reg_Empleados);
+		Tot_Empleados:= 0;
+		Tot_Empleados_Tecnicos:= 0;
+		Tot_Empleados_No_Tecnicos:= 0;
+		Tot_Empleados_Sucursal:= 0;
+		Tot_Empleados_Tecnicos_Sucursal:= 0;
+		Tot_Empleados_No_Tecnicos_Sucursal:= 0;
+		Tot_Empleados_General:= 0;
+		Tot_Empleados_Tecnicos_General:= 0;
+		Tot_Empleados_No_Tecnicos_General:= 0;
+		Resg_Sucursal:= Reg_Empleados.Nro_Sucursal;
+		Resg_Categoria:= Reg_Empleados.Categoria;
+		Mientras NFDA (Arch_Empleados) hacer
+			Si (Resg_Sucursal <> Reg_Empleados.Nro_Sucursal) entonces
+				Corte_Sucursal;
+			Sino
+				Si (Resg_Categoria <> Reg_Empleados.Categoria) entonces
+					Corte_Categoria;
+				Fin Si
+			Fin Si
+			Reg_Cursos.Cod_Curso:= Reg_Empleados.Cod_Curso;
+			Leer (Arch_Cursos, Reg_Cursos);
+			Escribir ('Sucursal - Categoria - Nombre del Empleado - Nombre del Curso');
+			Escribir (Reg_Empleados.ClaveE.Nro_Sucursal, Reg_Empleados.ClaveE.Categoria, Reg_Empledos.Nombre_Empleado, Reg_Cursos.Nombre);
+			Si (Reg_Empleados.Tecnico = 'Si') entonces
+				Tot_Empleados_Tecnicos:= Tot_Empleados_Tecnicos + 1;
+			Sino
+				Tot_Empleados_No_Tecnicos:= Tot_Empledos_Tecnicos + 1;
+			Fin Si
+			Tot_Empleados:= Tot_Empleados + 1;
+			Leer (Arch_Empleados, Reg_Empleados);
+		Fin Mientras
+		Corte_Sucursal;
+		Escribir ('El total de empleados de todas las sucursales es: ', Tot_Empleados_General);
+		Escribir ('De los cuales ',Tot_Empleados_Tecnicos_General,' son tecnicos y ',Tot_Empleados_No_Tecnicos_General,' no son tecnicos');
+		Cerrar (Arch_Empleados);
+		Cerrar (Arch_Cursos);
+Fin Accion

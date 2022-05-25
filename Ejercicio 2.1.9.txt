@@ -1,0 +1,57 @@
+Ejercicio 2.1.9¶
+Se dispone de una secuencia de caracteres. Se desea determinar la cantidad de palabras que comienzan con la letra 'I'.
+
+// Gerardo Juan Martin Serrano Gallego
+
+// Secuencia original : hola estoI Intentando hacer el algorItmo
+
+Accion palabrasI ES
+	
+	Ambiente
+
+		sec_c:secuencia de caracter
+		c:caracter
+
+	Procedimientos
+
+		Procedimiento InicializarSec()
+
+			ARR(sec_c)
+			AVZ(sec_c,c)
+			cont_p:entero
+			blanco:logico
+
+		Fin Procedimiento
+
+	Proceso
+
+		cont_p:=1
+
+		InicializarSec()
+
+			Mientras NFDS(sec_c) hacer
+
+				Si c = '' Entonces
+
+					blanco:=V~~~~`
+
+				Fin Si
+
+				Si c = I y blanco = V Entonces
+
+					cont_p:=cont_p+1
+					blanco:=F
+
+				Sino 
+
+				Fin Si
+
+					AVZ(sec_c)
+
+			Fin Mientras
+
+			Esc('La cantidad de palabras que empiezan con I es de :', cont_p)
+
+Fin Accion 
+
+// Secuencia original : hola estoI Intentando hacer el algorItmo

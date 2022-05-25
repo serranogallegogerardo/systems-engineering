@@ -1,0 +1,36 @@
+Accion Ejerc3.19 es
+	Ambiente
+		N = 10;
+		M = 10;
+		Arreglo: Arreglo [1..N][1..M] de enteros;
+		i,j,mayor,posicionimayor,posicionjmayor: entero;
+
+	Algoritmo
+		Para i:= 1 a N hacer
+			Para j:= 1 a M hacer
+				Escribi ('Escriba valores para cargar el arreglo');
+				Leer (Arreglo[i,j]);
+			Fin Para
+		Fin Para
+
+		Para i:= 1 a N hacer
+			Para j:= 1 a M hacer
+				mayor:= 0;
+				Si (Arreglo[i,j] > mayor) entonces
+					mayor:= Arreglo[i,j];
+					posicion:= j;
+				Fin Si
+			Fin Para
+			Escribir ('El mayor elemento de la fila ',i,' es ',mayor,' y se encuentra en la columna ',posicion);
+			Si (i = 1) entonces
+				resg_columna:= posicion;
+			Fin Si
+			Si (resg_columna = posicion) entonces
+				cont:= cont + 1;
+			Fin Si
+		Fin Para
+		Si (cont = N) entonces
+			Escribir ('Todas los elementos mayores se encontraron en la columna ',resg_columna);
+				
+		Fin Para
+Fin Accion

@@ -1,0 +1,46 @@
+Ejercicio 3.14
+El mes que viene se realizará en Buenos Aires el desfile “Alta Moda 2018”, el cual reúne a los diseñadores más reconocidos del país. 
+Para organizar las pasadas, se dispone de un arreglo por diseñador, 
+con la siguiente información: nombre de el/la modelo y altura. 
+La directora del evento necesita que se
+1imprima cada lista ordenada de acuerdo a la altura de el/la modelo.
+2Escribir un algoritmo que permita ingresar los datos de cada diseñador 
+3e imprimirlos de acuerdo a lo solicitado.
+
+	ACCION E3.14	ES
+  
+  	AMBIENTE
+    
+    reg = REGISTRO
+    	Nombre: AN(20)
+      Altura: N(3)
+    FR
+    
+    array: arreglo [1...N] de reg
+    
+    PROCESO
+    
+    PARA i:=1 HASTA N HACER
+    	ESC("Ingrese el nombre de el/la modelo")
+      LEER(array[i].Nombre)
+      ESC("Ingrese la altura de el/la modelo")
+      LEER(array[i].Altura)
+    FP
+    
+    Para i:= 2 a N hacer
+      x:= array[i].Altura;
+      j:=i-1;
+      Mientras((j > 0) y (x < array[j].Altura)) hacer
+        array[j+1].Altura:= array[j].Altura
+        j:= j -1 
+      Fin Mientras 
+    	array[j+1].Altura:=x
+    Fin para
+    
+3  PARA i:=1 HASTA N HACER
+    	ESC(array[i])
+    FP
+  
+  FA
+
+

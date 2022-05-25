@@ -1,65 +1,156 @@
-Se lleva a cabo una encuesta a fin de anticipar los posibles porcentajes de votos que obtendr√°n cada uno de los 4 partidos pol√≠ticos de mayor peso en las elecciones. Los datos solicitados a los encuestados son: partido al que Algoritmos y Estructuras de Datos 2019 votara, edad, sexo y partido al que vot√≥ en las elecciones anteriores. Las respuestas se tabulan de acuerdo a los siguientes criterios:
+ponAccion Ejerc3.31 es
+	Ambiente
+		Arreglo: Arreglo [1..8,1..7,1..3,1..7] de enteros;
+		i,j,k,z: entero;
 
-Partidos: P1, P2, P3, P4, Otro, En Blanco, Indeciso
-Edad: 18-25, 26-35, 36-45, 46-55, 56-65, +65
-Sexo: Femenino, Masculino
-Dise√±e un algoritmo que, utilizando un arreglo de 4 dimensiones (partido al que votara, edad, sexo , partido al que vot√≥), permita responder a las siguientes consultas:
+	Algoritmo
 
-Cantidad de personas de cierta edad que votar√°n a un Partido dado.
-Cantidad de personas de un sexo dado que votar√°n a un determinado Partido.
-Cantidad de personas de cierta edad que votaron a un determinado Partido y actualmente votar√°n a otro Partido dado.
-Cantidad de personas de un sexo dado que votaron a un determinado Partido y actualmente votar√°n a otro Partido dado.
+		Para i:= 1 a 8 hacer		PARTIDO QUE VOTARA
+			Para j:= 1 a 7 hacer		EDAD
+				Para k:= 1 a 3 hacer		SEXO
+					Para z:= 1 a 7 hacer		PARTIDO QUE VOTO ANTES
+						Arreglo[i,j,k,z]:= 0;
+					Fin Para
+				Fin Para
+			Fin Para
+		Fin Para
 
-ACCION 3.31 ES 
-AMBIENTE
-    encuesta: arreglo de [1..8, 1..7, 1..3, 1..8] de enteros
-    FUNCION Partido(TipoP:entero):entero 
-        SEGUN TipoP HACER
-            = 'P1': Partido:= 1
-            = 'P2': Partido:= 2
-            = 'P4': Partido:= 3
-            = 'Otro': Partido:= 4
-            = 'En Blanco': Partido:= 5
-            = 'Indeciso': Partido:= 6
-        FS 
-    FF 
+		Escribir ('øDesea cargar datos nuevos');
+		Leer (Resp);
 
-PROCESO 
-    //carga 
-    PARA i:= 1 HASTA 7 HACER
-        PARA j:= 1 HASTA 6 HACER
-            PARA k:= 1 HASTA 2 HACER 
-                PARA l:= 1 HASTA 7 HACER 
-                    Esc('ingrese a que partido votara')
-                    Leer(TipoP)
-                    PartidoV:=Partido(TipoP)
-                    Esc('Ingrese su edad')
-                    Leer(TipoE)
-                    SEGUN TipoE HACER
-                        <=25: Edad:= 1
-                        <=35: Edad:= 2
-                        <=45: Edad:= 3
-                        <=55: Edad:= 4
-                        <=65: Edad:= 5
-                        >65: Edad:= 6
-                    FS 
-                    eSC('Ingrese su sexo')
-                    Leer(TipoS)
-                    SEGUN TipoS HACER 
-                        = 'Femenino': sexo:= 1
-                        = 'Masculino': sexo:= 2
-                    FS                   
-                    Esc('Ingrese al partido que voto el a√±o anterior')
-                    Leer(TipoPA) 
-                    PartidoA:=Partido(TipoPA)
+		Mientras (Resp = 'S') hacer
+			Escribir ('Ingrese el partido al que votar·');
+			Leer (Partido1);
+			Escribir ('Ingrese su edad');
+			Leer (Edad);
+			Escribir ('Ingrese su sexo');
+			Leer (Sexo);
+			Escribir ('Ingrese el partido al que votÛ en las elecciones anteriores');
+			Leer (Partido2);
 
-                    encuesta[PartidoV,Edad,sexo,PartidoA]:= encuesta[PartidoV,Edad,sexo,PartidoA] + 1
-                    encuesta[8,Edad,sexo,PartidoA]:= encuesta[PartidoV,Edad,sexo,PartidoA] + 1
-                    encuesta[PartidoV,7,sexo,PartidoA]:= encuesta[PartidoV,Edad,sexo,PartidoA] + 1
-                    encuesta[PartidoV,Edad,3,PartidoA]:= encuesta[PartidoV,Edad,sexo,PartidoA] + 1
-                    encuesta[PartidoV,Edad,sexo,8]:= encuesta[PartidoV,Edad,sexo,PartidoA] + 1
-                FP 
-            FP
-        FP 
-    FP
-FIn_ACCION 
+			Segun (Partido1) hacer
+				'P1': i:= 1;
+				'P2': i:= 2;
+				'P3': i:= 3;
+				'P4': i:= 4;
+				'Otro': i:= 5;
+				'En Blanco': i:= 6;
+				'Indeciso': i:= 7;
+			Fin Segun
+
+			Si (Edad >= 18) y (Edad >= 25) entonces
+				j:= 1;
+			Sino
+				Si (Edad >= 26) y (Edad <= 35) entonces
+					j:= 2;
+				Sino
+					Si (Edad >= 36) y (Edad <= 45) entonces
+						j:= 3;
+					Sino
+						Si (Edad >= 46) y (Edad <= 55) entonces
+							j:= 4;
+						Sino
+							Si (Edad >= 56) y (Edad <= 65) entonces
+								j:= 5;
+							Sino
+								Si (Edad >= 66) entonces
+									j:= 6;
+								Fin Si
+							Fin Si
+						Fin Si
+					Fin Si
+				Fin Si
+			Fin Si
+
+			Segun (Sexo) hacer
+				'Femenino': k:= 1;
+				'Masculino': k:= 2;
+			Fin Segun
+
+			Segun (Partido2) hacer
+				'P1': z:= 1;
+				'P2': z:= 2;
+				'P3': z:= 3;
+				'P4': z:= 4;
+				'Otro': z:= 5;
+				'En Blanco': z:= 6;
+			Fin Segun
+
+			Para i:= 1 a 7 hacer		PARTIDO QUE VOTARA
+				Para j:= 1 a 6 hacer		EDAD
+					Para k:= 1 a 2 hacer		SEXO
+						Para z:= 1 a 6 hacer		PARTIDO QUE VOTO ANTES
+							Arreglo[i,j,k,z]:= Arreglo[i,j,k,z] + 1;
+						Fin Para
+					Fin Para
+				Fin Para
+			Fin Para
+
+			Escribir ('øDesea cargar datos nuevos?');
+			Leer (Resp);
+		Fin Mientras
+
+		Escribir ('Ingrese el partido al que votar·');
+		Leer (Partido1);
+		Escribir ('Ingrese su edad');
+		Leer (Edad);
+		Escribir ('Ingrese su sexo');
+		Leer (Sexo);
+		Escribir ('Ingrese el partido al que votÛ en las elecciones anteriores');
+		Leer (Partido2);
+			Segun (Partido1) hacer
+			'P1': i:= 1;
+			'P2': i:= 2;
+			'P3': i:= 3;
+			'P4': i:= 4;
+			'Otro': i:= 5;
+			'En Blanco': i:= 6;
+			'Indeciso': i:= 7;
+		Fin Segun
+		Si (Edad >= 18) y (Edad >= 25) entonces
+			j:= 1;
+		Sino
+			Si (Edad >= 26) y (Edad <= 35) entonces
+				j:= 2;
+			Sino
+				Si (Edad >= 36) y (Edad <= 45) entonces
+					j:= 3;
+				Sino
+					Si (Edad >= 46) y (Edad <= 55) entonces
+						j:= 4;
+					Sino
+						Si (Edad >= 56) y (Edad <= 65) entonces
+							j:= 5;
+						Sino
+							Si (Edad >= 66) entonces
+								j:= 6;
+							Fin Si
+						Fin Si
+					Fin Si
+				Fin Si
+			Fin Si
+		Fin Si
+
+		Segun (Sexo) hacer
+			'Femenino': k:= 1;
+			'Masculino': k:= 2;
+		Fin Segun
+
+		Segun (Partido2) hacer
+			'P1': z:= 1;
+			'P2': z:= 2;
+			'P3': z:= 3;
+			'P4': z:= 4;
+			'Otro': z:= 5;
+			'En Blanco': z:= 6;
+		Fin Segun
+
+		Para i:= 1 a 7 hacer		PARTIDO QUE VOTARA
+			Para j:= 1 a 6 hacer		EDAD
+				Para k:= 1 a 2 hacer		SEXO
+					Para z:= 1 a 6 hacer		PARTIDO QUE VOTO ANTES
+						Arreglo[
+					Fin Para
+				Fin Para
+			Fin Para
+		Fin Para

@@ -1,0 +1,33 @@
+Ejercicio 3.20
+Dadas dos matrices A y B, cuadradas, de 5 x 5, con números enteros;
+·   cargar una matriz C, de 5 x 5 teniendo en cuenta las siguientes condiciones: 
+    la diagonal principal completar con ceros, 
+    en las posiciones que están por encima de la diagonal principal,
+    copiar los correspondientes elementos de la matriz A 
+    y, en las posiciones que están por debajo de la diagonal principal,
+    copiar los elementos correspondientes de la matriz B.
+    
+
+Accion 3.20 ES
+    Ambiente
+    A:arreglo [1..5, 1..5] de entero
+    B:arreglo [1..5,1..5] de entero
+    C:arreglo [1..5,1..5] de entero
+    Proceso
+
+//ponenele que cargamos los datos de las matrices A y B
+
+        Para i:=1 hasta 5 hacer
+            Para j:=1 hasta 5 hacer
+                si (i=j) entonces    
+                    C[i,j]:=0 // COMPLETAR DIAGONAL PRINCIPAL
+                Fin SI              
+                Si i<j entonces
+                   C[i,j]:=A[i,j]
+                Fin Si 
+                Si i>j entonces
+                   C[i,j]:=B[i,j]
+                Fin Si
+            Fin Para
+        Fin Para
+Fin Accion

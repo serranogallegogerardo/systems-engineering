@@ -1,0 +1,84 @@
+Ejercicio 2.1.19
+Dada una secuencia de caracteres, generar otra secuencia con todas las palabras de tres caracteres.
+Informar el porcentaje de las mismas, sobre el total de palabras de la secuencia de entrada. 
+Considerar que puede haber más de un blanco entre palabras.
+
+Accion 219 ES
+
+	Ambiente
+
+	sec:secuencia de caracteres
+	c: caracter
+	secsal:secuencia de caracter
+	contletras,contpal,conttotal:entero
+	A,B,C,D: caracter
+
+
+	Proceso
+
+	conttotal:=0
+	contpal:=0
+	contletras:=0
+	ARR(sec)
+	AVZ(sec,c)
+	CREAR(secsal)
+	// sec ej:      AASDASJDJ asda gera DAS ASKDK FAS ASDLASD FKKE*
+
+	Mientras NFDS(sec) hacer
+
+		Mientras c = ' ' hacer
+
+			AVZ(sec,c)
+
+		Fin Mientras // c = A
+
+		Mientras c <> ' ' hacer 
+			
+			contletras:=contletras+1
+			Segun contletras hacer
+
+				=1 :
+
+				A = c
+				=2 :
+
+				B = c
+
+				= 3:
+				C = c
+
+			Fin Segun
+
+		AVZ(sec,c)
+
+		Fin Mientras
+
+		conttotal:=conttotal+1
+
+		Si contletras = 3 Entonces
+
+			contpal:=contpal+1
+
+			ESCRIBIR(secsal,A)
+			ESCRIBIR(secsal,B)
+			ESCRIBIR(secsal,C)
+			ESCRIBIR(secsal,' ')
+
+		Fin Si
+
+		contletras:=0
+
+	Fin Mientras
+
+	// rtas: 
+	//Informar el porcentaje de las mismas, sobre el total de palabras de la secuencia de entrada. 
+	//Considerar que puede haber más de un blanco entre palabras.
+
+	conttotal:= contpal / (100*conttotal)
+
+	ESCRIBIR('Pctaje es: ', conttotal)
+
+	CERRAR(sec)
+	CERRAR(secsal)
+
+Fin accion

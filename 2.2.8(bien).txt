@@ -1,0 +1,86 @@
+Ejercicio 2.2.8
+De los datos del siguiente ejercicio:
+
+COMPRAS Ordenado por Nro_Cliente
+
+Nro_ClienteFecha_Ultima_CompraMonto
+CLIENTES Ordenado por Nro_Cliente
+
+Nro_ClienteApellido_NombreDomicilioTeléfonoDNI
+
+Ambos archivos están ordenados por Nro. de Cliente en forma ascendente.
+ Listar
+  los nombres,fecha y monto de última compra, 
+ de todos aquellos clientes cuya última compra sea posterior(mayor) a una fecha dada 
+ y el monto supere un monto dado.
+
+Accion 2.8 ES
+
+	Ambiente
+
+		tfecha = reg
+
+			dd:n(2)
+			mm:n(2)
+			yy:n(4)
+
+		fr
+
+		tarch1 = reg
+
+			Nro_Cliente:N(5)
+			Fecha_Ultima_Compra:tfecha
+			Monto:n(6)
+
+		freg
+
+		tarch2 = reg
+
+			Nro_Cliente:(5)
+			Apellido_Nombre:AN(20)
+			Domicilio:AN(20)
+			Teléfono:N(5)
+			DNI:N(6)
+
+		freg
+
+		COMPRAS: archivo de tarch1 Ordenado por Nro_Cliente
+		CLIENTES: archivo de tarch2 Ordenado por Nro_Cliente
+		Rcom:tarch1
+		Rcli:tarch2
+
+		fechadada:tfecha
+		montodado:n(6)
+
+	Proceso
+
+		AbrirE/(COMPRAS,Rcom)
+		AbrirE/(CLIENTES,Rcli)
+		Leer(COMPRAS,Rcom)
+		Leer(CLIENTES,Rcli)
+
+		Esc("Ingrese una fecha")
+		Leer(fechadada)
+
+		Esc("Ingrese un monto")
+		Leer(montodado)
+
+		Esc("NOMBRE/FECHA/MONTO ULT. COMPRA")
+
+		Mientras NFDA(CLIENTES) Hacer
+
+			Si (Rcom.Fecha_Ultima_Compra > fechadada) y (Rcom.monto > montodado) Entonces
+
+				Esc(Rcli.Apellido_Nombre,"/",Rcom.Fecha_Ultima_Compra,"/",Rcom.monto)
+
+			Fsi
+
+			Leer(COMPRAS,Rcom)
+			Leer(CLIENTES,Rcli)
+
+		Fm
+
+		Cerrar(COMPRAS,Rcom)
+		Cerrar(CLIENTES,Rcli)
+
+FA

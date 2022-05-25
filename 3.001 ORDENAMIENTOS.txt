@@ -1,0 +1,118 @@
+"La empresa "Webtoon" desea crear un top con los usuarios mas longevos de la comunidad por lo tanto posee un arreglo de 30 codigos de usuarios los cuales precisan ser ordenados de menor a mayor, teniendo en cuenta que cuanto mas pequeño es numero del codigo mas antiguo es el usuario.
+
+
+
+
+
+
+
+
+
+
+BURBUJAJAJAJA...::
+
+ACCION WEBTTON ES
+AMBIENTE
+A:arreglo de (1...30)de entero
+j:entero
+x:entero
+Bandera:logico
+
+PROCESO
+
+Bandera:= Falso;
+
+Mientras NO Bandera hacer
+
+	Bandera:= Verdadero;
+
+	Para j:=1 hasta (30-1) hacer
+
+		Si A[j] > A[j+1]entonces
+
+			X:=A [j];
+
+			A[j] := A[j+1];
+
+			A[j+1]:=X;
+
+			Bandera:= Falso;
+		Fin si
+
+	Fin para
+
+Fin mientras
+
+
+
+
+
+
+
+
+INSERCION ::
+
+ACCION WEBTTON ES
+AMBIENTE
+A:arreglo de (1...30)de entero
+i:entero
+x:entero
+j:entero
+PROCESO
+
+PARA i:= 2 a 30 HACER
+
+    x:=a[i]
+    j:=i-1
+
+    MIENTRAS (j > 0) y (x < a[j]) HACER
+
+        a[j+1]:=a[j]
+
+        j:=j-1
+
+    FIN MIENTRAS
+
+    a[j+1]:=x
+
+FIN PARA
+
+
+
+
+
+
+
+SELECCION::
+
+ACCION WEBTTON ES
+AMBIENTE
+A:arreglo de (1...30)de entero
+i:entero
+x:entero
+j:entero
+PROCESO
+PARA i:= 1 a 30-1 HACER
+
+    x:=a[i]
+
+    max:=i
+
+    PARA j:= i+1 a n HACER
+
+        SI (x > a[j]) ENTONCES
+
+            max:=j
+
+            x:=a[j]
+
+        FIN SI
+
+    FIN PARA
+
+    a[max]:=a[i]
+
+    a[i]:=x
+
+FIN PARA
+FIN ACCION

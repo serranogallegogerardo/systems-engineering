@@ -1,0 +1,85 @@
+/*Ejercicio 2.1.15
+Se desea saber la cantidad promedio de palabras que contienen las oraciones de una secuencia de caracteres. Supóngase que los puntos son siempre contiguos al último caracter de la palabra. La secuencia finaliza con una marca.*/
+
+/* ANALISIS de ejemplo:
+secuencia:¡Hol@a soy Pedro!.¡Ho%la soy Juan!.Hola soy Gera.Hola soy Franco.*
+			acumulador:=0 ; cont:=0 ;
+	        acum:=acum+12 	  acum:=acum+11   acum:=acum+11      acum:=acum+13
+			cont = cont+1              + 1             + 1               + 1
+			promedio:= acumulador / cont
+*/
+
+Accion palabras ES
+
+	Ambiente
+
+		Constantes
+
+		letrasG = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','Ñ','O','P','Q','R','S','T','U','V','W','X','Y','Z'}
+		letrasM = {'a','b','c','d,'e','f','g','h','i','j','k','l','m','n','ñ','o','p','q','r','s','t','u','v','w','x','y','z' } 
+
+		Variables
+
+		sec_c: secuencia de caracter
+		c:caracter
+		ac_prom:entero // acumulador del promedio
+		cont:entero
+		promedio:real
+		acum:entero
+
+	Proceso
+
+		cont:=0//cuento la cantidad de oraciones que empiezan en mayuscula y terminan en '.'
+		acum:=0 // usando un acumulador me ahorro la operacion de la suma
+		ARR(sec_c)
+		AVZ(sec_c,c)
+
+		// En caso de que el usuario se equivoque poniendo ,,,** al comienzo de la oracion
+
+		//*%&*,@!,D,¡Hol@a soy Pedro!.¡Ho%la s$oy Juan.Holasoy Gera.Hola soy Franco.*
+
+		Mientras c <>letrasG o c <>LetrasM
+
+			AVZ(sec_c,c)
+
+		Fin Mientras
+
+		// Caso de que la secuencia tiene algunos defectos pero entra dentro de los parametros de lo normal pudiendo tener equivocaciones al escribir
+
+			// scia:¡Hol@a soy Pedro!.¡Ho%la s$oy Juan.Holasoy Gera.Hola soy Franco.
+			//                    11 .               9.          11.             13.
+			//                     1 +               1+           1+              1+ 
+
+		Mientras c <> '*' Hacer
+
+			Mientras c <> '.' Hacer
+
+				Si c = letrasG Entonces
+
+					acum:=acum+1
+
+				Sino c = letrasM
+
+					acum:=acum+1
+
+				Fin Si
+
+			AVZ(sec_c,c)
+
+			Fin Mientras
+
+			AVZ(sec_c,c)
+			cont:=cont+1
+
+		Fin Mientras
+
+		promedio:= acum/cont
+
+		Esc('La cantidad promedio de palabras que contiene es de:', promedio)
+
+Fin Accion
+
+// ACLARACION:
+//Intente hacer el codigo mas complejo para solucionar este problema pero no pude.
+			// scia:Hola l d f soy Pedro.Hola soy fd tr te fke fzxc Fulano.
+// Osea que no detecte letras solas o palabras que no tiene sentido pero creo que ya seria muy complejo y me estaria yendo por las ramas apartandome de la consigna principal

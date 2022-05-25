@@ -1,0 +1,145 @@
+Ejercicio 2.1.31
+El siguiente es un ejercicio del primer parcial del año 2017: La empresa TICKET-TEC ha generado una secuencia de caracteres con información de sus ventas para los eventos de los últimos 3 meses, cuya estructura se describe a continuación. Inicialmente existe el nombre del local de los eventos, cuya longitud se desconoce, termina con un #; a continuación se tiene la información de todos los tickets vendidos para ese local, separado cada ticket del siguiente con el caracter !, y al final de todas las ventas para ese local, el caracter &. Por último la marca de fin de secuencia. También en el caso de butaca se desconoce la longitud del número, termina con un guión.
+
+EJEMPLO
+Teatro Opera#270520171A45-2030!270520173D120-2230!280520172C233-2030!&Galpon de las Luces#070720171C5-2030!301020172A233-2230!&*
+
+local de eventos#Fecha del evento[ddmmaaaa] codigo del evento[1..3] butaca [sector [A,C o D], número] - horario evento [hhmm]!
+
+Solo hay dos horarios 20:30 y 22:30.
+
+La empresa solicita un algoritmo que cumpla con las siguientes consignas:
+
+Generar una nueva secuencia de salida con el mismo formato, que contenga los tickets correspondientes a un mes ingresado por el usuario.
+
+Informar total general de tickets vendidos, total de tickets por evento y porcentaje de cada uno sobre el total general.
+
+Accion tickettec ES
+
+	Ambiente
+
+		sr:secuencia de caracter // sr=secuencia recibida
+		srsalida:secuencia de caracter // secuencia a generar
+		acum:entero
+		r:caracter
+		mesd1,mesd2:caracter // digitos mes
+		d1,d2:caracter // digitos de fecha
+
+	Proceso
+
+		acum:=0
+		ARR(sr)
+		AVZ(sr,r)
+		CREAR(srsalida)
+
+		Esc("Ingrese el dia actual en forma de caracter (EJ: escribo "2" y luego "7") :" ")
+		Leer(d1)
+		Leer(d2)
+
+		Esc("Ingrese el mes actual en forma de caracter (EJ: escribo "0" y luego "3" o si quiero el anteultimo EJ: "0" y luego "2" ) :" ")
+		Leer(mesd1)
+		Leer(mesd2)
+
+		//Inicialmente existe el nombre del local de los eventos, cuya longitud se desconoce, termina con un #; a continuación se tiene la información de todos los tickets vendidos para ese local, //separado cada ticket del siguiente con el caracter !, y al final de todas las ventas para ese local, el caracter &.
+
+		Mientras r <> '*' hacer // en la mayoria de estos casos trate de cubrir bugs pero no todos
+
+			Mientras r <> '#' hacer
+
+				ESCRIBIR(srsalida,r) // en la secuencia generada le voy escribiendo los caracteres del nombre
+				AVZ(sr,r)
+
+			Fin mientras
+
+			ESCRIBIR(srsalida,r) // estoy en r = # entonces lo escribo para mantener el formato
+			AVZ(sr,r)
+
+		Mientras r <> '&' hacer 
+
+			Si	d1 = r Entonces
+
+				AVZ(sec,r) // digito fecha 
+
+				Si d2 = r Entonces
+
+			 		AVZ(sec,r) // digito fecha
+
+					Si r = mesd1 Entonces // comparo si el primer digito es igual a este
+
+					AVZ(sr,r)
+
+						Si r = mesd2 Entonces // comparo si el segundo digito es igual al segundo digito del ticket
+
+						Mientras r <> '-' hacer // avanzo hasta el '-'
+
+							ESCRIBIR(srsalida,r)
+							AVZ(sr,r)
+
+						Fin Mientras
+
+						// aca r ya es igual al '-'
+						ESCRIBIR(srsalida,r)
+
+						Mientras r = '-' hacer // avanzo en caso de que haya muchos '-'
+
+							AVZ(sr,r)
+
+						Fin Mientras
+
+						// ahora estoy en el numero del codigo
+
+						Mientras r <> '!' hacer
+
+							acum:=acum+r
+							ESCRIBIR(srsalida,r)
+							AVZ(sr,r)
+
+						Fin Mientras
+
+						// ahora r = '!' entonces tengo que avanzar y en caso de que haya muchos '!' por eso uso mientras
+
+						Mientras r = '!' hacer
+
+							AVZ(sr,r) // avanzo hasta que r ya no sea igual a '!'
+
+						Fin Mientras
+						
+						Fin si
+
+					Fin Si
+
+				Fin Si
+
+			Fin Si
+
+		// aca sale cuando con r siendo diferente de '!' entonces itera nuevamente hasta llegar al r = '&'
+
+		Fin Mientras
+
+		// ahora r = '&'
+
+		Mientras r = '&' hacer
+
+			AVZ(sr,r)
+
+		Fin Mientras
+
+		// Informar total general de tickets vendidos, total de tickets por evento y porcentaje de cada uno sobre el total general.
+
+		//local de eventos#Fecha del evento[ddmmaaaa] codigo del evento[1..3] butaca [sector [A,C o D], número] - horario evento [hhmm]!
+		//Teatro Opera #2705 2017 1A45-2030!270520173D120-2230! 28 05 2017 2C233 - 2030 !&Galpon de las Luces # 070720171C5-2030!301020172A233-2230 ! &* 
+		//Informar total general de tickets vendidos, total de tickets por evento y porcentaje de cada uno sobre el total general.
+
+// en este punto ya llevo 2hs con 11m. ( lo estoy haciendo con timer para ver cuanto me lleva )
+
+		// ahora r es diferente de & por lo tanto empieza otra secuencia de lo mismo, pero cuando r = * se va salir este pre test que abarca a todo
+
+		Fin Mientras // r 
+
+		CERRAR(srsalida)
+		CERRAR(sr)
+
+		ESC('Total de tickets vendidos :', acum)
+		// no entendi como sacar el porcentaje de cada uno en general 
+
+Fin Accion // me llevo 2h con 30m

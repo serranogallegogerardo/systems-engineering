@@ -1,0 +1,72 @@
+La empresa Game Virtual cuenta con información respecto al uso de sus juegos de realidad
+ virtual.
+Posee una secuencia de caracteres donde almacena datos de los juegos y versiones que comercializa, con la siguiente estructura: Disponibilidad(caracter que indica si está vigente o no S/N)Nombre del juego-Autor-Version(digito de 0 al 4)
+La secuencia finaliza con un *. Veamos un ejemplo
+SFight Virtual-Equipo Rojo-0SWarriors-Equipo Del Norte-0NSkyBlue-Argentina-1*
+ 
+Se te pide crear un algoritmo que permita:
+
+Crear una secuencia que incluya los datos correspondiente al nombre del juego y sus autores, siempre y cuando esté vigente
+
+Obtener la cantidad de juegos por tipo de versión (0-1-2).
+
+Hay juegos que no estén vigentes hoy y ya tengan una versión superior a 1? Qué porcentaje representan sobre el total de juegos?
+
+ACCION GAME ES:
+ambiente
+	s:secuencia de caracteres
+	sal:secuencia de caracteres
+	v:caracter
+	j0,j1,j2:entero
+	total,NOvigentes:entero
+	porcentaje:real
+Proceso
+	ARR(s)
+	AVZ(s,v)
+	CREAR(sal)
+	CONTADORES A CERO
+	MIENTRAS NFDS(s) HACER
+		si v = "S" entonces
+			AVZ(s,v)
+			Mientras v <> "-" hacer
+				ESC(sal,v)
+				Avz(s,v)
+			fin mientras
+				ESC(sal,v)
+				AVZ(s,v)
+			Mientras v <> "-" hacer
+				ESC(sal,v)
+				Avz(s,v)
+			fin mientras
+			AVZ(s,v)
+		sino
+			AVZ(s,v)
+			Mientras v <> "-" hacer
+				Avz(s,v)
+			fin mientras
+				AVZ(s,v)
+			Mientras v <> "-" hacer
+				Avz(s,v)
+			fin mientras
+			AVZ(s,v)
+			si v <> '0' y v <> '1' entonces
+				NOvigentes:= NOvigentes + 1
+			fin si
+		FIN SI
+		Segun (v) hacer
+			= '0': j0 := j0+1
+			= '1': j1 := j1+1
+			= '2': j2 := j2+1
+		fin segun
+		total := total + 1
+		AVZ(s,v)
+	fin mientras
+	CERRAR (SAL)
+	CERRAR(s)
+	ESC("la cantidad de juegos de version 0 es", j0)
+	ESC("la cantidad de juegos de version 1 es", j1)
+	ESC("la cantidad de juegos de version 2 es", j2)
+	porcentaje := (NOvigentes/total)*100
+	ESC("EL PORCENTAJE DE JUEGOS NO VIGENTES Y VERSION MAYOR A 1 es %",porcentaje)
+
+FIN ACCION

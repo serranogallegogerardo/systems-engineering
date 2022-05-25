@@ -1,0 +1,307 @@
+// SERRANO GALLEGO GERARD JUAN MARTIN ISI A 
+
+/*TAREA DE TEAMS GRUPO 6
+La empresa TodoCompu te solicita realices el diseño de un algoritmo que sea capaz de imprimir N facturas, cada una de las cuales solo puede incluir hasta 5 productos. Por cada factura se deberá requerir los datos del cliente, nro de factura, fecha, código de productos, precio unitario de los productos ( no puede ser igual a 0), cantidad y total. La impresión por pantalla de la factura debe incluir por producto, el IVA (averiguar cómo se calcula el iva de un producto en la factura).
+----
+La empresa quiere conocer el monto total que se facturó, y cuántas facturas fueron por debajo de los $1000.
+---
+Se debe imprimir todos los datos de la factura. 
+Y al finalizar el proceso la cantidad de facturas menores a 1000$*/
+
+Accion TodoCompu ES
+ Ambiente
+
+ 	//Variables
+
+	 	pp,pp2,pp3,pp4,pp5,cant_facturas,cont_facturamm,cdp,total,monto_total_facturado:numerico
+	 	nombre,apellido,cods_prods,fecha:alfanumerico
+	 	genero,pedir,pedir_facturas:logico
+
+ 	//Constantes
+
+ 		IVA=0.21
+
+ Funciones
+
+ 		
+	 	Funcion Error_cant_prod(cdp:entero):entero
+
+	 		Repetir
+
+	 		Esc('Error, la cantidad de productos no debe ser menor a 1, ni mayor a 5')
+	 		Esc('Escriba nuevamente la cantidad de productos')
+	 		Leer(cdp)
+
+	 		Hasta que (cdp = 1 o cdp = 2 o cdp = 3 o cdp = 4 o cdp = 5)
+
+	 		Error_cant_prod:=cdp
+
+	 	Fin Funcion
+
+ 		Funcion Dif_precio_cero(pp:entero):entero
+
+	 		Repetir
+
+	 			Esc('Error, el precio debe ser diferente 0 y mayor al mismo.")
+	 			Esc('Precio del producto:') 
+				Leer(pp)
+
+	 		Hasta que pp>0
+
+	 		Dif_precio_cero:=pp
+
+	 	Fin Funcion
+
+ Procedimientos
+
+ 	Procedimiento PedirFactura() // pd: solo lo use para mandar los escribir no devuelve nada
+
+ 		Esc('Por favor, ingrese los siguientes datos:')
+ 		Esc('Nombre: ')
+ 		Esc('Apellido: ') 
+ 		Esc('Genero: "V" = Varon, "F" = Mujer') 
+ 		Esc('Fecha: ')
+ 		Esc('Ingrese los codigos de todos los productos o del producto si es solo uno (Ej: ABK15A - AB4251): ') 
+ 		//corresponde a la variable cods_prods
+ 		Esc('Ingrese la cantidad del producto: ') // corresponde a la variable cdp
+ 		Esc('Ingrese los precios de sus productos:') // corresponde a la variable pp
+
+ 	Fin Procedimiento
+
+ 	Procedimiento Imp_Fact(cant_facturas,total,monto_total_facturado,cont_facturamm,cdp,total:numerico, nombre,apellido,fecha,cods_prods:alfanumerico, 
+		genero:logico) 
+
+		Esc('Datos de la factura N: ', cant_facturas)
+
+		Esc('Monto total facturado: ', monto_total_facturado)
+		ESc('IVA: ', total)
+		Esc('Facturas menores a $1000: ', cont_facturamm)
+
+		Esc('Nombre: ', nombre)
+		Esc('Apellido: ', apellido)
+
+			Si genero V Entonces
+
+				Esc('Genero: Hombre)
+
+			Sino
+
+				Esc('Genero: Mujer')
+
+			FinSi
+
+		Esc('Fecha: ', fecha)
+		Esc('Codigos de los productos: ', cods_prods)
+		Esc('Cantidad de productos: ', cdp)
+		Esc('Total a pagar por ', cdp ,' Productos: ', total)
+
+	Fin Procedimiento
+
+ Proceso
+
+ 	// Primero hago un algoritmo que sea capaz de pedir e imprimir todo esto
+
+ 	//Definicion de contadores 
+ 	total:=0
+ 	cant_facturas:=0 // contador de facturas
+ 	cont_facturamm:=0 // contador de facturas menor a mil
+ 	cdp:=0 // contador de cantidad de productos
+ 	monto_total_facturado:=0 // acumulador de lo facturado
+
+ 	// Pedir datos al usuario hasta que ya no quiera ingresar mas facturas
+
+ 	Repetir
+
+ 		PedirFactura()
+ 		Leer(nombre)
+ 		Leer(apellido)
+ 		Leer(genero)
+
+	 	cant_facturas=cant_facturas+1
+
+	 	Leer(fecha)
+
+	 	// productos
+
+	 	Leer(cods_prods)
+
+	 	Repetir
+
+	 		Repetir 
+
+	 		Leer(cdp)
+
+	 				Si (cdp < 1 y cdp > 5) Entonces // cantidad de productos error
+
+	 					 cdp:=Error_cant_prod(cdp)
+
+	 				Fin si
+
+	 		Hasta  que cdp<=5 y cdp>0
+
+	 	    	Segun cdp hacer // a continuacion veremos la cosa mas ineficiente en la faz de los codigos tomar asiento porfavor
+	 	    						// profe ya se que quedo horrible este segun pero no sabia como guardar valores dentro de una secuencia para ponerle los precios, perdon
+	 	    						// capaz funciona esta cosa segun mis pruebas de escritorio a ojo
+			 		= 1 :
+
+			 				Leer(pp)
+
+			 				Si pp <= 0 Entonces // si el precio es diferente de numero positivo
+
+			 			    pp:=Dif_precio_cero(pp)
+
+			 				FinSi
+
+			 		= 2 :
+
+			 				Leer(pp)
+
+			 				Si pp <= 0 Entonces // si el precio es diferente de numero positivo
+
+			 			    pp:=Dif_precio_cero(pp)
+
+			 				FinSi
+
+			 				Leer(pp2)
+
+			 				Si pp2 <= 0 Entonces // si el precio es diferente de numero positivo
+
+			 			    pp:=Dif_precio_cero(pp2)
+
+			 				FinSi
+
+			 		= 3 :
+
+			 				Leer(pp)
+
+			 				Si pp <= 0 Entonces // si el precio es diferente de numero positivo
+
+			 			    pp:=Dif_precio_cero(pp)
+
+			 				FinSi
+
+			 				Leer(pp2)
+
+			 				Si pp2 <= 0 Entonces // si el precio es diferente de numero positivo
+
+			 			    pp:=Dif_precio_cero(pp2)
+
+			 				FinSi
+
+			 				Leer(pp3)
+
+			 				Si pp3 <= 0 Entonces // si el precio es diferente de numero positivo
+
+			 			    pp:=Dif_precio_cero(pp3)
+
+			 				Fin Si
+
+			 		= 4 :
+
+			 				Leer(pp)
+
+			 				Si pp <= 0 Entonces // si el precio es diferente de numero positivo
+
+			 			    pp:=Dif_precio_cero(pp)
+
+			 				FinSi
+
+			 				Leer(pp2)
+
+			 				Si pp2 <= 0 Entonces // si el precio es diferente de numero positivo
+
+			 			    pp:=Dif_precio_cero(pp2)
+
+			 				FinSi
+
+			 				Leer(pp3)
+
+			 				Si pp3 <= 0 Entonces // si el precio es diferente de numero positivo
+
+			 			    pp:=Dif_precio_cero(pp3)
+
+			 				FinSi
+
+			 				Leer(pp4) 
+
+			 				Si pp4 <= 0 Entonces // si el precio es diferente de numero positivo
+
+			 			    pp:=Dif_precio_cero(pp4)
+
+			 				FinSi
+
+			 				Leer(pp4) 
+
+			 				Si pp4 <= 0 Entonces // si el precio es diferente de numero positivo
+
+			 			    pp:=Dif_precio_cero(pp4)
+
+			 				FinSi
+			 				
+			 		= 5 :
+
+			 				Leer(pp)
+
+			 				Si pp <= 0 Entonces // si el precio es diferente de numero positivo
+
+			 			    pp:=Dif_precio_cero(pp)
+
+			 				FinSi
+
+			 				Leer(pp2)
+
+			 				Si pp2 <= 0 Entonces // si el precio es diferente de numero positivo
+
+			 			    pp:=Dif_precio_cero(pp2)
+
+			 				FinSi
+
+			 				Leer(pp3)
+
+			 				Si pp3 <= 0 Entonces // si el precio es diferente de numero positivo
+
+			 			    pp:=Dif_precio_cero(pp3)
+
+			 				FinSi
+
+			 				Leer(pp4) 
+
+			 				Si pp4 <= 0 Entonces // si el precio es diferente de numero positivo
+
+			 			    pp:=Dif_precio_cero(pp4)
+
+			 				FinSi
+
+			 				Leer(pp5) 
+
+			 				Si pp5 <= 0 Entonces // si el precio es diferente de numero positivo
+
+			 			    pp:=Dif_precio_cero(pp5)
+
+			 				FinSi
+
+			 	Fin Segun
+
+	 		pedir = V
+
+		Hasta que pedir = F
+
+		total:=(pp*IVA)+(pp2*IVA)+(pp3*IVA)+(pp4*IVA)+(pp5*IVA)
+
+		monto_total_facturado:=monto_total_facturado+total
+
+			Si monto_total_facturado < 1000
+
+				cont_facturamm:=cont_facturamm+1 
+
+			FinSi
+
+		Esc('Desea agregar otra factura? ( V si es verdadero, F si es falso )')
+		Leer(pedir_facturas)
+
+			Imp_Fact(cant_facturas,total,monto_total_facturado,cont_facturamm,cdp,total,nombre,apellido,fecha,cods_prods, 
+			genero)
+
+	Hasta que pedir_facturas = F 
+
+Fin Accion

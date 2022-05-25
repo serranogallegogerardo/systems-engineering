@@ -1,0 +1,140 @@
+ejercicio arreglos parcial
+
+La Municipalidad de Resistencia desea actualizar los valores de los terrenos luego de una rezonificacion de los mismos. El valor final de cada terreno se calcula de la siguiente manera
+
+Valor del Terreno = Superficie terreno (en M2) * valor del M2 * coeficiente de incremento
+
+Para ello cuenta con la siguiente información:
+
+Un archivo maestro de los terrenos con los siguientes datos:
+
+MAESTRO Ordenado por Nro_Terreno
+
+Nro_TerrenoZonaUbicacionSuperficieValor
+
+Zona: codificadas de A a F
+Ubicación: codificada de 1 a 10
+
+Un arreglo V que contiene los valores del M2 por zona.
+
+Un archivo de movimientos
+
+MOVIMIENTO Ordenado por Nro_Terreno
+
+Nro_TerrenoZonaUbicacionSuperficieCod_Mov
+Se solicita actualizar (Alta Baja y Modificacion) los valores del archivo maestro, teniendo en cuenta que los unicos valores que se pueden actualizar es la zona y su valor.
+
+Accion Parcial es
+
+	Ambiente
+
+	f_maestro=registro
+		Nro_Terreno
+		Zona
+		Ubicacion
+		Superficie
+		Valor
+	finreg
+
+	f_mov=registro
+		Nro_Terreno
+		Zona
+		Ubicacion
+		Superficie
+		Cod_Mov:("A","B","M")
+	finreg
+
+	MAESTRO,MAESTRO_ACT:archivo de f_maestro ordenado por Nro_Terreno
+	reg_mae,reg_mae_act,aux:f_maestro
+
+	MOVIMIENTO:archivo de f_mov ordenado por Nro_Terreno
+	reg_mov:f_mov
+
+	arr:arreglo("A".."F") de reales
+
+	Subacción Proceso_Iguales es
+		Si Reg_mov.Cod_mov = 'A' entonces
+			Escribir('Error alta no existe')
+			reg_mae_act:= Reg_mae
+			Escribir(MAESTRO_ACT, reg_mae_act)
+		Sino 
+			Si (Reg_mov.Cod_Mov = 'M') entonces 
+				
+				reg_mae_act := Reg_mae
+
+				reg_mae_act.Zona:=Reg_mov.Zona
+
+				reg_mae_act.valor:=reg_mae_act.Superficie*arr(reg_mae_act.Zona)*coe
+
+				Escribir(MAESTRO_ACT, reg_mae_act)
+			Fin Si
+		Fin Si
+		Leer_Maestro
+		Leer_Movimiento
+	Fin Subacción.
+
+	Subaccion Proceso_Distintos es
+		Si (Reg_mov.Cod_Mov = 'B') entonces 
+			Escribir('Error baja no existe')
+		Sino 
+			Si (Reg_mov.Cod_Mov = 'M') entonces  
+				Escribir('Error mofificación no existe')
+			Sino
+				reg_mae_act.Nro_Terreno:= Reg_mov.Nro_Terreno
+				reg_mae_act.Zona:= Reg_mov.Zona
+				reg_mae_act.Ubicacion:= Reg_mov.Ubicacion
+				reg_mae_act.Superficie:= Reg_mov.Superficie
+				reg_mae_act.valor:=reg_mae_act.Superficie*arr(reg_mae_act.Zona)*coe       
+				Escribir(MAESTRO_ACT, reg_mae_act)
+			Fin Si
+		Fin Si
+		Leer_Movimiento
+	Fin Subaccion
+
+
+	Subaccion Leer_Movimiento es
+		Leer(MOVIMIENTO, Reg_mov)
+		Si FDA(MOVIMIENTO) entonces
+			reg_mov.Nro_Terreno:= HV
+		Fin Si
+	Fin Subaccion
+
+	Subaccion Leer_Maestro es
+		Leer(MAESTRO, Reg_mae)
+		Si FDA(MAESTRO) entonces
+			reg_mae.Nro_Terreno : = HV
+		Fin Si
+	Fin Subaccion
+
+Proceso
+
+Cargar_arreglo
+
+Abrir e/(MAESTRO)
+Abrir e/(MOVIMIENTO)
+Abrir /s(MAESTRO_ACT)
+
+Leer_Maestro
+Leer_Movimiento
+
+esc("ingrese el coeficiente de incremento")
+leer(coe)
+
+Mientras (reg_mae.Nro_Terreno <> HV) o (reg_mov.Nro_Terreno <> HV) hacer
+	Si (reg_mae.Nro_Terreno = reg_mov.Nro_Terreno) entonces 
+		Proceso_Iguales
+	sino
+		Si (reg_mae.Nro_Terreno < reg_mov.Nro_Terreno) entonces
+			reg_mae_act:= Reg_mae 
+			reg_mae_act.valor:=reg_mae_act.valor+reg_mae_act.valor*coe
+			Escribir(MAESTRO_ACT, reg_mae_act)
+			Leer_Maestro
+		sino
+			Proceso_Distintos
+		Fin Si
+	Fin Si
+Fin Mientras
+
+Cerrar_Archivos
+
+finaccion

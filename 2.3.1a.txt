@@ -1,0 +1,47 @@
+Accion Ejerc2.3.1.a es
+	Ambiente
+		Fecha = Registro
+			DD: N(2);
+			MM: N(2);
+			AA: N(4);
+		Fin Registro
+
+		Clave = Registro
+			Nro_Cliente: N(8);
+			Nro_Factura: N(8);
+		Fin Registro
+
+		Facturas = Registro
+			ClaveF: Clave;
+			Fecha: Fecha;
+			Importe: entero;
+		Fin Registro
+
+		Clientes = Registro
+			Nro_Cliente: N(8);
+			Nombre: AN(50);
+			DNI: N(8);
+			CUIT: N(11);
+			Domicilio: AN(50);
+		Fin Registro
+
+		Arch_Facturas: Archivo de Facturas ordenado por Clave;
+		Arch_Clientes: Archivo de Facturas indexado por Nro_Cliente;
+		Reg_Facturas: Facturas;
+		Reg_Clientes: Clientes;
+
+	Algoritmo
+		Abrir E/ (Arch_Facturas);
+		Abrir E/ (Arch_Clientes);
+		Crear (Arch_Facturas_Actual);
+		Leer (Arch_Facturas, Reg_Facturas);
+		Mientras NFDA (Arch_Facturas) hacer
+			Reg_Clientes.Nro_Cliente:= Reg_Facturas.Nro_Cliente;
+			Leer (Arch_Clientes, Reg_Clientes.Nro_Cliente);
+			Escribir ('Nro. Cliente - Nombre Cliente - Nro. Factura');
+			Escribir (Reg_Facturas.Nro_Cliente, Reg_Cliente.Nombre, Reg_Facturas.Nro_Factura);
+			Leer (Arch_Facturas, Reg_Facturas);
+		Fin Mientras
+		Cerrar (Arch_Facturas);
+		Cerrar (Arch_Clientes);
+Fin Accion

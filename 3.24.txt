@@ -19,7 +19,7 @@ PROCESO
         FP
     FP
     8-10	10-12	12-16	16-18	18-20
-    MIENTRAS NFA(Arch) HACER
+    MIENTRAS NFDA(Arch) HACER
         SEGUN s.Hora HACER
             =>8 y <=9: j:=1
             =>10 y <=11: j:= 2

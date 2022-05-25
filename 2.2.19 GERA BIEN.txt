@@ -1,0 +1,161 @@
+2.2.19
+
+Accion FARMA ES
+
+ Ambiente
+
+ 	FECHA = reg de
+ 		dd:n(2)
+ 		ww:n(2)
+ 		yy:n(8)
+ 	freg
+
+ 	CLAVE = reg de
+
+ 		farmacia:an(10);
+ 		medicamento:an(10);
+
+ 	freg
+
+ 	maestro = reg de
+
+ 		clave:CLAVE
+ 		Cant_Actual:n(5);
+ 		Fecha_Vencimiento:FECHA;
+
+ 	freg
+
+ 	movimientos = reg de
+
+ 		clavem:CLAVE
+ 		cod_mov:n(1)
+ 		cant_recibida:n(5);
+
+ 	freg
+
+ 	vencidos = reg de
+ 		Medicamento:an(10)
+ 		Cant_Vencida:n(5)
+ 	freg
+
+ 	Variables
+
+ 	MAE_REM,ACT_REM:Archivo de maestro ordenado por clave
+ 	MOV_REM:Archivo de movimiento ordenado por clavem
+ 	REM_VENC:Archivo de vencidos Ordenado por Medicamento 
+ 	rMAE,rACT:maestro
+ 	rMOV:movimiento
+ 	rREM:vencidos
+
+ 	Procedimientos
+
+ 		Procedimiento leerMAE
+ 			leer(MAE_REM,rMAE)
+ 	 		SI FDA(MAE_REM) entonces
+				rMAE.clave:=HV
+ 			Fsi		
+
+ 		fp
+
+ 		Procedimiento leerMAE
+ 			leer(MOV_REM,rMOV)
+ 			SI FDA(MOV_REM) entonces
+ 				rMOV.clave:=HV
+ 			Fsi	
+ 		fp
+
+ Proceso
+
+ 	AbrirE/(MAE_REM)
+ 	AbrirE/(MOV_REM)
+ 	ABRIRS/(ACT_REM)
+ 	ABRIRS/(REM_VENC)
+
+ 	leerMAE
+ 	leerMOV
+
+ 	Mientras (rMAE.clave <> HV) o (rMOV.clave <> HV) Hacer
+
+ 		Si rMAE.clave < rMOV.clave entonces // alta de verdad
+ 			//simplemente se transfieren los datos del Maestro a la salida y se graban.
+ 			rACT:=rMAE // asignar
+ 			GRABAR(ACT_REM,rACT) // imprimir en la salida
+ 			Leer(rMAE.clave) // avanzar en el del condicional
+ 		Sino
+
+ 			Si rMAE.clave = rMOV.clave entonces
+
+ 				Segun rMOV.cod_mov Hacer
+
+ 					=1: // alta
+ 					// se considera error y se lista un mensaje indicando el tipo de error;
+ 						Esc("Error, no se puede hacer la alta a uno que ya esta dado de alta")
+ 						rACT:=rMAE
+ 						GRABAR(ACT_MAE,rACT)
+ 		
+ 					=2: // baja
+
+					//entonces es un remedio que deja de fabricarse y se transfiere 
+ 					//el registro el archivo de Remedios vencidos REM_VENC
+
+ 						rREM.Medicamento:=rMAE.medicamento
+ 						rREM.Cant_Vencida:=rMAE.Cant_Actual
+ 						GRABAR(REM_VENC,rREM)
+
+ 					=3: // modificacion
+ 					// se modifica la cantidad actual con la cantidad recibida
+
+ 						rACT.clave:=rMAE
+ 						rACT.Cant_Actual:=rMOV.cant_recibida
+ 						GRABAR(ACT_REM,rACT)
+
+ 				Fsegun
+
+ 						leerMAE
+ 						leerMOV
+
+ 			Sino // sera mayor a rMOV.clave 
+
+ 				Segun rMOV.cod_mov Hacer
+
+ 					=1:
+						/* Se incorpora el remedio a nuestro ACT_REM, considerando que
+						   la cantidad recibida modifica la cantidad actual
+						   y la Fecha_Vencimiento es 30 días posterior a la fecha actual */
+ 					
+ 						rACT.clave.farmacia:=rMOD.clavem.farmacia
+ 						rACT.clave.medicamento:=rMOD.clavem.medicamento
+ 						rACT.Cant_Actual:=rMOD.cant_recibida
+ 						rACT.Fecha_Vencimiento:=fechamas30d(rMAE.Fecha_Vencimiento) //subaccion
+ 						GRABAR(ACT_REM,rACT)
+ 						
+
+ 					=2:
+
+ 						/* pero si el Codmov es 2 se considera error y se deben producir 
+ 					    los correspondientes mensajes de error. */
+ 						Esc('ERROR 2 NO SE PUEDE DAR DE BAJA YA QUE NO EXISTE')
+ 						
+
+ 					=3:
+
+ 						/* pero si el Codmov es 3 se considera error y se deben producir 
+ 					    los correspondientes mensajes de error. */
+ 						Esc('ERROR 3 NO SE PUEDE MODIFICAR YA QUE NO EXISTE')
+ 					
+ 				Fsegun
+
+ 				LeerMOV
+
+ 			Fsi
+
+ 		Fsi
+
+ 	Fin Mientras
+
+ 	Cerrar(MAE_REMEDIOS)
+ 	Cerrar(REM_VENC)
+ 	Cerrar(ACT_REM)
+ 	Cerrar(MOD_REM)
+
+Faccion

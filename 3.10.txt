@@ -1,21 +1,32 @@
-Dado un arreglo de 50 elementos, cada uno de los cuales tiene los siguientes datos: Código de localidad y Lluvia caída en un año. Escribir un algoritmo que permita saber dada una localidad, cuanto llovió en el año. Aplicar el método más adecuado considerando que el arreglo esta ordenado por Código de localidad.
+Ejercicio 3.10
+Dado un arreglo de 50 elementos, cada uno de los cuales tiene los siguientes datos: 
+Código de localidad y Lluvia caída en un año. Escribir un algoritmo que permita saber dada una localidad,
+cuanto llovió en el año. 
+Aplicar el método más adecuado considerando que el arreglo esta ordenado por Código de localidad.
 
-ACCION 3.10 ES
-AMBIENTE
-    lluvia = REGISTRO 
-        cod: N(4)
-        lluviaCaida: N(5)
-    FR 
-    LLuvias: arreglo de [1..50] de lluvia 
+Accion
 
+    Ambiente
+                                                                      
+      array:arreglo de [1..2, 1..50] de entero
+      x, loc, :entero
+  
+  Proceso 
+        Esc('ingrese código de localidad')  
+    leer(loc)//24
+    
+    x:= 1
 
-PROCESO
-    Esc('Ingrese el codigo de una localidad')
-    Leer(Loc)
-    PARA i:= 1 HASTA 50 HACER
-        SI (Lluvias[i].cod = Loc) ENTONCES
-            poslluvia:= i 
-        FSI 
-    FP 
-    Esc('Llovio ', lluvias[poslluvia].lluviaCaida, 'En el codigo de localidad Nro ', Loc)
-Fin_ACCION 
+      Mientras (x=<50) y (loc <> array[1,x] ) hacer
+          x := x +1
+      Fin Mientras
+      SI loc == array[x] Entonces
+          //tratar_ éxito
+      ESC('la cantidad de lluvia caída en ese año fue de: ', array[2, x], ' mlts')
+      Contrario 
+               //tratar_ fracaso
+        ESC('codigo invalido')
+      Fin Si
+    
+  
+FA

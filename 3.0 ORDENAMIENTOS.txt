@@ -1,0 +1,112 @@
+/*
+Tema: Aplicacion movil
+Proceso: Ordenamiento
+PROCESO: ORDENAMIENTO??
+
+UNA EMPRESA IMPORTANTE ACUDE A TU EQUIPO DE DESARROLLO DE APLICACIONES MÓVILES, EN EL BUSCAN SOLUCIONAR INCONVENIENTES DEL CÓDIGO FUENTE PROGRAMADO DE TINDER, UNO DE LOS EMPLEADOS DEL SERVICIO DE MANTENIMIENTO RECIBIÓ UN CYBER ATAQUE DURANTE SU JORNADA LABORAL EN EL CUAL SE BORRO PARTE DE LOS MÓDULOS QUE ORDENABAN LOS PUNTAJES DEL  TOP FOUR LIGONES DE LOS 4 USUARIOS TOP SÚPER FAMOSOS (ELON MUSK, JEFF BEZOS, BARACK OBAMA, SELENA GOMEZ) EN LA MISMA PERO NO LLEGO A MAYORES DAÑOS A LA EMPRESA Y TAN SOLO FUE POR UNOS MINUTOS POR LO TANTO SE SOLICITA:HACER UN PROGRAMA CON MÉTODO DE ORDENAMIENTO POR INSERCIÓN EN DONDE RECIBA 4 PUNTAJES RED ONLINE TINDER DEL TOP FOUR LIGONES ESTÁN DESORDENADAS Y SE VUELVAN A IMPRIMIR POR PANTALLA EN ORDEN ANTINATURAL CORRESPONDIENTE A CADA UNO.??
+TAMBIÉN SE PIDE A TRAVÉS DE LA FACTURACIÓN DEL AÑO, OBTENER EL MES EN EL QUE MENOS  ??
+
+SE RECAUDO, EN EL QUE LE SIGUE TAMBIÉN Y EN EL QUE SE ALCANZO UN PICO MÁXIMO Y EN EL QUE ESTA ANTEÚLTIMO DE RECAUDACIÓN DE LOS MIEMBROS QUE??
+
+VAN PAGANDO LA SUSCRIPCIÓN MEMBER GOLD ADEMÁS UN PROGRAMADOR LE INFORMO A TU EQUIPO QUE EL MÉTODO QUE TENÍAN QUE TENÍAN QUE UTILIZAR, ERA EL DE ORDENAMIENTO POR INTERCAMBIO DIRECTO EN EL RANKING DE LOS USUARIOS CON MAYOR RACHA DIARIA EL CUAL CONTENÍA 5 USUARIOS EN ORDEN ASCENDENTE.??
+
+LOS USUARIOS ERAN: 1° C ; 2° B ; 3° D ; 4° A ;     
+*/
+
+Accion SelecciónGold ES
+ Ambiente
+ 	arreglo: arreglo de [1..12] de enteros
+ 	res,i,j,LV,HV:entero
+ 	Procedimiento mostrarmes(a:entero)
+ 			Segun a hacer
+			= 1: Escribir("Enero") 
+			= 2: Escribir("Febrero")
+			= 3: Escribir("Marzo")
+			= 4: Escribir("Abril")
+			= 5: Escribir("Mayo")
+			= 6: Escribir("Junio")
+			= 7: Escribir("Julio")
+			= 8: Escribir("Agosto")
+			= 9: Escribir("Septiembre")
+			= 10: Escribir("Octubre")
+			= 11: Escribir("Noviembre")
+			= 12: Escribir("Diciembre")
+		Fin segun
+ 	fin procedimiento
+Proceso
+ 	Para i = 1 hasta 12 Hacer //Inicializar arreglos en 0
+ 		arreglo[i]:=0
+ 	Fin Para	
+ 	Para i = 1 hasta 12 Hacer //carga del arreglo
+ 		Leer(arreglo[i])
+ 	Fin Para
+ 	Para i:=1 hasta 11 hacer // ordenamiento por seleccion 
+		res:=arreglo[i]
+		LV:=i
+		Para j:=(i+1) hasta 12 hacer
+			Si arreglo[j] < res entonces
+				LV:=j
+				res:=arreglo[j]
+			Fin si
+		Fin para
+		arreglo[LV]:=arreglo[i]
+		arreglo[i]:=res
+	Fin para
+	Escribir("El mes que menos recaudo fue: ",mostrarmes(arreglo[1]))
+	Escribir("El mes que mas recaudo fue: ",mostrarmes(arreglo[12]))
+Fin accion
+
+Accion InserciónTopLigones ES
+ Ambiente
+	Variables
+		arreglo: arreglo de [7446,2723,6523,1362] de entero
+		i,j,res,:entero
+ Proceso
+	Para i:= 2 a 4 hacer
+	res:= arreglo[i];
+	j:=i-1;
+		Mientras((j > 0) y (res > arreglo[j]))hacer
+			arreglo[j+1]:= arreglo[j]
+			j:= j-1
+		Fin Mientras
+	arreglo[j+1]:=x
+	Fin para
+	Escribir("---///TOP FOUR LIGONES///---")
+	Escribir("Puesto //// NOMBRE /// PUNTAJE")
+	Para i:= 1 hasta 4 hacer
+		Segun i hacer
+			= 1:
+				Escribir(i,"° Elon Musk /", arreglo[i])
+			= 2:  
+				Escribir(i,"° Jeff Bezos /", arreglo[i])
+			= 3: 
+				Escribir(i,"° Barack Obama /", arreglo[i])
+			= 4:
+				Escribir(i,"° Selena Gomez /", arreglo[i]) 
+		Fin Segun
+		Escribir("")
+	Fin Para
+Fin Accion
+
+Accion IntercambioRacha ES
+ Ambiente
+ 	arreglo: arreglo de [C,B,D,A] de caracteres
+	j,res:enteros      
+	Band:booleano 	   
+ Proceso
+ 	Band:= Falso;
+	Mientras NO (Band) hacer
+		Band:=Verdadero;
+			Para j:=1 hasta 3 hacer
+				Si arreglo[j] > arreglo[j+1] entonces   
+					res:=arreglo[j];			
+					arreglo[j] := arreglo[j+1];
+					arreglo[j+1]:=res;
+					Band:= Falso;
+				Fin si
+			Fin para
+	Fin mientras
+	Para j:=1 hasta 4 hacer
+	Escribir(arreglo[j])
+	Fin Para
+Fin accion

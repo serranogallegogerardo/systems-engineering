@@ -1,0 +1,25 @@
+
+Se desea un listado con el siguiente detalle por // debo imprimir una lista
+
+/* EJ:
+Sexo | carrera | total general 
+M    | ISI     | 2
+M    | IEM     | 1
+F    | IQ      | 3
+F    | LAR     | 1 */
+ 
+
+1° Total de alumnos que ingresaron en el año 2009 con más de 20 materias aprobadas.
+
+2° Total de alumnos que ingresaron en el año 2009 con menos de 20 materias aprobadas
+
+
+
+	Sexo|Carrera |Nro_Legajo        |Fecha_Ingreso|Total_Materias_Aprobadas
+	M   |  ISI   | 5		|  22-03-2009 | 22
+	M   |  ISI   | 8		|  22-03-2009 | 6
+	M   |  IEM   | 21		|  22-03-2009 | 17
+	M   |  IQ    | 43		|  22-03-2010 | 40
+	F   |  IQ    | 23 		|  22-03-2008 | 12
+	F   |  IQ    | 213		|  22-03-2009 | 39
+	F   |  LAR   | 421		|  22-03-2009 | 27

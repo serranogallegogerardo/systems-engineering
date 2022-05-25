@@ -1,0 +1,45 @@
+Ejercicio 2.1.4
+Se dispone de una secuencia de números de socios, y se desea saber la cantidad de socios que están registrados.
+
+// 123456789
+
+Accion socios ES
+
+	Ambiente
+
+		sec_s:secuencia de entero
+		s:entero
+		cont:entero
+
+	Funciones
+
+	Procedimientos
+
+		Procedimiento ArrancarSecuencia()
+
+			ARR(sec_s)
+			AVZ(sec_s,s)
+
+		Fin Procedimiento
+
+	Proceso
+
+		ArrancarSecuencia()
+
+		cont:=cont+1
+
+			Mientras NFDS Hacer
+
+				Si s<0 o s>0 o s=0 Entonces
+
+				cont:=cont+1
+
+				Fin Si
+
+				AVZ(sec_s,s)
+
+			Fin Mientras
+
+		Esc('La cantidad de socios registrados es de: ', cont)
+
+Fin Accion

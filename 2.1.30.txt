@@ -1,0 +1,251 @@
+Ejercicio 2.1.30
+La AFIP dispone de dos secuencias de caracteres:
+
+PERSONAS Contiene los siguientes datos de personas físicas o Empresas: 
+nombre completo y fecha (de nacimiento o de creación, respectivamente),
+ agrupadas por provincias. No existe carácter separador entre personas, 
+ el fin de cada provincia se indica con el carácter &.
+
+Ejemplo: María Góm-14021977Carlos Alberto Rodriguez-20061990....&Lionel Messi-24061987....&....{fin} nombre-ddmmaaaanombre-ddmmaa....&
+
+CUIT: contiene la Clave Unica de Identificación Tributaria de las personas de la secuencia PERSONAS (existiendo una correspondencia una a una, es decir la primer persona con el primer cuit, la segunda con el segundo y asi sucesivamente) 
+Cada número de CUIT se almacena por medio de 11 caracteres: los 2 primeros indican el tipo, los 8 siguientes el número de DNI (en caso de personas físicas) o de sociedad (en caso de Empresas) y el último es un digito verificador.
+
+Ejemplo: **20123456786**23134567823**30712434445**
+
+Los tipos pueden ser:20, 23, 24 y 27 para Personas Físicas y 30, 33 y 34 para Empresas.
+
+Se solicita.
+
+Generar una secuencia de salida que contenga DNI y nombre de todas las personas físicas cuyo nombre comience con AEIOU 
+
+Para cada Provincia calcular el total de personas físicas de todas las provincias y el porcentaje de personas de fisica sobre el total de la provincias.
+
+Accion Afip ES
+
+	Ambiente
+
+		personas:secuencia de caracter // personas fisicas o empresas
+		p:caracter
+		cuit:secuencia de caracter // cuits
+		c:caracter
+		dnisalida:secuencia de caracter // en esta guardo todo
+		contVF:entero // contador persona fisica vocal
+		pftotal:entero // contador personas fisicas total sin discriminar la letra inicial
+		vocal = {'A','E','I','O','U'}
+		fisica2d = {'0','3','4','7'} // segundo digito
+
+
+	Proceso
+
+		//nombre-fechanombre-fechanombre-fecha&nombre-fechanombre-fechanombrefecha&*
+		//Ejemplo: María Góm-14 02 1977 Carlos Alberto Rodriguez-20061990& Lionel Messi-24061987....&....{fin} nombre-ddmmaaaanombre-ddmmaa....&*
+		//			tipo dni     v   t  dni     v  t	dni    v
+		//Ejemplo: **20123456786**23 13456782 3**30 71243444 5* *
+		// PERSONAS FISICAS: 20, 23, 24 y 27 
+
+		contf:=0
+		ARR(personas)
+		ARR(cuit)
+		AVZ(personas,p)
+		AVZ(cuit,c)
+		CREAR(dnisalida)
+
+		Mientras NFDS(personas) y NFDS(cuit) hacer // Generar una secuencia de salida que contenga DNI y nombre de todas las personas físicas cuyo nombre comience con AEIOU 
+
+			Mientras c = '*' hacer // creo que el enunciado tendria que haber usado algo diferente del * porque el mismo lo estabamos usando para indicar donde termina la secuencia
+
+				AVZ(cuit,c)
+
+			Fin mientras
+
+		Si c = '2' Entonces // para las personas fisicas ya sabemos que empiezan con 2
+
+				AVZ(cuit,c)
+
+				Si c = fisica2d Entonces // SI ES PERSONA FISICA ENTRA HASTA ACA
+
+				    ftotal:=pftotal+1 // cada vez que itere cuenta una persona 
+					AVZ(cuit,c)
+
+					 // cuento personas fisicas total sin importar su letra inicial de vocal
+
+					Si p = vocal Entonces
+
+							Para i=1 hasta 8 hacer // guardo el dni ya que empieza con vocal y es fisica
+
+								ESCRIBIR(dni,c)
+								AVZ(cuit,c)
+
+							Fin Para 
+
+							Mientras p <> '-' hacer // guardo el nombre de la persona ya que es fisica
+
+								ESCRIBIR(persona,p)
+								AVZ(persona,p)
+
+							Fin Mientras // p = '-' y sale
+
+							Mientras p = '-' hacer
+
+								AVZ(persona,p)
+
+							Fin Mientras
+
+							Para i=1 hasta 8 hacer // avanzo toda la fecha
+
+								AVZ(persona,p)
+
+							Fin Para
+
+							Si p = '&' Entonces
+
+								AVZ(persona,p)
+								contp:=contp+1
+
+							Fin Si
+
+					Sino // avanzo si no es vocal
+
+							Mientras p <> '-' hacer
+
+								AVZ(persona,p)
+
+							Fin Mientras // p = '-' y sale
+
+							Para i=1 hasta 8 hacer // avanzo toda la fecha
+
+								AVZ(persona,p)
+
+							Fin Para
+
+							// me quedo parado en la nueva letra o en & o *
+
+							Si c = '&' Entonces
+
+								AVZ(persona,p)
+								contp:=contp+1
+
+							Fin Si
+
+					Fin Si 
+
+						AVZ(persona,p) 
+
+						Mientras p <> '&' hacer
+
+							AVZ(persona,p)
+
+						Fin Mientras
+
+						AVZ(persona,p)
+
+					Mientras c <> * hacer 
+
+						AVZ(cuit,c) 
+
+					Fin Mientras //**23 13456782 3**30 71243444 5* *
+
+					Mientras c = * hacer
+
+						AVZ(cuit,c)
+
+					Fin mientras
+
+				Sino // entonces es persona no juridica por c <> fisica2d
+
+					Mientras c <> * Hacer
+
+						AVZ(cuit,c)
+
+					Fin Mientras
+
+					Mientras p <> '-' hacer
+
+						AVZ(persona,p)
+
+					Fin Mientras
+
+					AVZ(persona,p)
+
+					Para i=1 hasta 8 hacer
+
+						AVZ(persona,p)
+
+					Fin para
+
+					Si p = '&'
+
+						AVZ(persona,p)
+						contp:=contp+1
+
+					Fin Si
+
+					Mientras c = * Hacer
+
+						AVZ(cuit,c)
+
+					Fin mientras
+
+				Fin Si
+
+		Sino // entonces no es persona juridica por c <> '2'
+
+					Mientras c <> * Hacer
+
+						AVZ(cuit,c)
+
+					Fin Mientras
+
+					Mientras p <> '-' hacer
+
+						AVZ(persona,p)
+
+					Fin Mientras
+
+					AVZ(persona,p) // avanzo el guion medio 
+
+					Para i=1 hasta 8 hacer // avanzo toda la fecha hasta encontrar la nueva letra o & o un asterisco y terminar todo
+
+						AVZ(persona,p)
+
+					Fin para
+
+					Fin Mientras
+
+					Si p = & Entonces
+
+						AVZ(persona,p)
+						contp:=contp+1
+
+					Fin Si
+
+					// ahora si p es * sale y si es otra cosa vuelve a iterar
+
+					Mientras c = * Hacer // esta linea puede llegar a parecer una contradiccion al pretest que abarca todo, pero la consigna puso que se usa * por eso 
+									     // pero esta puesta para saltar los ** que sapara cada cuil, lo mismo con las otras lineas que utilizen * para separar
+						AVZ(cuit,c)
+
+					Fin mientras
+
+					// ahora si c <> NFDS se itera nuevamente sino se termina y sale de la estructura repetitiva
+
+			Fin Si
+
+		Fin si
+
+		Fin mientras
+
+//Generar una secuencia de salida que contenga DNI y nombre de todas las personas físicas cuyo nombre comience con AEIOU 
+//Para cada Provincia calcular el total de personas físicas de todas las provincias y el porcentaje de personas de fisica sobre el total de la provincias.
+
+
+		Esc('El total de  personas fisicas es de: ', pftotal)
+		contp:=(pftotal DIV contp)*100
+		Esc('El porcentaje total de personas fisicas en todas las provincias es de: ', contp)
+
+		CERRAR(personas)
+		CERRAR(cuit)
+		CERRAR(dni)
+
+Fin Accion 

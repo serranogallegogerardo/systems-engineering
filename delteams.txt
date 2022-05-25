@@ -1,0 +1,51 @@
+EJERCICIO DEL TEAMS
+Queremos guardar la temperatura mínima y máxima de 5 días. 5x2
+Realiza un algoritmo que informe la siguiente información:
+LUNES MARTES MIERCOLES JUEVES VIERNES 
+3-La temperatura de cada día min+max/2
+2Los días con menos temperatura 
+1Se lee una temperatura por teclado 
+4y se muestran los días cuya temperatura máxima coincide con ella. 
+si no existeningún día se muestra un mensaje de información
+
+ACCION ESTUDIAR ES
+Ambiente
+	tmp: arreglo [1...5,1...2] de entero
+	i:n(1)
+	j,dmta:n(1)   // dmenos temp ant
+  min,max,media,tmpmin:n(3)
+Proceso
+  tmpmin:=HV
+  dmta:=HV
+  //1:MATRIZ A 0
+  Para i:=1 hasta 5 hacer 
+    Para j:=1 hasta 2 hacer
+    	tmp[i,j]:= 0
+    fp
+  Fp
+  //2:CARGAR DATOS
+  Para i:=1 hasta 5 hacer // LUNES MARTES MIERCOLES JUEVES VIERNES
+    Para j:=1 hasta 2 hacer // MAX MIN
+      Si j = 1 Entonces
+       	ESC('Ingrese la temperatura mínima del día',i)
+			 	LEER(tmp[i,j])//min     
+      Sino
+       	ESC('Ingrese la temperatura máxima del día',i)	
+			 	LEER(tmp[i,j])//max
+      Fsi 
+    fp
+    // lUNES CON SU MINIMA Y SU MAXIMA CUANDO i=1 y j=2
+    // DIAS CON MENOS TEMP ?
+ 		Si tmp[i,1] < tmpmin Entonces
+      tmpmin:=tmp[i,1]
+    Sino
+      Si tmp[i,1] < dmta Entonces
+         dmta:=tmp[i,1]
+      Fsi
+    Fibi dea
+    //aca le sacas temp media
+   ESc("LA TEMP MEDIA:',(tmp[i,1]+tmp[i,2])/2));
+   
+  Fp     
+Fin_ACCION
+// FALTA LA 4

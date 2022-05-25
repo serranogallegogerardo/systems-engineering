@@ -1,0 +1,43 @@
+Ejercicio 2.1.10: (Hecho por: Gerardo Serrano y Juan Segnana)
+Escribir un algoritmo que permita efectuar la operación 
+de diferencia entre dos secuencias (ordenadas crecientes), 
+esto es, que genere el conjunto de los elementos con la diferencia a las dos secuencias.
+ 
+Accion Operacion ES
+
+	Ambiente
+
+		sec1:secuencia de entero
+    s1:entero
+    sec2:secuencia de entero
+  	s2:entero
+    secsalida:secuencia de entero
+  	d:=entero
+  
+  Proceso
+
+  	// [1, 2, 3, 4, 5,   6,  7,  8,  9*
+    // [3, 4, 6, 8, 10, 12, 14, 16, 18*
+    // secsalida:1 = 1-3
+    // secsalida:2 = 2-4  
+
+    ARR(sec1)
+    ARR(sec2)
+    AVZ(sec1,s1)
+    AVZ(sec2,s2)
+    CREAR(secsalida)
+    
+    Mientras NFDS(sec1) y NFDS(sec2) hacer
+
+      d:=(s1-s2)
+    	ESCRIBIR(secsalida,d)
+  		AVZ(sec1,s1)
+      AVZ(sec2,s2)
+    
+    Fin Mientras 
+
+    CERRAR(sec1)
+    CERRAR(sec2)
+    CERRAR(secsalida)
+    
+Fin accion

@@ -1,0 +1,14 @@
+Accion Ejerc3.21 es
+	Ambiente
+		A: Arreglo [1..6,1..6] de enteros;
+		i,j: entero;
+
+	Algoritmo
+		Para i:= 1 a 5 hacer
+			Para j:= 1 a 5 hacer
+				A[i,6]:= A[i,6] + A[i,j];
+				A[6,j]:= A[6,j] + A[i,j];
+			Fin Para
+			A[6,6]:= A[6,6] + A[i,6];
+		Fin Para
+Fin Accion

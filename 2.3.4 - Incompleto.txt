@@ -1,0 +1,69 @@
+Accion Ejerc2.3.4 es
+	Ambiente
+		Productos = Registro
+			Cod_Prod: N(8);
+			Nombre: AN(50);
+			Stock: entero;
+			Precio: N(4,2);
+		Fin Registro
+
+		Ticket = Registro
+			Nro_Ticket: N(8);
+			FechaT: Fecha;
+			Cliente: N(8);
+		Fin Registro
+
+		Detalle_Ticket = Registro
+			Nro_Ticket: N(8);
+			Nro_Linea: N(5);
+			Cod_Prod: N(8);
+			Cantidad: entero;
+		Fin Registro
+
+		Fecha = Registro
+			DD: N(2);
+			MM: N(2);
+			AA: N(4);
+		Fin Registro
+
+		Arch_Productos: Archivo de Productos indexado por Cod_Prod;
+		Arch_ Ticket: Archivo de Ticket indexado por Nro_Ticket;
+		Arch_Detalle_Ticket: Archivo de Detalle_Ticket indexado por Nro_Ticket;
+		Reg_Productos: Productos;
+		Reg_Ticket: Ticket;
+		Reg_Detalle_Ticket: Detalle_Ticket;
+		Resg_Total, Resg_Subtotal: real;
+		Resg_Cantidad: entero;
+
+	Algoritmo
+		Abrir E/ (Arch_Productos);
+		Abrir E/ (Arch_Ticket);
+		Abrir E/ (Arch_Detalle_Ticket);
+		Resp:= 'S';
+		Reg_Ticket.Nro_Ticket:= Generar_Nro_Ticket;
+		Grabar (Arch_Ticket:= Reg_Ticket);
+		Resg_Total:= 0;
+		Resg_Cantidad:= 0;
+		Mientras (Resp = 'S') hacer
+			Resg_Subtotal:= 0;
+			Escribir ('Ingrese el nombre del cliente');
+			Leer (Resg_Cliente);
+			Escribir ('Pase el producto por el censor');
+			Leer (Resg_Cod_Prod);
+			Escribir ('Ingrese la cantidad de unidades del producto');
+			Leer (Resg_Cantidad);
+			Reg_Productos.Cod_Prod:= Resg_Cod_Prod;
+			Leer (Arch_Productos, Reg_Productos);
+			Reg_Productos.Stock:= Reg_Productos.Stock - Resg_Cantidad;
+			Escribir (Nombre - Cantidad- Subtotal);
+			Resg_Subtotal:= Resg_Cantidad * Reg_Productos.Precio
+			Resg_Total:= Resg_Total + Resg_Subtotal;
+			Escribir (Reg_Productos.Nombre, Resg_Cantidad, Resg_Subtotal);
+			Escribir ('¿Desea seguir escaneando productos?');
+			Leer (Resp);
+		Fin Mientras
+		Escribir ('Total: ', Resg_Total);
+		Cerrar (Arch_Productos);
+		Cerrar (Arch_Ticket);
+		Cerrar (Arch_Detalle_Ticket);
+Fin Accion

@@ -1,0 +1,77 @@
+Ejercicio 2.1.15 COMPLEMENTARIO SERRANO
+Dada una secuencia de caracteres de entrada, desarrollar un algoritmo que produzca dos secuencias de salida de caracteres.
+La primera secuencia de salida contendrá los caracteres numéricos pares y la segunda secuencia de salida contendrá los caracteres numéricos impares.
+Al final del proceso calcular e informar el porcentaje de caracteres numericos pares e impares sobre el total de caracteres numericos.
+//#sec. caracteres
+//#Conjunto de digitos={"0","1","2","3","4","5","6","7","8","9"} 
+
+Accion ParImpar ES
+
+  Ambiente
+  
+    sec:secuencia de caracter
+    c:caracter
+    digito={"0","1","2","4","6","8","5","6","7","8","9"}
+    par={"0","2","4","6","8"}
+    impar={"1","3","5","7","9"}
+    secpar:secuencia de caracter
+    secimpar:secuencia de caracter
+    ct,cpar,cimpar:entero // ct: contador total , cpar : contador par , cimpar : contador impar 
+    pctaje:real
+  
+  Proceso
+  
+    ct:=0
+    cpar:=0
+    cimpar:=0
+
+    ARR(sec)
+    AVZ(sec,c)
+  
+    CREAR(secpar)
+    CREAR(secimpar) 
+                             // Secuencia de ejemplo:
+    Mientras NFDS(sec) hacer // B000F 2012D018F0KFFJA1242DJJ11211K1l24dd1*
+
+        Mientras (c <> digito) hacer 
+          AVZ(sec,c) 
+        Fin Mientras
+        
+        // 2012
+        // EJ C = 2 
+
+        Mientras (c en digito) hacer // comparo y avanzo dependiendo de si es nro
+          
+          Si c en par Entonces // analizo los pares y escribo en la secuencia para par
+        
+            Escribir(secpar,c)
+            cpar:=cpar+1
+          
+          Fin Si 
+          
+          Si C en impar  Entonces // analizo los pares y escribo en la secuencia para impar
+          
+            Escribir(secimpar,c)
+            cimpar:=cimpar+1
+              
+          Fin Si
+          
+          ct:=ct+1
+          AVZ(sec,c)  
+          
+        Fin Mientras
+        
+        // C = 'D' Entonces vuelve a iterar y en caso que C = '*' sale y termina todo
+                
+    Fin Mientras  
+  
+    pctaje:= (cpar*100)/ct
+    Esc('El porcentaje de numeros pares es del ', pctaje ,'% respecto del total')
+    pctaje:= (cimpar*100)/ct
+    Esc('El porcentaje de numeros impares es del ', pctaje ,'% respecto del total')
+      
+    CERRAR(sec)
+    CERRAR(secpar)
+    CERRAR(secimpar)
+  
+Fin Accion

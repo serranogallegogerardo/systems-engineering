@@ -1,0 +1,67 @@
+Ejercicio 2.2.2
+Se dispone de una secuencia de facturas con los siguientes datos:
+
+Nº de Factura
+Fecha
+Total
+
+Se desea un listado de las facturas cuyas fechas sean posteriores(mayores) a una fecha dada,
+ y cuyos importes totales no alcancen los $1000, 
+ con el siguiente formato:
+
+Nro_Factura/Fecha/Importe_Total
+
+Accion ej2.2 ES
+
+	Ambiente
+
+		tfecha = reg
+
+			dd:n(2)
+			mm:n(2)
+			yy:n(4)
+
+		fr
+
+		tarch = reg 
+
+			nrofactura:n(5)
+			Fecha:tfecha
+			Total:n(6)
+
+		fr
+
+		ar: archivo de tarch 
+		r:tarch
+		b:=bandera
+		fechadada:tfecha
+
+	PROCESO
+
+		AbrirE/(ar,r)
+		Leer(ar,r)
+		b:=true
+		Esc("Ingrese una fecha:")
+		leer(fechadada)
+
+		Esc("nrofactura/Fecha/Total")
+
+		Mientras NFDA(ar) Hacer
+
+			Si (fechadada < r.Fecha) y (r.importe < 1000)  Entonces
+				b:=false
+				Esc(nrofactura,"/",Fecha,"/",Total)
+			Fsi
+
+			Leer(ar,r)
+
+		Fm
+
+		Si b Entonces 
+
+			Esc("La fecha ingresada no fue encontrada.")
+
+		Fsi
+
+
+FA

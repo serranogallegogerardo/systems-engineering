@@ -1,0 +1,154 @@
+Ejercicio 2.2.11
+Se dispone de un archivo con datos de los alumnos de la U.T.N. con la siguiente información para cada alumno:
+
+PRODUCTOS Ordenado por Sexo, Carrera, Nro_Legajo
+
+	Sexo|Carrera |Nro_Legajo|Fecha_Ingreso|Total_Materias_Aprobadas
+	M   |  ISI   | 5		|  22-03-2009 | 22
+	M   |  ISI   | 8		|  22-03-2009 | 6
+	M   |  IEM   | 21		|  22-03-2009 | 17
+	M   |  IQ    | 43		|  22-03-2010 | 40
+	F   |  IQ    | 23 		|  22-03-2008 | 12
+	F   |  IQ    | 213		|  22-03-2009 | 39
+	F   |  LAR   | 421		|  22-03-2009 | 27
+
+Se desea un listado con el siguiente detalle por sexo,
+ por carrera y el total general // debo imprimir una lista
+
+//* EJ:
+Sexo | carrera | total general 
+M 	 | ISI     | 2
+M    | IEM     | 1
+F    | IQ      | 3
+F    | LAR     | 1 *//
+ 
+1° Total de alumnos que ingresaron en el año 2009 con más de 20 materias aprobadas.
+
+2° Total de alumnos que ingresaron en el año 2009 con menos de 20 materias aprobadas
+
+Accion 2.2.11 ES
+
+	Ambiente
+
+		utenianos = registro de
+
+			sexo:('M','F')
+			carrera:('ISI','IEM','IQ','LAR')
+			legajo:n(5)
+			fecha = registro de
+
+				dia:n(2)
+				mes:n(2)
+				año:n(4)
+
+			Fin registro
+			TMA:n(2)
+
+		Fin Registro
+
+		u:utenianos
+		ArUTN: Archivo de utenianos con orden sexo,carrera,legajo
+		contcarrera,contcarreramenor,contsexo,contsexomenor:entero
+		tcarrera,total,tsexo:entero
+
+		Subaccion corte_carrera ES
+
+			// IMPRIMO TODO EL ESTADO
+
+			ESC('SEXO  | Carrera    | Menor a 20 materias| Mayor a 20 materias ')
+			ESC(tsexo,'|',tcarrera,'|',contcarreramenor,'|',contcarrera)
+
+			// GUARDO EN LA VARIABLE DEL NIVEL SUPERIOR
+
+			contsexo:=contsexo+contcarrera
+			contsexomenor:=contsexomenor+contcarreramenor
+
+			// INICIALIZO CONTADORES A 0
+
+			contcarreramenor:=0
+			contcarrera:=0
+
+			// ACTUALIZO LA VARIABLE TESTIGO
+
+			tcarrera:= u.carrera
+
+		Fin Subaccion
+
+		Subaccion corte_sexo ES
+
+		 	// Llamo a la subaccion de nivel inferior
+
+			corte_carrera
+
+			// Imprimo todos los estados hasta el momento
+
+			Esc('Sexo  | Menor a 20 materias | Mayor a 20 materias ')
+			Esc(tsexo,'|',contsexo,'|',contsexomenor)
+
+			// Acumulo en el nivel superior inmediato
+
+			total:=total+contsexo
+			totalmenos:=totalmenos+contsexomenor 
+
+			// Inicializo nuevamente en 0 los contadores del nivel
+
+			contcarreramenor:=0
+			contcarrera:=0
+
+			// Actualizar variables TESTIGO
+
+			tsexo:= u.sexo
+			
+		Fin Subaccion
+
+	Proceso
+
+		total:=0
+		totalmenos:=0
+		contsexo:=0
+		contsexomenor:=0
+		contcarreramenor:=0
+		contcarrera:=0
+		tcarrera:=u.carrera
+		tsexo:=u.sexo
+
+		Abrir E/(ArUTN)
+		Leer(ArUTN)
+
+		Mientras NFDA(ArUTN) hacer
+
+			Si u.sexo <> tsexo Entonces
+
+				corte_sexo
+
+			Sino // no hago corte x legajo xq ya viene ordenado
+				
+				Si u.carrera <> tcarrera Entonces
+
+					corte_carrera
+
+				Fin Si
+
+			Fin Si
+
+			Si u.fecha.año = 2009 y u.TMA > 20 Entonces
+
+				contcarrera:=contcarrera+1
+
+			Sino
+
+				contcarreramenor:=contcarreramenor+1
+
+			Fin Si
+
+			Leer(ArUTN)
+
+		Fin Mientras
+
+		corte_sexo // SIEMPRE SE LLAMA AL CORTE MAS GRANDE EN CDC
+
+		Escribir('El total de materias mayor a 20 es de: ', contcarrera)
+		Escribir('El total de materias menor a 20 es de: ', contcarreramenor)
+		Cerrar(ArUTN)
+
+Fin Accion

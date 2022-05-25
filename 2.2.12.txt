@@ -1,0 +1,125 @@
+
+        Ejercicio 2.2.12
+Dada una secuencia con información de población de un PAIS:
+ 
+POBLACION Ordenado porProvincia, Departamento, Ciudad, Barrio, ID_Casa
+
+Provincia |Departamento |Ciudad|Barrio |ID_Casa|Cantidad_Habitantes
+CHACO     | SAN FERNAND |RESIS |TOBA   | 231   | 2134
+CHACO     | SAN FERNAND |RESIS |TOBO   | 238   | 2132
+                                             sub:4266 
+... cortedepto 
+CHACO     | SAN JUJEN   |FONTA |ALFONDO| 236   | 2112
+                                             sub:
+CHACO     | CH X PROV   | 
+BSAS      | QUESEYO     |LAPLAT|AMIGOS | 244   | 21035
+BSAS      | QUESEYO     |BAHIAB|PROVUNI| 322   | 21033
+BSAS      | OTROMAS     |PROVBS|PROVBS | 455   | 33216
+CHUBUT    | CRISTINITA  |RAWSON|LINDO  | 555   | 12317
+
+Generar una secuencia de archivo con información de los departamentos de esa provincia, cuyo registro tenga el siguiente formato:
+
+POBLACION_SALIDA
+
+Provincia|Departamento|Cantidad_Habitantes| ch por prov 
+
+ACCION Poblacion ES
+
+    AMBIENTE
+
+        POBLACION= REGISTRO de
+            Prov: AN(10)
+            Dep: AN(20)
+            Ciudad: AN(20)
+            Barrio: AN(10)
+            id: N(3)
+            ch:N(30) // cantidad de habitantes
+        Fin_Registro
+        
+        gen = Registro de
+        
+            Prov:an(10)
+            Dep: an(20)
+            ch: N(30)
+         
+        Fin Registro
+        
+        g:gen
+        p:POBLACION
+        ArSAL:Archivo de gen ordenado por prov,dpto,ch
+        ArPB:Archivo de POBLACION ordenado por Provincia, Departamento, Ciudad, Barrio, ID_Casa
+        accanth: entero
+        
+        SUBACCION CORTEDEPARTAMENTO ES
+        
+            //llamar al corte de nivel inferior
+            
+            //grabar todo hasta el momento
+            
+            g.Prov:=tprov
+            g.Dep:= tdep
+            g.ch:= tch
+            
+            GRABAR(ArSAL,g)
+                                                     
+            //actualizo en 0
+            
+                tch:= 0
+                
+            //actualizo testigo
+            
+                tdep:= p.dep
+                                         
+        Fin_Subaccion
+        
+        SUBACCION CORTEPROVINCIA ES
+        
+            CORTEDEPARTAMENTO 
+            
+            tprov:= p.Prov
+                                    
+        Fin_Subaccion 
+        
+        tdep: AN(20)
+        tprov: AN(10)
+        tch: entero   
+        
+    PROCESO
+    
+    ABRIR E/(ArPB)
+    ABRIR /S(ArSAL)
+    Leer(ArPB,p)
+    tprov:=p.Prov
+    tdep:=p.Dep
+    tch:= 0 
+    
+    
+    MIENTRAS NFDA(ArPB) HACER
+    
+    tch:= tch + p.Ch
+   
+        SI tprov <> p.Prov ENTONCES
+        
+            CORTEPROVINCIA
+            
+        SINO
+        
+            SI tdep <> p.Dep ENTONCES
+            
+                CORTE DEPARTAMENTO
+                
+            Fin_Si
+            
+        Fin_Si
+        
+    LEER(ArPB,p) 
+    
+    FIN MIENTRAS
+    
+    corteprovincia
+    
+    CERRAR(ArPB)
+    CERRAR(ArSAL)
+
+    FIN_ACCIÓN
+    

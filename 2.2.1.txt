@@ -1,0 +1,39 @@
+Se dispone de una secuencia con los datos de los alumnos de la facultad: Nro de Legajo, Apellido y Nombre, Fecha de Ingreso, Sexo (M o F), 
+Carrera (ISI - IEM - IQ), Fecha de Nacimiento, DNI, Fecha de último examen aprobado, Codigo de la material del ultimo examen aprobado y Nota.
+
+Se desea un listado de los mismos, con el siguiente formato: Legajo - Apellido y Nombre - Documento - Carrera
+
+Accion Ejerc2.2.1 es
+	Ambiente
+		Fecha = Registro
+			DD: N(2);
+			MM: N(2);
+			AA: N(4);
+		Fin Registro
+		
+		Alumno = Registro
+			NroLegajo: N(5);
+			ApeYNom: AN (50);
+			FechaIngreso: Fecha;
+			Sexo: ('M', 'F');
+			Carrera: ('ISI', 'IEM', 'IQ');
+			FechaNacimiento: Fecha;
+			DNI: N(8);
+			FechaUltExamenAprob: Fecha;
+			CodMat: N(8);
+			Nota: N(2);
+		Fin Registro
+		
+		Arch_Alu: archivo de Alumnos;
+		Reg_Alu: Alumnos;
+		
+	Algoritmo
+		Abrir S/ (Arch_Alu);
+		Leer (Arch_Alu, Reg_Alu);
+		Escribir ('Legajo - Nombre y Apellido - Documento - Carrera');
+		Mientras NFDA (Arch_Alu) hacer
+			Escribir (Reg_Alu.Legajo, Reg_Alu.ApeyNom, Reg_Alu.DNI, Reg_Alu.Carrera);
+			Leer (Arch_Alu, Reg_Alu);
+		Fin Mientras
+		Cerrar(Arch_Alu);
+Fin Accion

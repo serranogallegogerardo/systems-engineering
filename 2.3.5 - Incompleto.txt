@@ -1,0 +1,50 @@
+Accion Ejerc2.3.5 es
+	Ambiente
+		Cabecera_Sueldo = Registro
+			ClaveS: Clave
+			ApyNom: AN(50);
+			Empresa: AN(50);
+		Fin Registro
+
+		Clave = Registro
+			DNI: N(8);
+			Periodo: N(6);
+			Nro_Recibo: N(15);
+		Fin Registro
+
+		Recibo = Registro
+			Nro_Recibo: N(15);
+			Concepto: N(8);
+			Tipo: (0..2);
+			Monto: N(15,2);
+		Fin Registro
+
+		Arch_Cabecera_Sueldo: Archivo de Cabecera_Sueldo indexado por ClaveS;
+		Arch_Recibo: Archivo de Recibo indexado por Nro_Recibo;
+		Reg_Cabecera_Sueldo: Cabecera_Sueldo;
+		Reg_Recibo: Recibo;
+
+	Algoritmo
+		Abrir E/ (Arch_Cabecera_Sueldo);
+		Abrir E/ (Arch_Recibo);
+		Escribir ('Ingrese el número de documento del interesado a comprar dolares');
+		Leer (Resg_DNI);
+		Reg_Cabecera_Sueldo.DNI:= Resg_DNI;
+		Leer (Arch_Cabecera_Sueldo, Reg_Cabecera_Sueldo);
+		Reg_Aux:= Reg_Cabecera_Sueldo;
+		Mientras (Reg_Cabecera_Sueldo.DNI = Reg_Aux.DNI) hacer
+			Si ((Reg_Cabecera_Sueldo.Periodo - Fecha_Actual) >= 12) entonces
+				Reg_Recibo.Nro_Recibo:= Reg_Cabecera_Sueldo.Nro_Recibo;
+				Leer (Arch_Recibo, Reg_Recibo);
+				Si (Reg_Recibo.Tipo = 0) entonces
+					Cont_Sueldo:= Cont_Sueldo + Reg_Recibo.Monto;
+				Sino
+					Si (Reg_Recibo.Tipo = 1) entonces
+						Con_Sueldo:= Cont_Sueldo + Reg_Recibo.Monto;
+					Fin Si
+				Fin Si
+			Fin Si
+			Leer (Arch_Cabecera_Sueldo, Reg_Cabecera_Sueldo);
+		Fin Mientras
+		
+			

@@ -1,0 +1,29 @@
+Accion Ejerc3.11 es
+	Ambiente
+		Peliculas = Registro
+			Titulo: AN(50);
+			Director: AN(50);
+			Categoria: AN(50);
+			Cant_Personas: entero;
+			Alquilado: ('Si','No');
+		Fin Registro
+
+		Arreglo: Arreglo [1..100] de Peliculas;
+		i: entero;
+		Titulo: AN(50);
+
+	Algoritmo
+		Escribir ('Ingrese el video que desea alquilar');
+		Leer (Titulo);
+		i:= 1;
+		Mientras (i < 100) y (Arreglo[i].Titulo <> Titulo) hacer
+			i:= i+1;
+		Fin Mientras
+		Si (Arreglo[i].Titulo = Titulo) entonces
+			Si (Arreglo[i].Alquilado = 'Si') entonces
+				Escribir ('Pelicula alquilada');
+			Sino
+				Arreglo[i].Cant_Personas:= Arreglo[i].Cant_Personas + 1;
+			Fin Si
+		Fin Si
+Fin Accion

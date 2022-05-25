@@ -1,0 +1,149 @@
+Ejercicio 2.2.24
+/*Una obra social lleva el control de los costos que le insume cada afiliado. Considerando como costos, 
+los pagos que la misma debe realizar (en conceptos de honorarios, pagos a farmacias, etc) 
+por los distintos servicios que el afiliado utiliza. Para esto la empresa cuenta con un archivo COSTOS_POR_AFILIADO, 
+en el cual se registran la cantidad de atenciones y/o servicios que solicita el empleado y el costo total (en pesos) 
+que la empresa debe pagar por estos. Este archivo está conformado por registros con el siguiente formato,
+
+ y está ordenado Cod_Afiliado
+
+COSTOS_POR_AFILIADO Ordenado por Cod_Afiliado
+Cod_AfiliadoFecha_AltaFecha_BajaCant_ServiciosCosto
+
+Cada viernes en la organización, se lleva a cabo un proceso de actualización del archivo COSTOS_POR_AFILIADO. 
+Para poder realizarlo se cuenta con un archivo SERVICIOS_SEMANALES, ordenado por cod_afiliado y fecha_at,
+ en el cual se registran los servicios que solicitaron los afiliados durante cada semana. Cada registro de 
+ este archivo presenta el siguiente formato,
+
+SERVICIOS_SEMANALES Ordenado por Cod_Afiliado
+Cod_AfiliadoFecha_AtCod_ServicioCosto
+
+En el archivo SERVICIOS_SEMANALES puede existir más de un registro por cada afiliado.
+
+Para realizar el proceso de actualización se deben tener en cuenta las siguientes consideraciones.
+
+Si algún Cod_Afiliado de serviciosSemanales, no se encuentra en ningún registro del archivo COSTOS_POR_AFILIADO, 
+y el primer Cod_Servicio asociado al mismo es igual a 001 entonces se trata de un nuevo afiliado que fue dado de alta.
+
+Si Cod_Afiliado de serviciosSemanales es igual al de COSTOS_POR_AFILIADO y
+ el Cod_Servicio es igual a 000 se trata de un afiliado que fue dado de baja y
+  se considera como fecha de baja el valor que reside en Fecha_At. Si en cambio,
+   el Cod_Servicio tiene algún otro valor este representa un servicio o atención que solicitó el afiliado;
+    por lo tanto deben contabilizarse la cantidad de servicios que solicitó; como así también los costos que estos insumen.
+
+Si algún Cod_Afiliado de COSTOS_POR_AFILIADO no se encuentra en el archivo SERVICIOS_SEMANALES,
+ se trata de un afiliado que no utilizó los servicios en la semana que se realiza la actualización.
+
+Cualquier otro caso distinto a los considerados anteriormente se toma como un error, 
+y deben ser informados por pantalla; indicando claramente el motivo del error. */
+
+Accion ejercicio Es
+ Ambiente
+ 	ffecha = reg de
+ 		dd:n(2)
+ 		mm:n(2)
+ 		yy:n(4)
+ 	freg
+ 	claveo = reg de
+ 		Cod_Afiliado:N(4)
+ 	freg
+ 	afiliados = reg de
+ 		clave:claveo
+ 		Fecha_Alta:ffecha
+ 		Fecha_Baja:ffecha
+ 		Cant_Servicios:n(5)
+ 		Costo:n(7)
+ 	freg
+ 	servicios = reg de
+ 		clave:claveo
+ 		Fecha_At:ffecha
+ 		Cod_Servicio:n(6)
+ 		Costo:n(7)
+ 	freg
+
+ 	arMAE,arACT:Archivo de afiliados ordenado por clave// costos por afiliado
+ 	arMOV:Archivo de servicios ordenado por clave// SERVICIOS SEMANALES
+ 	rMAE,rACT:afiliados
+ 	rMOV:servicios
+
+ 	Procedimiento LeerMAE();
+ 		leer(arMAE,rMAE)
+ 		Si FDA(arMAE) entonces
+ 			rMAE:=HV
+ 		Fsi
+ 	Fp
+ 	Procedimiento LeerMOV();
+ 		leer(arMOV,rMOV)
+ 		Si FDA(arMOV) entonces
+ 			rMOV:=HV
+ 		Fsi
+ 	Fp
+ 	
+ Proceso // es de actualizacion x lote
+	AbrirE/(arMAE)
+	AbrirE/(arMOV)
+	AbrirS/(arACT)
+	LeerMAE();
+	LeerMOV();
+	Mientras rMAE.clave <> HV y rMOV.clave <> HV Hacer
+		Si rMAE.clave < rMOV.clave Entonces 
+			rACT:=rMAE;
+			GRABAR(arACT,rACT)
+			LeerMAE()
+		Sino 
+			Si rMAE.clave = rMOV.clave Entonces // Cod_Servicio es igual a 000, afiliado dado de baja
+				Mientras rMAE.clave = rMOV.clave Hacer
+					rACT.Cant_Servicios:=0
+					rACT.Costo:=0
+					Si rMOV.Cod_Servicio = 000 Entonces
+						rACT:=rMAE // doy de baja
+						rACT.Fecha_Baja:=rMAE.Fecha_Alta
+					Sino
+						//cantidad de servicios que solicitó; 
+						rACT.Cant_Servicios:=rACT.Cant_Servicios+rMAE.Cant_Servicios
+						//como así también los costos que estos insumen.
+						rACT.Costo:=rACT.costo+rMOV.costo+rMAE.costo
+					Fsi
+					LeerMOV;
+				Fm
+				GRABAR(arACT,rACT)
+				LeerMAE;
+			Sino
+				Mientras rMAE.clave > rMOV.clave Hacer
+					Segun rMOV.Cod_Servicio Hacer
+						//nuevo afiliado que fue dado de alta.
+						= 000:
+							Esc("ERROR EL ARCHIVO QUE DESEA DAR DE BAJA NO EXISTE")
+						= 001:
+							rACT.clave:=rACT.clave
+	 						rACT.Fecha_Alta:=rMOV.Fecha_At		
+	 						rACT.costo:=rMOV.Costo
+	 						GRABAR(arACT,rACT)
+ 						otros:
+ 							Esc("ERROR EL ARCHIVO QUE DESEA MODIFICAR NO EXISTE")
+					Fs
+					LeerMOV
+				Fm				
+			Fsi
+	Fm
+	Cerrar(arMAE)
+	Cerrar(arMOV)
+	Cerrar(arACT)
+FA
+
+/*
+Si algún Cod_Afiliado de serviciosSemanales, no se encuentra en ningún registro del archivo COSTOS_POR_AFILIADO, 
+y el primer Cod_Servicio asociado al mismo es igual a 001 entonces se trata de un nuevo afiliado que fue dado de alta.
+
+Si Cod_Afiliado de serviciosSemanales es igual al de COSTOS_POR_AFILIADO y
+ el Cod_Servicio es igual a 000 se trata de un afiliado que fue dado de baja y
+  se considera como fecha de baja el valor que reside en Fecha_At. Si en cambio,
+   el Cod_Servicio tiene algún otro valor este representa un servicio o atención que solicitó el afiliado;
+    por lo tanto deben contabilizarse la cantidad de servicios que solicitó; como así también los costos que estos insumen.
+
+Si algún Cod_Afiliado de COSTOS_POR_AFILIADO no se encuentra en el archivo SERVICIOS_SEMANALES,
+ se trata de un afiliado que no utilizó los servicios en la semana que se realiza la actualización.
+
+Cualquier otro caso distinto a los considerados anteriormente se toma como un error, 
+y deben ser informados por pantalla; indicando claramente el motivo del error.
+*/

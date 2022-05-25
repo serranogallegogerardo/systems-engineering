@@ -1,0 +1,20 @@
+Accion Ejerc3.14 es
+	Ambiente
+		N = 40;
+
+		Arreglo: Arreglo[1..N] de enteros;
+		i: entero;
+
+	Algoritmo
+		Para:= 2 a N hacer
+			x:= Arreglo[i];
+			j:= i - 1;
+			Mientras (j > 0) y (x < Arreglo[j]) entonces	
+				Arreglo[j+1]:= Arreglo[j];
+				j:= J - 1;
+			Fin Mientras
+			Si (x = Arreglo[j]) entonces
+			Arreglo[j+1]:= x;
+		Fin Para
+
+		

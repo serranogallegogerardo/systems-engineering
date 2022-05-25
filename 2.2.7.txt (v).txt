@@ -1,0 +1,100 @@
+Ejercicio 2.2.7
+Se dispone de un archivo con los datos de un padrón electoral con la siguiente información:
+Nombre y apellido|Clase       |   DNI  |Dirección 		|Nº de Mesa|Observaciones|Nº de Circuito|Partido
+Juan Arial		 | 1939       |44617324|Calle falsa 321| 328	   | Es muy alto | 3588			| 0
+Juan Boliv		 | 1941       |44117224|Calle falsa 323| 328	   | Es muy bajo | 6588			| 1
+Juan Cenet		 | 1942       |44615324|Calle falsa 351| 323	   | Es muy alto | 6589		    | 2
+Juan Pontag		 | 1943       |44667324|Calle falsa 371| 324	   | Es muy capo | 6290			| 3
+Partido (0= independiente, 1=‘A’, 2=‘B’, 3=‘C’)
+Generar:
+a) Una secuencia de salida con nombre y apellido, DNI, y dirección de todas las personas afiliadas al partido “C”.
+Nombre y Apellido|DNI|Direccion // 3 = C
+
+b) Una secuencia de salida con nombre y apellido, DNI, y dirección de todas las personas no afiliadas a ningún partido y de clase posterior a 1940.
+Nombre y Apellido|DNI|Direccion // 0 = independiente
+
+padron : viene ordenado y imprime totales generales
+Accion 2.2.7 ES
+
+	Ambiente
+
+		Personas = Registro de
+
+			N_A:AN(40) // nombre y apellido
+			clase:N(4)
+			DNI:N(8)
+			Dir:AN(50)
+			Nmesa:N(3)
+			obs:AN(30)
+			Ncir:N(4)
+			partido:('0','1','2','3')
+
+		Fin Registro
+
+		sal = Registro de
+
+			N_A:AN(40)
+			DNI:N(8)
+			Dir:AN(50)
+
+		Fin Registro
+
+		p = Personas
+		s = sal
+		s2 = sal
+		ArPersonas = Archivo de Personas 
+		ArPC = Archivo de sal
+		ArPI = Archivo de sal
+
+	Proceso
+
+		Abrir E/(ArPersonas)
+		Abrir S/(ArPC)
+		Abrir S/(ArPI)
+		Leer(ArPersonas)
+
+		Mientras NFDA(ArPersonas) Hacer
+
+		// GRABAR (ARCHIVO, Registro)
+		// ESTO ESTA MAL GRABAR ( ARCHIVO, CAMPO CAMPO CAMPO)
+
+			Si p.partido = 3 Entonces
+
+				s.N_A := p.N_A
+				s.DNI := p.DNI
+				s.Dir := p.Dir
+				
+				Grabar(ArPC,s)
+
+			Fin Si
+
+			Si p.partido = 0 y p.clase > 1940 Entonces
+
+				s2.N_A := p.N_A
+				s2.DNI := p.DNI
+				s2.Dir := p.Dir
+
+				Grabar(ArPI,s2)
+
+			Fin Si
+
+			Leer(ArPersonas,p)
+
+		Fin Mientras
+
+		Cerrar(ArPersonas)
+		Cerrar(ArPC)
+		Cerrar(ArPI)
+
+Fin accion
+
+b) Una secuencia de salida con nombre y apellido, DNI, y dirección de todas las personas no afiliadas a ningún partido 
+y de clase posterior a 1940.
+
+Nombre y Apellido|DNI|Direccion // 0 = independiente
+
+Nombre y apellido|Clase|   DNI  |Dirección 		|Nº de Mesa|Observaciones|Nº de Circuito|Partido
+Juan Arial		 | A   |44617324|Calle falsa 321| 328	   | Es muy alto | 3588			| 0
+Juan Boliv		 | B   |44117224|Calle falsa 323| 328	   | Es muy bajo | 6588			| 1
+Juan Cenet		 | C   |44615324|Calle falsa 351| 323	   | Es muy alto | 6589		    | 2
+Juan Pontag		 | D   |44667324|Calle falsa 371| 324	   | Es muy capo | 6290			| 3

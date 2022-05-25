@@ -1,0 +1,195 @@
+Actualizacion
+Ejercicio 2.2.19
+En una Empresa Farmacéutica se posee un archivo MAE_REMEDIOS (ordenado por Clave: Farmacia + Medicamento),
+ el que se actualiza semanalmente, a traves de la información que se encuentra cargada en un archivo de MOVIMIENTOS
+  (ordenado por Clavem: Farmacia + Medicamento, y Cod_Mov), de la siguiente forma:
+
+Si Clave (MAE_REMEDIOS) es menor que Clavem (MOVIMIENTOS), simplemente se transfieren los datos del Maestro a la salida y se graban.
+
+Si Clave (MAE_REMEDIOS) es igual a Clavem (MOVIMIENTOS) y el Codmov es 1, se considera error y se lista un mensaje 
+indicando el tipo de error; pero si el Codmov es 2, entonces es un remedio que deja de fabricarse y se transfiere el 
+registro al archivo de Remedios vencidos (REM_VENC) ; pero si el Cod_Mov es 3, se modifica la cantidad actual con la cantidad recibida.
+
+Si Clave (MAE_REMEDIOS) es mayor que Clavem (MOVIMIENTOS) y el Codmov es 1, se incorpora el remedio a nuestro Vademecum,
+ considerando que la cantidad recibida configura la cantidad actual y la Fecha_Vencimiento es 30 días posterior a la fecha actual
+  pero si el Codmov es 2 o 3 se considera error y se deben producir los correspondientes mensajes de error.
+
+Se considera que solo existe un registro de movimiento para cada registro del maestro.
+
+MAE_REMEDIOS Ordenado por Farmacia y Medicamento
+Farmacia/Medicamento/Cant_Actual/Fecha_Vencimiento
+
+MOVIMIENTOS Ordenado por Farmacia, Medicamento y Cod_Mov
+Farmacia/Medicamento/Cod_Mov/Cant_Recibida
+
+REM_VENC Ordenado por Medicamento
+Medicamento/Cant_Vencida
+
+Accion Farmaceuticas es
+
+ Ambiente
+
+ 	fecha = registro de
+ 		day:n(2)
+ 		week:n(2)
+ 		year:n(4)
+ 	freg
+
+ 	clavef = registro de
+ 		Farmacia:n(10)
+ 		Medicamento:n(10)
+ 	freg
+
+ 	Farmaceuticas = registro de 
+ 		clave:clavef
+ 		Cant_Actual:n(5)
+ 		Fecha_Vencimiento:fecha
+ 	freg
+
+    Movimientos = registro de
+    	clavem:clavef
+    	Cod_Mov:n(5)
+    	Cant_Recibida:n(5)
+    freg
+
+    vencidos = registro de
+    	Medicamento:an(10)
+    	Cant_Vencida:n(5)
+    freg
+
+	Variables
+	ar_MAE: archivo de Farmaceuticas Ordenado por clave // maestro
+	ar_MAE_ACT: archivo de Farmaceuticas Ordenado por clave// salida mae actualizado
+	ar_MOV: archivo de Movimientos Ordenado por clave//movimiento
+	ar_VEN: archivo de vencidos Ordenado por Medicamento//remedios vencidos
+
+	rMAE:Farmaceuticas
+	rMOV:Movimientos
+	rVEN:vencidos
+	op:logico
+
+	Constantes
+
+	Funciones
+
+	Procedimientos
+
+	Procedimiento LeerMAE
+
+		leer(ar_MAE,rMAE)
+		Si FDA(ar_MAE) entonces
+			rMAE.clave:=HV
+		Fsi
+
+	Fin Procedimiento
+
+	Procedimiento LeerMOV
+
+		leer(ar_MOV,rMOV)
+		Si FDA(ar_MOV) entonces
+			rMOV.clave:=HV
+		Fsi
+
+	Fin Procedimiento
+
+ Proceso 
+
+ 	
+ 	AbrirE/(ar_MAE);AbrirE/(ar_MOV);
+ 	ABRIRS/(ar_VEN);ABRIRS/(ar_MAE_ACT);
+ 	LeerMOV
+ 	LeerMAE
+
+ 	Escribir('Desea utilizar el programa s/n')
+ 	leer(op)
+
+ 	Mientras op = s hacer
+
+ 		Mientras (ar_MAE<>HV) o (ar_MOV<>HV) hacer
+
+ 			Si Aclave < clavem entonces
+
+ 				ESC(ar_MAE_ACT,rMAE) // grabo en la salida
+ 				LeerMAE
+
+ 			Sino clave > clavem entonces
+
+ 				segun Cod_Mov hacer
+
+ 					= 1: 
+ 						rMAE.Cant_Actual:=rMOV.Cant_Recibida
+ 						rMAE.Fecha_Vencimiento:=FECHAACTUAL()+30;
+ 						Esc(ar_MAE_ACT,rMAE)
+
+ 					= 2: 
+						 esc('ERROR de baja invalido')
+
+ 					= 3: 
+ 						 esc('ERROR modificacion invalida')
+
+ 				Fsegun
+
+ 				LeerMOV
+
+ 			Sino (clave = clavem) 
+
+ 				Segun rMAE.Cod_Mov hacer
+
+ 					= 1: 
+ 						esc('ERROR: COD DE MOVIMIENTO 1.')
+ 						esc(ar_MAE_ACT,rMAE)
+
+ 					= 2: 
+ 						rVEN.Medicamento:=rMAE.Medicamento
+ 						rVEN.Cant_Vencida:=rMAE.Cant_Actual
+						esc(ar_VEN,rVEN)
+
+ 					= 3: 
+ 						 rMAE.Cant_Actual:=rMOV.Cant_Recibida
+ 						 esc(ar_MAE_ACT,rMAE)
+
+ 				Fsegun
+ 				
+ 				LeerMAE
+ 				LeerMOV
+
+ 			Fin SI
+
+ 		Fmientras
+
+ 		esc('desea utilizar nuevamente o cerrar s/n')
+ 		leer(op)
+ 	
+ 	Fmientras
+
+ 	Cerrar(ar_VEN)
+ 	Cerrar(ar_MOV)
+ 	Cerrar(ar_MAE)
+ 	Cerrar(ar_MAE_ACT)
+
+Fin accion
+
+En una Empresa Farmacéutica se posee un archivo MAE_REMEDIOS (ordenado por Clave: Farmacia + Medicamento),
+ el que se actualiza semanalmente, a traves de la información que se encuentra cargada en un archivo de MOVIMIENTOS
+  (ordenado por Clavem: Farmacia + Medicamento, y Cod_Mov), de la siguiente forma:
+
+Si Clave (MAE_REMEDIOS) es menor que Clavem (MOVIMIENTOS), simplemente se transfieren los datos del Maestro a la salida y se graban.
+
+Si Clave (MAE_REMEDIOS) es igual a Clavem (MOVIMIENTOS) y el Codmov es 1, se considera error y se lista un mensaje 
+indicando el tipo de error; pero si el Codmov es 2, entonces es un remedio que deja de fabricarse y se transfiere el 
+registro al archivo de Remedios vencidos (REM_VENC) ; pero si el Cod_Mov es 3, se modifica la cantidad actual con la cantidad recibida.
+
+Si Clave (MAE_REMEDIOS) es mayor que Clavem (MOVIMIENTOS) y el Codmov es 1, se incorpora el remedio a nuestro Vademecum,
+ considerando que la cantidad recibida configura la cantidad actual y la Fecha_Vencimiento es 30 días posterior a la fecha actual
+  pero si el Codmov es 2 o 3 se considera error y se deben producir los correspondientes mensajes de error.
+
+Se considera que solo existe un registro de movimiento para cada registro del maestro.
+
+MAE_REMEDIOS Ordenado por Farmacia y Medicamento
+Farmacia/Medicamento/Cant_Actual/Fecha_Vencimiento
+
+MOVIMIENTOS Ordenado por Farmacia, Medicamento y Cod_Mov
+Farmacia/Medicamento/Cod_Mov/Cant_Recibida
+
+REM_VENC Ordenado por Medicamento
+Medicamento/Cant_Vencida

@@ -1,0 +1,96 @@
+Ejercicio 2.2.6
+Se cuenta con una secuencia que contiene el Apellido y Nombre y Promedio General de los Graduados de una Facultad
+, y se solicita generar un listado con diversas recomendaciones para cubrir vacantes en una importante Empresa. 
+Las mencionadas recomendaciones serán establecidas del siguiente modo: si el promedio es menor que 7, la recomendación será
+ negativa ("NO"); por el contrario, si el promedio es menor que 8, la recomendación será positiva ("SI"); de lo contrario,
+  si el promedio es menor que 9, la recomendación será favorable ("F"); por último, si el promedio supera los 9 puntos,
+  la recomendación será muy favorable("MF"). El listado deber respetar el siguiente formato:
+Apellido_NombrePromedioRecomendación
+Además, se solicita la impresión del total de graduados que recibieron cada una de las recomendaciones, y el promedio global de los mismos.
+// EJEMPLO: 
+
+Apellido y Nombre | Promedio General 
+Rodolfo Menez	  | 6.1
+Juan dominguez	  | 3.5
+Joaquin Fonseca	  | 7.5
+Pepe Fanlag		  | 6.9
+Carlos Menem	  | 8.7
+Maximo Rodriguez  | 9.2
+Vladimir Putin	  | 10
+
+<7 = 'NO' / >7 y <8 = 'SI' / >8 y <9 = 'F' / >9 = 'MF'
+
+Se pide imprimir: Apellido_Nombre|Promedio|Recomendación
+
+y la sumatoria de todos los promedios.
+
+Accion 2.2.6 ES
+
+	Ambiente
+
+		Graduados = Registro de
+
+			Ap_N:AN(30)
+			prom:N(2,1) 
+
+		Fin Registro
+
+		sal = Registro de
+
+			Ap_N:AN(30)
+			prom:N(2,1)
+			rec:('NO','SI','F','MF')
+
+		Fin Registro
+
+		s = sal
+		g = Graduados
+		ArG = Archivo de Graduados
+		ArSal = Archivo de Graduados
+		promtotal:entero
+
+	Proceso
+
+		promtotal:=0 // acumulador
+		Abrir E/(ArG)
+		Abrir S/(ArSal)
+		Leer(ArG,g)
+
+		Mientras NFDA(ArG) hacer
+
+			Segun (g.prom) hacer
+				<7 :
+					s.Ap_N := g.Ap_N
+					s.prom := g.prom
+					s.rec  := 'NO'
+					Grabar(ArSal,s)
+				>7 y <8 :
+					s.Ap_N := g.Ap_N
+					s.prom := g.prom
+					s.rec  := 'SI'
+					Grabar(ArSal,s)
+				>8 y <9 :
+					s.Ap_N := g.Ap_N
+					s.prom := g.prom
+					s.rec  := 'F'
+					Grabar(ArSal,s)
+				>9 : 
+					s.Ap_N := g.Ap_N
+					s.prom := g.prom
+					s.rec  := 'MF'
+					Grabar(ArSal,s)
+			Fin Segun
+
+			promtotal:= promtotal + g.prom
+
+			Leer(ArG,g)
+
+		Fin Mientras
+
+		Escribir('El promedio total es de: ', promtotal)
+
+		Cerrar(ArG)
+		Cerar(ArSal)
+
+Fin Accion
+
