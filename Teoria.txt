@@ -1,0 +1,88 @@
+	Nombre: Franco Adolfo Bottaro 			ISI B
+	Legajo:25525
+
+	*Tengo que dar un caramelo a cada alumno de un aula de 20 alumnos.*
+
+Acción caramelos es
+Ambiente 
+	variable
+		cantcara: entero
+		i: 1..20
+Algoritmo
+	Escribir ("Ingrese la cantidad de caramelos: ")
+	leer (cantcara)
+	Si (cantcara > 19) entonces
+		para i:= 1 a 20 hacer
+			Escribir ("dar un caramelo al alumno: ", i)
+		fin para
+	Contrario 
+		Escribir ("no hay suficientes caramelos.")
+	fin si
+fin acción
+
+
+
+	*Quiero mostrar por pantalla los número del 1 al 10*
+
+Acción 1AL10 es
+Ambiente
+	variable
+		i: 1..10
+algoritmo 
+	Para i:=1 hasta 10 hacer
+		Escribir (i, ", ")
+	fin para
+fin acción
+
+
+
+
+	*Ingresar  100 números y mostrar todos los que son pares*
+
+Acción npar es
+Ambiente
+	variable
+		i: 1..100
+		num: Entero
+		fnum: Entero
+algoritmo
+	Para i:=1 a 100 hacer
+		escribir ("Digite un numero: ")
+		leer (num)
+		fnum:= num mod 2
+		si fnum = 0 entonces 
+			Escribir (fnum, ", ")
+		fin si
+	fin para
+fin acción
+
+
+
+	*Necesito contar todas los caracteres distintos de blanco que existen en una oración en castellano, sin considerar al punto (final de la oración) ¿Lo hacemos?*
+
+	**Y si tuviéramos que contar también el punto, cambiaríamos de estructura?**
+
+
+Acción Oracion es
+	cont:cadena de entero
+	cont2: cadenas de entero
+	s:secuencia de caracteres
+	v:caracter
+algoritmo 
+	Arrancar (sec)
+	Avanzar (sec,v)
+	cont:= 0
+	mientras NFDS hacer
+		si v <> " " o v <> "." entonces
+			cont:= cont + 1
+		fin si
+		si v <> " " entonces	// condicional que cuentando los puntos 
+			cont2:= cont2 + 1
+		fin si
+		Avanzar (sec,v)
+	fin mientras
+	Escribir ("la cantidad de caracteres que hay en la oracion sin contar los espacios en blacos ni los puntos son: ", cont)
+	Escribir ("la cantidad de caracteres que hay en la oracion sin contar los espacios en blacos pero si los puntos son: ", cont2)
+	Cerrar (sec)
+	// Si cambiaria las estructura como se muestra en el condicional de que cuenta los puntos.
+finAcción

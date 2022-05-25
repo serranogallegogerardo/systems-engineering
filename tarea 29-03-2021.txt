@@ -1,0 +1,87 @@
+Tarea
+
+Tengo que dar un caramelo a cada alumno de un aula de 20 alumnos
+Quiero mostrar por pantalla los número del 1 al 10
+
+Ingresar 100 números y mostrar todos los que son pares
+
+• Necesito contar todas los caracteres distintos de blanco que existen en una oración en castellano, sin considerar al punto (final de la oración
+Y si tuviéramos que contar también el punto, cambiaríamos de estructura?
+
+Acción caramelo ES
+	Ambiente
+		Variables
+		i:entero
+	Proceso
+		Para i:=1 hasta 20 Hacer // esta condición en pascal es (i:=1; i<=10 ; i++)
+			Esc(‘*Le da un caramelo al alumno numero ”, i ,” *”) // roleando
+			darCaramelo() // procedimiento del sistema que da caramelos
+		fp
+		// también podría haber impreso aca directamente el con
+		// un simple condicional i <= 10 Entonces ; esc(i) ; dentro del bucle ManejadoP.C.
+FA
+
+Acción NRO ES
+	Ambiente
+		i:entero
+	Proceso
+		Para i:=1 hasta 10 Hacer
+			Esc(i)
+		fp
+FA
+
+
+Acción pares ES
+	Ambiente
+		Variables
+		secINT: secuencia de entero
+		s,i:entero
+		Subacciones
+		Procedimiento CARGA() ES
+			Esc(‘Ingrese 100 números’)
+			Para i:=1 hasta 100 hacer // proceso de carga
+				Leer(s)
+				Grabar(secINT,s) // grabo independientemente de si es par o no.
+				// Por que no avanzo en una secuencia abierta como de escritura?
+				// Porque esta misma se va grabando una seguida de la otra
+				// por lo tanto en las secuencias abiertas de salida no es posible avz
+			fp
+		Fp
+		Procedimiento Mostrar() ES
+			Para i:=1 hasta 100 Hacer
+			Si (s MOD 2 = 0) Entonces // ES PAR
+				Esc(s)
+			Fsi // si no es par no me interesa y avanzo en la secuencia.
+			AVZ(secINT,s)
+			fp
+		fp
+	Proceso
+		Crear(secINT) // Abro del tipo salida para la escritura de la secuencia
+		Carga()
+		Cerrar(secINT) // Cierro de salida al terminar la carga
+		ARR(secINT) // Este seria el verbo abrir para tomar de entrada la secuencia.
+		AVZ(secINT,s)
+		Mostrar()
+		Cerrar(secINT) // siempre es importante cerrar la secuencia o explota todo.
+FA
+
+
+Acción NOBLANCOS ES
+	Ambiente
+		Variables
+		sec:secuencia de carácter 
+		v:caracter // esta seria la ventana de la secuencia
+		ct:entero // contador	
+	Proceso
+		ARR(sec)
+		AVZ(sec,v)
+		ct:=0 // inicializo en 0 el contador para ir contando a medida que v <> ‘’ 
+			Mientras NFDS(sec) Hacer // mientras no fin de secuencia significa la abrev.
+				Si (v <> ‘ ’) o (v <> ‘.’) Entonces // si es distinto de blanco y punto
+					ct:=ct+1
+				Fsi			
+				AVZ(sec,v)	
+			Fm
+		Cerrar(sec)
+		// Si hubiese que contar también simplemente borraríamos la condición del simple 		//condicional que dice (v <> ‘.’) 
+FA

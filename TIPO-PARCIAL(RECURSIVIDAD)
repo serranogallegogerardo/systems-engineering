@@ -1,0 +1,45 @@
+// "Invertir los numeros de un arreglo de enteros"
+
+// Caso base = i=N
+FUNCION Invertir(arreglo: [1..N]: entero, i: entero): arreglo ES
+Ambiente
+  j : entero
+PROCESO
+        j := (N+1) - i;
+        Si (i = N) ENTONCES
+          arreglo[j] := arreglo[N]
+          Invertir := arreglo;
+        SINO
+          Invertir := Invertir(arreglo, i+1)
+          arreglo[j] := arreglo[i];
+          Invertir := arreglo;
+        FSI
+// 8 6 4 1  
+// 1 4 6 8
+// i=1, j=4 | i=2, j=3 | i=3, j=2 | i=4, j=1 -> 1en[1], inv=
+F-P
+
+j:= 1
+PARA I:=N HASTA 1, -1 HACER 
+    arreglo[j]:= arreglo[i]
+    j:=j+1
+FP
+
+
+FUNCION Invertir(arreglo: [1..n]: entero, i: entero): arreglo ES
+    AMBIENTE 
+        j: entero 
+    PROCESO
+        j:= (N+1) - I 
+        SI I = N ENTONCES 
+            arreglo[j]:= arreglo[i]
+            Invertir:= arreglo[j]
+        SINO 
+            arreglo[j]:= Invertir(arreglo, i+1)
+        FSI 
+        // 4 3 5 6 
+        //
+        1) I=1 y J=4. 4
+        2) I=2 y J=3. 4
+        3) I=3 y J=2. 4
+        4) I=4 y J=1. 4

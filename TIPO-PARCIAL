@@ -1,0 +1,120 @@
+ACCION AFA(PRIM:puntero a NODO) ES 
+AMBIENTE
+    fech = REGISTRO 
+        Equipo_Local: AN(40)
+        Equipo_Visitante: AN(40)
+        Hora: N(4)
+        Fecha: fecha 
+        Ciudad_Local: ('A', 'B', 'C')
+    FR 
+    FECHAS: archivo de fech 
+    v: fech 
+    info = REGISTRO 
+        ApyN: AN(80)
+        Cant: N(2)
+        Localidad: ('A', 'B', 'C')
+    FR 
+    NODO = REGISTRO 
+        DATOS: info
+        prox: puntero a NODO 
+    FR
+    P: puntero a NODO 
+    info2 = REGISTRO 
+        Equipo_Local: AN(40)
+        Equipo_Visitante: AN(40)
+        ApyN: AN(80)
+    FR 
+    NODO2= REGISTRO 
+        DATOS: info2 
+        prox: puntero a NODO 
+    FR 
+    PRIM2, P2, Q2: puntero a NODO2
+    NODO3= REGISTRO 
+        NyA: AN(80)
+        prox,ant: puntero a NODO3
+    FR
+    PRIM3, ULT3, P3, Q3: puntero a NODO3
+    Subaccion Carga_ListaNueva(Q2:puntero a NODO) ES 
+        SI PRIM2 = NILL ENTONCES 
+            PRIM2:= Q2 
+            *Q2.prox:= nill
+            P2:= Q2
+        SINO 
+            *P2.prox:= Q2 
+            *Q2.prox:= nill 
+            P2:= Q2
+        FSI 
+    FS
+PROCESO 
+    Abrir(FECHAS)
+    Leer(FECHAS,v)
+    PRIM2 := nill 
+    P2:= nill 
+    MIENTRAS NFDA(FECHAS) HACER
+        P:=PRIM
+        Nuevo(Q2) 
+        *Q2.DATOS.Equipo_Local:= v.Equipo_Local
+        *Q2.DATOS.Equipo_Visitante:= v.Equipo_Visitante
+        *Q2.DATOS.ApyN:= *P.DATOS.ApyN
+        SI P = PRIM ENTONCES 
+           SI v.Ciudad_Local <> *P.DATOS.Ciudad_Local ENTONCES 
+                SI *P.DATOS.Cant < 10 ENTONCES 
+                    *P.DATOS.Cant:= *P.DATOS.Cant + 1
+                    Carga_ListaNueva(Q2)
+                    Leer(FECHAS,v)
+                FSI
+            FSI
+            P:= *P.prox 
+        FSI 
+        MIENTRAS P<> PRIM HACER  
+            SI v.Ciudad_Local <> *P.DATOS.Ciudad_Local ENTONCES
+                SI *P.DATOS.Cant < 10 ENTONCES 
+                    *P.DATOS.Cant:= *P.DATOS.Cant + 1
+
+                    Carga_ListaNueva(Q2)
+                    Leer(FECHAS,v)
+                FSI
+            FSI
+            P:= *P.prox 
+        FM 
+    FM
+    P:= PRIM 
+    SI *P.DATOS.Cant = 10 ENTONCES
+        Nuevo(Q3) 
+        *Q3.NyA:= *P.DATOS.ApyN
+        SI PRIM3 = NILL ENTONCES
+            PRIM3:= Q3
+            *Q3.prox:= nill 
+            *Q3.ant:= nill 
+            ULT3:= Q3
+            P:= *P.prox 
+        FSI
+        MIENTRAS P<> PRIM y *P.DATOS.Cant = 10 HACER
+            Nuevo(Q3) 
+            *Q3.NyA:= *P.DATOS.ApyN 
+                MIENTRAS P3 <> NILL Y *P3.NyA > *Q3.NyA HACER 
+                    P3:= *P3.prox 
+                FM 
+                SI PRIM3 = P3 ENTONCES //primer elemento 
+                    PRIM3:= Q3 
+                    *P3.ant:= Q3 
+                    *Q3.prox:= P3
+                    *Q3.ant:= nill 
+                    ULT3:= P3
+                SINO 
+                    SI P3 = NILL ENTONCES
+                        ULT3:= Q3 
+                        *Q3.ant:= P3 
+                        *Q3.prox:= nill 
+                        *P3.prox:= Q3
+                    SINO 
+                        *Q3.prox:= P3 
+                        *Q3.ant:= *P3.ant 
+                        *(P3.ant).prox:= Q3 
+                        *P3.ant:= Q3 
+                    FSI 
+                FSI 
+            FSI 
+            P:= *P.prox
+        FM
+    FSI

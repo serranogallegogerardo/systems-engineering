@@ -1,0 +1,130 @@
+La Universidad Tecnológica Nacional contiene información de los alumnos almacenada en una secuencia de caracteres. Estos datos son código de carrera, nombre y apellido del alumno, año que cursa actualmente, de la siguiente forma:
+1GuillermoFernandez|4#3MicaelaLopez|1#3CarlosGomez|5#.....*
+ Además se cuenta con un arreglo de 10 posiciones cuyo contenido es el nombre de cada carrera (alfanumérico de 40). 
+Se pide:
+a.	Generar como salida una lista con los alumnos (guardar como máximo 40 caracteres) y la carrera a cual pertenece, ordenada por nombre de carrera.
+b.	Emitir un listado de los alumnos que se encuentran en quinto año.
+
+ACCION UTN Es 
+AMBIENTE 
+    dato = REGISTRO 
+        Alumno: arreglo de 1..40 de AN(1) 
+        Carrera: AN(40)
+    FR
+    NODO = REGISTRO 
+        DATOS: dato
+        prox: puntero a NODO 
+    FR 
+    P,PRIM: puntero a NODO
+    Alumnos: secuencia de caracteres 
+    A: caracter
+    Pos: arreglo de [1..10] de AN(40)
+
+    Procedimiento CargaOrdenadaSimple(P,Q,PRIM:puntero a NODO) ES
+    AMBIENTE 
+        ANT:puntero a NODO 
+    PROCESO
+        SI PRIM = NILL ENTONCES
+            PRIM:= Q 
+            *Q.prox:= NILL
+        FSI 
+        MIENTRAS P<> NILL y *P.DATOS.Carrera > *Q.DATOS.Carrera HACER
+            ANT:= P 
+            P:=*P.prox
+        FM 
+        SI PRIM = P ENTONCES 
+            PRIM:= Q 
+            *Q.prox:= P
+        SINO 
+            SI P = NILL ENTONCES 
+                *P.prox:= Q 
+                *Q.prox:= NILL 
+            SINO
+                *ANT.prox:= Q 
+                *Q.prox:= P 
+            FSI 
+        FSI 
+    FM   
+
+PROCESO 
+    arr(Alumnos)
+    P:= PRIM
+    MIENTRAS NFDS(Alumnos) HACER
+        AVZ(Alumnos,A)
+        Nuevo(Q) 
+        PARA i:=1 hasta 10 HACER
+            SI Pos[i] = A ENTONCES 
+                *Q.DATOS.Carrera:= Pos[i]
+            FSI 
+        FP 
+        AVZ(Alumnos,A)
+        PARA i:=1 hasta 40 HACER 
+            *Q.DATOS.Alumnos[i]:= A 
+            AVZ(Alumnos,A)
+        FP 
+        MIENTRAS A <> | HACER 
+            AVZ(Alumnos,A)
+        FM 
+        AVZ(Alumnos,A)
+        SI A= '5' ENTONCES 
+            PARA i:=1 hasta 40 HACER 
+                Esc(*Q.DATOS.Alumno[i])
+            FP 
+        FSI 
+        CargaOrdenadaSimple(P,Q,PRIM)
+        AVZ(Alumnos,A)
+    FM 
+F_Accion
+
+Utilizando listas, realizar el juego de la OCA ALGORÍTMICA de la siguiente manera:
+•	Se recibe una lista que representa el tablero del juego (usted deberá indicar qué tipo de lista es la más adecuada) con los campos salto (entero de -5 a 5) y puntaje (entero de 0 - 100).
+•	Mediante una función tirar() se obtiene un número aleatorio del 1 al 6 que indica cuántos casilleros se deberá mover.
+•	Luego de cada tirada el jugador deberá avanzar tantos casilleros como indique el resultado de la función tirar(), sumar tantos puntos como indique el campo puntaje y avanzar/retroceder tantos casilleros como indique el campo salto (o quedarse en el sitio).
+•	La partida se termina cuando el jugador llega a la última posición o cuando realizó 50 tiradas.
+•	En caso de que el jugador sobrepase el último lugar, deberá retroceder tantos casilleros como se haya excedido (por ejemplo, si tenía que sacar un 1 para llegar al final y obtuvo un 6, deberá retroceder desde el final 5 casilleros).
+•	Al finalizar mostrar el puntaje obtenido.
+
+Aclaración: no se debe desarrollar la función tirar().
+
+ACCION OCA(PRIM,ULT:puntero a NODO) ES 
+    AMBIENTE
+        dato = REGISTRO
+            puntaje: 0..100 
+            salto: -5..5 
+        FR
+        NODO= REGISTRO
+            DATOS: dato
+            ant,prox: puntero a NODO 
+        FR 
+        P: puntero a NODO
+    PROCESO
+        P:=PRIM 
+        Total:= 0
+        MIENTRAS P<> ULT o tiradas = 50 HACER
+            puntaje:= *P.DATOS.puntaje 
+            casilleros:= tirar()
+            PARA i:=1 HASTA casilleros HACER 
+                P:=*P.prox
+            FP 
+            Total:= Total + *P.DATOS.puntaje
+            casilleros:= *P.DATOS.salto
+            SI casilleros > 0 ENTONCES 
+                PARA i:= 1 hasta casilleros HACER 
+                    P:=*P.prox 
+                FP 
+            SINO 
+                SI casilleros <0 ENTONCES 
+                    PARA i:= 1 hasta casilleros, -1 HACER 
+                        P:=*P.ant
+                         
+                    FP 
+                FSI 
+            FSI 
+            SI P = ULT ENTONCES 
+
+
+
+
+
+
+

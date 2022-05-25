@@ -1,0 +1,118 @@
+ACCIÓN EJ1 ES
+    AMBIENTE
+        MAE = REGISTRO
+            CÓDIGO: N(5)
+            NRO: N(5)
+            VOZ: N(6)
+            DATOS: N(6)
+            SMS: N(6)
+        FIN_REGISTRO
+
+        ANUAL, SAL: Archivo de MAE ordenado por CÓDIGO y NRO.
+        ma, s: MAE
+
+        MOV = REGISTRO
+            COD: N(5)
+            CENTRAL: N(5)
+            CODMOV: {"ALTA", "MODIFICACIÓN"}
+            TIPO: [1..3]
+            DATOSKB: N(6)
+        FIN_REGISTRO
+
+        COMUNICACIONES: Archivo de MOV ordenado por COD y CENTRAL.
+        mo: MOV
+
+        INDX = REGISTRO
+            CodProv: N(5)
+            NOMBRE: AN(40)
+        FIN_REGISTRO
+
+        PROVINCIAS: Archivo de INDX indexado por CodProv.
+        i: INDX
+
+        SUBACCIÓN leer_mae ES
+            LEER(ANUAL,ma)
+            SI FDA(ANUAL) ENTONCES
+                CÓDIGO:= HV
+            FIN_SI
+        FIN_SUBACCIÓN
+
+        SUBACCIÓN leer_mov ES
+            LEER(COMUNICACIONES,mo)
+            SI FDA(COMUNICACIONES) ENTONCES
+                cod:= HV
+            FIN_SI
+        FIN_SUBACCIÓN
+
+        voz, sms, datos, total: entero
+
+    PROCESO
+        ABRIR E/(ANUAL)
+        ABRIR E/(COMUNICACIONES)
+        ABRIR S/(SAL)
+
+        leer_mae
+        leer_mov
+
+        voz:= 0
+        sms:= 0
+        datos:= 0
+        total:= 0
+
+        MIENTRAS(ma.CODIGO <> HV) y (mo.cod <> HV) HACER
+            SI (ma.CODIGO > mo.cod) ENTONCES //Si no hubo ninguna modificacion en esa provincia lo mantengo tal cual estaba
+                s:= ma
+                GRABAR(SAL,s)
+                leer_mae
+            SINO
+                SI (ma.CODIGO = mo.cod) ENTONCES 
+                    SI (CODMOV = "ALTA") ENTONCES      //ALTA = CREAR
+                        ESC("ERROR. ALTA INEXISTENTE")
+                    SINO                              //SI SE TRATA DE UNA MODIFICACIÓN
+                        s.CÓDIGO:= ma.CÓDIGOD
+                        s.NRO:= ma.NRO
+                       SEGÚN (TIPO) HACER
+                            =1 :    s.VOZ:= mo.DATOSKB
+                                    voz:= voz + mo.DATOSKB
+                            =2 :    s.DATOS:= mo.DATOSKB
+                                    datos:= datos + mo.DATOSKB
+                            =3 :    s.SMS:= mo.DATOSKB
+                                    sms:= sms + mo.DATOSKB
+                        Fin_Según
+                        GRABAR(SAL,s)
+                    FIN_SI
+                    leer_mov
+                SINO                                   //SI SE QUIERE AGREGAR UNA NUEVA PROVINCIA
+                    SI (CODMOV = "ALTA") ENTONCES 
+                        s.CÓDIGO:= mO.CÓDIGOD
+                        s.NRO:= mO.NRO
+                        SEGÚN (TIPO) HACER
+                            =1 :    s.VOZ:= mo.DATOSKB
+                                    voz:= voz + mo.DATOSKB
+                            =2 :    s.DATOS:= mo.DATOSKB
+                                    datos:= datos + mo.DATOSKB
+                            =3 :    s.SMS:= mo.DATOSKB
+                                    sms:= sms + mo.DATOSKB
+                        Fin_Según
+                        GRABAR(SAL,s)
+                    SINO
+                        ESC("ERROR. MODIFICACION INEXISTENTE")
+                    FIN_SI
+                    leer_mov
+                FIN_SI
+            FIN_SI
+            total:= voz + sms + datos
+        FIN_MIENTRAS
+
+        ESC(" NOMBRE DE PROVINCIA   |   TOTALVOZ   |   TOTALDATOS   |   TOTALSMS   |   SUMA DE DATOS TRANSMITIDOS   ")
+        MIENTRAS NFDA(COMUNICACIONES) HACER
+            i:= mo.cod
+            LEER(PROVINCIAS,i)
+            SI (EXISTE) ENTONCES
+            ESC("       ",i.NOMBRE,"          ",voz,"        ",datos,"      ",sms,"                ",total)
+            LEER(COMUNICACIONES,mo)
+        FIN_MIENTRAS
+        CERRAR(COMUNICACIONES)
+        CERRAR(ANUAL)
+        CERRAR(SAL)
+FIN_ACCIÓN

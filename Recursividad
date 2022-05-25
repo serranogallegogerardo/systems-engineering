@@ -1,0 +1,372 @@
+Recursividad
+
+Accion "1.02" es;
+	Amb
+		Funcion Fib(n:Entero):Entero
+			Si (n<2) ent
+				Fib:=1;	//Caso Base
+			Sino
+				Fib:=Fib(n-1)+Fib(n-2) //Caso Recursivo
+			FS
+		FF
+
+hacer desde el 1.03 al 1.06...
+
+Accion "1.03" es;
+	Amb
+		Funcion Pot(a,b:Entero):Entero
+			si (b=0) ent
+				Pot:=1; //Caso Base a^1=1
+			sino
+				si (b=1) ent
+					Pot:=a; //Caso Base a^1=a
+				sino
+					si (a=0) ent
+						Pot:=0; //Caso Base 0^x=0
+					sino
+						Pot:= a*Pot(a,b-1); //Caso Recursivo a^b	
+					fs
+				fs
+			fs
+		FF
+		Planteo Formal: Pot(a,b:Entero):Entero	{1 si b=0 Caso Base
+												{a si b=1 Caso Base
+												{0 si a=0 Caso Base
+												{a*Pot(a,b-1) si a>0 Caso Recursivo
+
+Accion "1.04" es;
+	Amb
+		Funcion Par(n:Entero):Boolean
+			d: N(5,2);
+			si (n=0) ent 	//Caso Base, si al procesar cada dijito todos 
+				Par:=True;	//eran pares y llego al resultado 0
+			sino
+				d:=n MOD 10;
+				si (d MOD 2)=0 ent
+					Par:=Par(n DIV 10);
+				sino
+					Par:=False;
+				fs
+			fs
+		FF
+		Planteo Formal: Par(n:Entero):Booleano	{Verdadero si n=0 						Caso Base
+												{Falso si n>0 y (n mod 10)<>0 			Caso Base
+												{Par(n DIV 10) si n>0 y (n mod 10)=0 	Caso Recursivo
+
+Accion "1.05" es;
+	Amb
+		Funcion Divs(b,a:Entero):Entero
+			si (a>b) ent //  5/10
+				Divs:=0; //Caso Base
+			sino
+				Divs:= (1+Divs(b-a,a)); //Caso Recursivo
+			fs
+		FF
+		Planteo Formal: Divs(b,a:Entero):entero	{0 si a>b 				Caso Base
+												{1+Divs(b-a,a) si a<b 	Caso Recursivo
+
+Accion "1.06" es;
+	Amb
+		Funcion IP(n:Entero):Logico //Verdadero=Par, Falso=Impar
+			si (n=0) ent
+				IP:=Verdadero;
+			sino
+				si (n=1) ent
+					IP:=Falso;
+				sino
+					IP:=IP(n-2);
+				fs
+			fs
+		FF
+		Planteo Formal: IP(n:Entero):Booleano	{Verdadero 	si n=0 	Caso Base
+												{Falso 		si n=1 	Caso Base
+												{IP(n-2)	si n>1	Caso Recursivo
+
+Accion "1.07" es;
+	Amb
+		Funcion
+
+
+Accion "1.08" es;
+	Amb
+		Funcion Sum(i: Entero, A:Arreglo [1..10] de Enteros):Entero
+			Si (i=10) ent
+				Sum:=A[i];
+			Sino
+				Sum:=A[i]+Sum(i+1, A);
+			FS
+		FF
+
+Accion "1.21" es;
+	Amb
+		Procedimiento Imp(n:Entero)" es;
+			Esc(n MOD 10);
+			si (n>9) ent
+				Esc(Inv(n DIV 10));
+			fs
+		FP
+
+Accion "1.22" es;
+	Amb //long posee la cant de caracteres de la palabra
+		Procedimiento Cad(A:Arreglo [1..N] de Caracter, i:Entero)
+			Si (i<n) ent
+				Cad(A,i+1);
+			FS
+			Esc(A[i]);
+		FP
+
+Accion "1.23" es;
+	Amb
+		Procedimiento RevList(P:Puntero a Nodo)
+			Si *P.Prox<>Nill ent
+				RevList(*P.Prox);
+				Esc(*P.Nom);
+			Sino
+				Esc(*P.Nom);
+			FS
+		FP
+
+Accion "1.24" es;
+	Amb
+		Procedimiento Bin(n:Entero)
+			Si (n<2) ent //Al ser menor que 2 no se procede mas y solo muestro
+				Esc(n);
+			Sino
+				Bin(n DIV 2); //Devuelvo la division entera
+				Esc(n MOD 2); //Muestro el Resto en forma Binaria
+			FS
+		FP
+
+3.1:
+	1. Las Hojas Son: D M N F J K L
+	2. Raiz: A
+	3. Padre de C: A
+	4. Hijos de C: F G H
+	5. Antecesor de C: A
+	6. Decendientes de E: I
+	7. Hermanos derechos de D y E: F G H
+	8. Izq de G: D E F, Der de G: H
+	9. Siendo A: Nivel 1 y (M y N los mas bajos) Nivel 5 su Profundidad o Altura es de 5
+	10.El Nodo C es de Nivel 2, osea que su Altura o Profundidad es de 2
+
+3.2:
+	Hay 5 caminos de longitud 5:(A,D)={A,B,D}
+								(A,E)={A,B,E}
+								(A,F)={A,C,F}
+								(A,G)={A,C,G}
+								(A,H)={A,C,H}
+
+3.3:			 (/)
+				/	\
+			  (*)	(+)
+		 	 /	\	/  \
+		   (-)  (z)(m) (^)
+		   / \		   / \
+	     (x) (y)	 (n) (p)
+
+3.4:
+	Post:	9 32 28 52 10 70 40
+	En:		9 28 32 40 52 70 10
+	Pre:	40 28 9 32 70 52 10
+
+3.5:
+	( 5 + 7 ) / 8 – ( 6 * 7 )^2
+				 (-)
+				/	\
+			  (/)	(^)
+		 	 /	\	/  \
+		   (+)  (8)(*) (2)
+		   / \	   / \
+	     (5) (7) (6) (7)
+
+	3 – 6 + 6 * ( 8 / 3 )
+				 (+)
+				/	\
+			  (-)	(*)
+		 	 /	\	/  \
+		   (3)  (6)(6) (/)
+		   			   / \
+	      			 (8) (3)
+
+	4 / ( 8 – 6 * ( 8 + 3 ) )
+				 (/)
+				/	\
+			  (4)	(-)
+			       /   \	
+				 (8)   (*)
+				       / \ 
+				     (6) (+)
+				         / \ 
+				       (8) (3)
+
+Accion "3.6" es;
+	Amb
+		P=Registro
+			Dato: Entero;
+			Izq,Der: Puntero a P;
+		FR
+		SubAccion "En" es;
+			Si P<>Nill ent
+				En(*P.Izq);
+				Esc()
+
+Accion "3.7"(Prim: Puntero a T) es; //Escribir una función recursiva que encuentre el número de nodos de un árbol binario.
+	Amb
+		T=Registro
+			Dato:AN(30);
+			Izq,Der:Puntero a T;
+		FR
+
+		Funcion "EnOrd"(P:Puntero a T):Entero es;
+			Si (P<>Nill) ent
+				EnOrd:=1+EnOrd(*P.Izq)+EnOrd(*P.Der);
+			Sino
+				EnOrd:=0;
+			FS
+		FSA
+
+	Proceso
+		Esc("La Cant de Nodos en el Arbol Binario es de:" EnOrd(P));
+FA
+
+Accion "3.8"(Prim: Puntero a T) es; //Escribir una función recursiva que encuentre la altura de un árbol binario.
+	Amb
+		T=Registro
+			Dato:AN(30);
+			Izq,Der:Puntero a T;
+		FR
+
+		Funcion "Alt"(P:Puntero a T):Entero es;
+			Si (P<>Nill) ent
+				Alt-I:=Alt(*P.Izq)+1;
+				Alt-D:=Alt(*P.Der)+1;
+				Si (Alt-Izq > AltD) ent
+					Alt:=Alt-I);
+				Sino
+					Alt:=Alt-D);
+				FS
+			Sino
+				Alt:=0;
+			FS
+		FSA
+
+	Proceso
+		Esc("La Altura del Arbol Binario es de:" Alt(P));
+FA
+
+Accion "3.9"(Prim:Puntero a Arb) es;
+	Amb
+		Arb=Registro
+			N:Entero;
+			Der,Izq:Puntero a Arb;
+		FR
+
+		Funcion "Suma"(P:Puntero a Arb) es;
+			Si (P<>Nill) ent
+				Arb:=*P.N+Arb(*P.Izq)+Arb(*P.Der);
+			Sino
+				Arb:=0;
+			FS
+		FF
+
+		Funcion "Suma3"(P:Puntero a Arb) es;
+			Si (P<>Nill) ent
+				Si (*P.N MOD 3)=0 ent
+					Arb:=*P.N+Arb(*P.Izq)+Arb(*P.Der);
+				Sino
+					Arb:=Arb(*P.Izq)+Arb(*P.Der);
+				FS
+			Sino
+				Arb:=0;
+			FS
+		FF
+	Proceso
+		P:=Prim;
+		Esc("El Total de sus Elementos es:", Suma(P));
+		P:=Prim;
+		Esc("El Total de sus Elementos Mult de 3 es:", Suma3(P));
+FA
+
+Accion "5.3.10"(Prim: Puntero a arbol) es;
+	Amb
+		arbol=Registro
+			x: entero;
+			izq,der:Puntero a arbol;
+		FR
+		P: Puntero a Nodo;
+		C: Entero;
+
+	Proceso
+		P:=Prim;
+		Esc("Ingrese un Valor a Hallar"); Leer(C);
+		Si (P<>Nill) ent
+			Si (*P.x=C) ent
+				*P.x;
+			Sino
+				arbol(*P.izq);
+				arbol(*P.der);
+			FS
+		FS
+
+5.3.11: ((a + b) + c * (d + e) + f) * (g + h)
+						 __(*)__
+						/       \
+					_(*)_	    (+)
+				   / 	 \	    / \
+				(+)     (+)   (g) (h)
+				/ \     / \
+			  (+) (c) (+) (f)
+			  / \	  / \
+		    (a) (b) (d) (e)
+
+	Expresion prefija: **++abc++def+gh
+			 postfija: ab+c+de+f+*gh+*
+
+5.3.12:
+	1:
+	G 		_G__
+	E 	 __E    \_
+	A  _A_        \_
+	I I   |         \_
+	B     B           \_
+	M                ___M
+	C            ___C
+	L           L_
+	D             D___
+	F                 F___
+	K                     K___
+	J                       _ J
+	H                       H
+	  I A B E G L D C F M K H J
+
+	2:
+	  postorden: I B A E H J K F D L C M G
+	
+	3:
+	Si (P<>Nill) ent
+		arbol(*P.izq);
+		arbol(*P.der);
+		Esc(*P.Dato);	
+	FS
+
+Accion "5.3.13" es;
+	Amb
+
+		Funcion ""():;
+
+5.3.14:
+
+5.3.15: ABB con: 10,25,35,40,42,45,50,60,70,75,90
+					
+				 ______45________
+			 ___40___		 ___60___
+		 ___25___	42		50	 ___75___
+		10		35				70		90
+
+5.3.16: 
+
+5.3.17: Ninguno es AVL, el 1ro: Porque la diferencia de alturas entre los subarboles de
+clave B, es de 2. y el 2do pasa lo mismo, el subarbol derecho no seria problema pero la
+diferencia de altura es mayor conparada con el subarbol izquierdo, ambas ramas izq de los
+subarboles tiene una diferencia de 2 con la rama derecha del subarbol izquierdo.
+

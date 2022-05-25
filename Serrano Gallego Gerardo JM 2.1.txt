@@ -1,0 +1,38 @@
+2.1. Secuencias de datos elementales
+
+Ejercicio 2.1.1
+Dada una secuencia de letras del alfabeto que finaliza con una marca '*', contar cuantas letras "A" hay en la secuencia.
+
+Accion 2.1 ES
+
+	Ambiente
+
+		sec:secuencia de caracter
+		v:caracter
+		ct:entero
+
+	Proceso
+
+		ARR(sec)
+		AVZ(sec,v)
+
+		ct:=0
+
+		Mientras v <> '*' Hacer
+
+			Si v = 'A' Entonces
+
+				ct:=ct+1
+
+			Fsi
+
+			AVZ(sec,v)
+
+		Fm
+
+		Esc('La cantidad de caracteres con valor 'A' es de:', ct)
+
+		Cerrar(sec)
+
+
+FA
