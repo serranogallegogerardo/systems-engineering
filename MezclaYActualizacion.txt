@@ -1,0 +1,1631 @@
+Mezcla
+Ejercicio 2.2.16¶
+Construir un algoritmo que a partir de un fichero de películas nuevas conteniendo:
+
+PELICULAS_NUEVAS Ordenado por Nro_Pelicula
+
+Nro_PeliculaTituloGeneroCant_CopiasFecha_Estreno
+y otro fichero de peliculas existentes, ambos ordenados por película,
+
+PELICULAS Ordenado por Nro_Pelicula
+
+Nro_PeliculaTituloGeneroCant_CopiasFecha_Estreno
+
+Genere un único archivo (con el mismo formato de los ficheros de entrada) que contenga todas las peliculas. 
+Considerar que hay un solo registro por película y no se repiten entre ficheros.
+
+Accion 2.2.16 ES
+
+	Ambiente
+
+		tPELICULAS = registro
+
+			Nro_Pelicula:// no tenia ganas de poner el tipo de c/u
+			Titulo:
+			Genero:
+			Cant_Copias:
+			Fecha_Estreno:
+
+		fr
+
+		ar1:archivo de tPELICULAS Ordenado por Nro_Pelicula
+		r1:tPELICULAS
+
+		ar2:archivo de tPELICULAS Ordenado por Nro_Pelicula
+		r2:tPELICULAS
+
+		arsal:archivo de tPELICULAS Ordenado por Nro_Pelicula
+		s:tPELICULAS
+
+		Subaccion Leer_ar1 ES 
+
+			Leer(ar1,r1)
+			Si FDA(ar1) Entonces
+				r1.Nro_Pelicula:=HV
+			Fsi
+
+		Fs
+
+		Subaccion Leer_ar2 ES 
+
+			leer(ar2,r2)
+
+			Si FDA(ar2) Entonces
+				r2.Nro_Pelicula:=HV
+			Fsi 
+
+		Fs
+
+
+	Proceso
+
+		AbrirE/(ar1,r1) ; Leer_ar1
+		AbrirE/(ar2,r2) ; Leer_ar2
+
+		AbrirS/(arsal)
+
+		//CICLO EXCLUYENTE MEZCLA
+		//Mientras clave1<> HV o clave2<>HV o claveN<>HV ... Hacer
+
+		Mientras (r1.Nro_Pelicula <> HV) o (r2.Nro_Pelicula) Hacer
+
+			Si r1.Nro_Pelicula < r2.Nro_Pelicula Entonces
+
+				Escribir(arsal,r1)
+				Leer_ar1
+
+			Sino 
+
+				Si r1.Nro_Pelicula = r2.Nro_Pelicula Entonces
+
+					Escribir(arsal,r2)
+					Leer_ar1
+					Leer_ar2
+
+				Sino // r1 > r2
+
+					Escribir(arsal,r2)
+					Leer_ar2
+
+				Fsi
+
+			Fsi
+
+		Fm 
+
+		Cerrar(ar1); Cerrar(ar2); Cerrar(arsal) 
+
+
+FA
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+2.2.17
+
+Ejercicio 2.2.17
+La Secretaria Academica de la Facultad lanza un proyecto para incentivar a aquellos alumnos que realizaron el Cursillo de Ingreso a la Universidad 
+y no lograron aprobarlo en los turnos de Agosto y Febrero, de manera de brindarles apoyo Academico con el fin de que,
+ en el Cursillo del año siguiente puedan aprobar los examenes necesarios e ingresar a la Universidad.
+
+Para esto, dicha Secretaria­necesita crear un archivo donde se encuentren todos los aspirantes que realizaron el Cursillo de Ingreso en ambos turnos, 
+y no lograron aprobarlo.
+
+Los datos correspondientes a cada uno de los turnos del Cursillo dictado están almacenados en dos archivos (uno para cada turno),
+ los cuales presentan el siguiente formato:
+
+ASPIRANTES Ordenado por DNI
+
+DNIApeyNomCarreraF_NacEmailColegioSecFechaInscripcionAprobado (Si/No)
+UD debe realizar un algoritmo que permita mezclar los archivos Aspirantes (de Agosto y Febrero) y generar un archivo SEGUIMIENTO con el siguiente formato:
+
+SEGUIMIENTO Ordenado por DNI
+
+DNIApeyNomEmailColegioSec
+CONSIGNA:
+Los q no lograron aprobarlo.
+Al finalizar el proceso informar la cantidad de aspirantes que se grabaron en el archivo SEGUIMIENTO.
+
+Accion 2.2.17 ES
+
+	Ambiente
+
+	tASPIRANTES = registro
+
+		DNI// no tenia ganas de poner el tipo de c/u
+		AyN
+		Carrera
+		F_Nac
+		Email
+		ColegioSec
+		FechaInscripcion
+		Aprobado:('si','no')
+
+	fr
+
+	tSEGUIMIENTO = registro
+
+		DNI
+		AyN
+		Email
+		ColegioSec
+
+	fr
+
+	ar_asp1,ar_asp2:archivo de tASPIRANTES Ordenado por DNI
+	r_asp1,r_asp2:tASPIRANTES
+
+	ar_sal:archivo de tSEGUIMIENTO Ordenado por DNI
+
+	c_asp:entero
+	
+		Subaccion Leer_asp1 ES 
+
+			Leer(ar_asp1,r_asp1)
+
+			SI FDA(ar_asp1) Entonces
+				r_asp1.DNI:=HV
+			Fsi
+
+		Subaccion Leer_asp2 ES 
+
+			Leer(ar_asp2,r_asp2)
+
+			SI FDA(ar_asp2) Entonces
+				r_asp2.DNI:=HV
+			Fsi
+
+		Fs
+
+	Proceso
+
+		c_asp:=0
+
+		AbrirE(ar_asp1);AbrirE(ar_asp2);Leer_asp1;Leer_asp2
+		AbrirS/(ar_sal)
+
+		Mientras r_asp1.DNI <> HV o r_asp2.DNI <> HV Hacer 
+
+		// LIMPIEZA DE LO QUE NO ME INTERESA
+
+			Mientras r_asp1.Aprobado = 'si' Hacer 
+
+				Leer_asp1
+
+			Fm
+
+			Mientras r_asp2.Aprobado = 'si' Hacer 
+
+				Leer_asp2
+
+			Fm
+
+			//AHORA SI
+			Si r_asp1.DNI < r_asp2.DNI Entonces 
+				Escribir(ar_sal,r_asp1)
+				c_asp:=c_asp+1
+				Leer_asp1
+			Sino 
+				Si r_asp1.DNI = r_asp2.DNI Entonces
+					Escribir(ar_sal,r_asp1)
+					c_asp:=c_asp+1
+					Leer_asp2
+					Leer_asp1
+				Sino // r1 > r2
+					Escribir(ar_sal,r_asp2)
+					c_asp:=c_asp+1
+					Leer_asp2
+				Fsi
+			Fsi
+				
+		Fm
+
+		Esc("Total aspirantes en el arch SEGUIMIENTO:", c_asp)
+
+		Cerrar(ar_asp1);Cerrar(ar_asp2);Cerrar(ar_sal)
+
+FA
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+2.2.18
+
+Ejercicio 2.2.18
+Un supermercado desea conocer la totalidad de unidades existentes de cada artículo a fin de hacer un control de stock y
+ decidir si se deben comprar nuevas unidades o redistribuir la mercadería existente.
+
+El supermercado posee dos sucursales, cada una de las cuales envió su información en un fichero con el siguiente formato:
+
+ARTICULOS
+
+Cod_ProdTipoMarcaDescripciónCant_Unidades
+
+Escribir un algortimo que permita obtener un único fichero de salida, con el mismo formato, que contenga la información solicitada y además,
+ emita un listado con los siguientes datos:
+
+Cod_Prod	Tipo	Marca	Descripción	Cant_Suc_1	Cant_Suc_2	Total_Unidades
+
+Accion 2.2.18 ES
+
+	Ambiente
+
+	
+		tARTICULOS = registro
+
+			Cod_Prod // no tenia ganas de poner el tipo de c/u
+			Tipo
+			Marca
+			Descripción
+			Cant_Unidades
+
+		fr
+
+		tsal = registro
+
+			Cod_Prod
+			Tipo
+			Marca
+			Descripción
+			Cant_Suc_1
+			Cant_Suc_2
+			Total_Unidades
+
+		fr
+
+		ar1,ar2:archivo de tARTICULOS ordenado por Cod_Prod
+		r1,r2:tARTICULOS
+
+		arsal:archivo de tsal
+		s:tsal  
+
+		Subaccion Leer_r1 ES
+
+			Leer(ar1,r1)
+
+			Si FDA(ar1) Entonces 
+				r1.Cod_Prod:=HV
+			FSi
+
+
+		Fs 
+
+		Subaccion Leer_r2 ES 
+
+			Leer(ar2,r2)
+
+			Si FDA(ar2) Entonces 
+				r2.Cod_Prod:=HV
+			FSi
+
+		Fs
+
+	Proceso
+
+	AbrirE/(ar2)		AbrirE/(ar1)
+	Leer_r2 			Leer_r1
+	AbrirS/(arsal) // ya se que habia que listar, pero es muy facil asi que, pero quise probar algo nuevo para mi.
+
+	Mientras r1.Cod_Prod <> HV o r2.Cod_Prod <> HV Hacer
+
+		Si r1.Cod_Prod < r2.Cod_Prod Entonces
+
+			s.Cod_Prod:=r1.Cod_Prod
+			s.Tipo:=r1.Tipo
+			s.Marca:=r1.Marca
+			s.Descripción:=r1.Descripción
+			s.Cant_Suc_1:=r1.Cant_Unidades
+			s.Cant_Suc_2:=0
+			s.Total_Unidades:=s.Cant_Suc_1+s.Cant_Suc_2
+			Leer_r1
+
+		Sino 
+
+			Si r1.Cod_Prod = r2.Cod_Prod Entonces
+
+				s.Cod_Prod:=r1.Cod_Prod
+				s.Tipo:=r1.Tipo
+				s.Marca:=r1.Marca
+				s.Descripción:=r1.Descripción
+				s.Cant_Suc_1:=r1.Cant_Unidades
+				s.Cant_Suc_2:=r2.Cant_Unidades
+				s.Total_Unidades:=s.Cant_Suc_1+s.Cant_Suc_2
+
+				Leer_r1
+				Leer_r2
+
+			Sino // r1 > r2
+
+				s.Cod_Prod:=r2.Cod_Prod
+				s.Tipo:=r2.Tipo
+				s.Marca:=r2.Marca
+				s.Descripción:=r2.Descripción
+				s.Cant_Suc_2:=r2.Cant_Unidades
+				s.Cant_Suc_1:=0
+				s.Total_Unidades:=s.Cant_Suc_1+s.Cant_Suc_2
+				Leer_r2
+
+			Fsi
+
+	Fm
+
+	Cerrar(ar1);Cerrar(ar2);Cerrar(arsal)
+
+	AbrirE/(arsal)
+	leer(arsal,s)
+
+	Esc("/Cod_Prod 	/Tipo 	/Marca 	/Descripción 	/Cant_Suc_1 	/Cant_Suc_2 	/Total_Unidades 	/")
+
+		Mientras NFDA(arsal) Hacer 
+
+			Esc(s.Cod_Prod,'/ 	',s.Tipo,'/ 	',s.Marca,'/ 	',s.Descripción,'/ 	',s.Cant_Suc_1,'/ 	',s.Cant_Suc_2,'/ 	',s.Total_Unidades)
+			Leer(arsal,s)
+
+		Fm
+
+	Cerrar(arsal)
+
+FA
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+Actualizacion
+Ejercicio 2.2.19
+En una Empresa Farmacéutica se posee un archivo MAE_REMEDIOS (ordenado por Clave: Farmacia + Medicamento), 
+el que se actualiza semanalmente, 
+a traves de la información que se encuentra cargada en un archivo de MOVIMIENTOS (ordenado por Clavem: Farmacia + Medicamento, y Cod_Mov),
+ de la siguiente forma:
+
+Si Clave (MAE_REMEDIOS) es menor que Clavem (MOVIMIENTOS), simplemente se transfieren los datos del Maestro a la salida y se graban.
+
+Si Clave (MAE_REMEDIOS) es igual a Clavem (MOVIMIENTOS) y el Codmov es 1, 
+se considera error y se lista un mensaje indicando el tipo de error; 
+pero si el Codmov es 2, entonces es un remedio que deja de fabricarse y
+ se transfiere el registro al archivo de Remedios vencidos (REM_VENC) ;
+ pero si el Cod_Mov es 3, se modifica la cantidad actual con la cantidad recibida.
+
+Si Clave (MAE_REMEDIOS) es mayor que Clavem (MOVIMIENTOS) y el Codmov es 1, se incorpora el remedio a nuestro Vademecum(archivo de salida), 
+considerando que la cantidad recibida configura la cantidad actual y la Fecha_Vencimiento es 30 días posterior a la fecha actual; 
+pero si el Codmov es 2 o 3 se considera error y se deben producir los correspondientes mensajes de error.
+
+Se considera que solo existe un registro de movimiento para cada registro del maestro.
+
+MAE_REMEDIOS Ordenado por Farmacia y Medicamento
+FarmaciaMedicamentoCant_ActualFecha_Vencimiento
+
+MOVIMIENTOS Ordenado por Farmacia, Medicamento y Cod_Mov
+FarmaciaMedicamentoCod_MovCant_Recibida
+
+REM_VENC Ordenado por Medicamento
+MedicamentoCant_Vencida
+
+Accion 2.2.19 ES 
+
+	Ambiente
+
+		tfecha = registro
+
+			dd // me aburre esto de poner tipos de dato
+			mm 
+			yy
+
+		fr
+
+		tclave = registro
+
+			Farmacia
+			Medicamento
+
+		fr
+
+		tREMEDIO = registro //maestro 
+
+			clave:tclave
+			Cant_Actual
+			Fecha_Vencimiento:tfecha
+
+		fr 
+
+
+		tMOV = registro
+
+			clave:tclave
+			Cod_Mov
+			Cant_Recibida
+
+		fr
+
+		tVENCIDO = registro
+
+			Medicamento
+			Cant_Vencida
+
+		fr
+
+	arMAE:archivo de tREMEDIO ordenado clave
+	arMOV:archivo de tMOV ordenado por clave y Cod_Mov
+	arVEN:archivo de tVENCIDO ordenado por Medicamento
+
+	rMAE,rSAL:tREMEDIO // MAESTRO
+	rMOV:tMOV
+	rVEN:tVENCIDO
+
+	Subaccion LeerMAE ES 
+
+		Leer(arMAE,rMAE)
+
+		Si FDA(arMAE) Entonces
+			rMAE.clave:=HV
+		Fsi 
+
+	Fs 
+
+	Subaccion LeerMOV ES
+
+		Leer(arMOV,rMOV)
+
+		Si FDA(arMOV) Entonces
+
+			rMOV.clave:=HV
+
+		Fsi
+
+	Fs
+
+	Proceso 
+
+		AbrirE/(arMAE)
+		LeerMAE
+
+		AbrirE/(arMOV)
+		LeerMOV
+
+		AbrirS/(arVEN)
+		AbrirS/(arSAL)
+
+		Mientras rMAE.clave <> HV o rMOV.clave <> HV Hacer 
+
+			Si (rMAE.clave < rMOV.clave) Entonces
+
+				Escribir(arSAL,rMAE)
+				LeerMAE
+
+			Sino 
+
+				Si rMAE.clave = rMOV.clave Entonces
+
+					Segun rMOV.Cod_Mov Hacer 
+
+						1:  // ALTA
+							// se considera error y se lista un mensaje indicando el tipo de error; 
+							Esc("Error, No se puede dar de alta algo que ya existe.")
+						2:  // BAJA FISICA (YA QUE NO SE COPIA EN LA SAL)
+							// entonces es un remedio que deja de fabricarse y
+ 							// se transfiere el registro al archivo de Remedios vencidos (REM_VENC)
+							rVEN.Medicamento:=rMOV.clave.Medicamento
+							rVEN.Cant_Vencida:=rMAE.Cant_Actual
+							Escribir(arVEN,rVEN)
+
+						3:  // MODIF
+							//se modifica la cantidad actual con la cantidad recibida.
+							rSAL:=rMAE
+							rSAL.Cant_Actual:=rMOV.Cant_Recibida
+							Escribir(arSAL,rSAL)
+
+					Fs
+
+
+					LeerMAE
+					LeerMOV
+
+				Sino // rMAE.clave > rMOV.clave 
+
+					Segun rMOV.Cod_Mov Hacer
+
+						1: 
+							/*se incorpora el remedio a nuestro Vademecum(archivo de salida), 
+							considerando que la cantidad recibida configura la cantidad actual y
+							 la Fecha_Vencimiento es 30 días posterior a la fecha actual; */
+
+							rSAL.clave := rMOV.clave 
+							rSAL.Cant_Actual:=rMOV.Cant_Recibida
+							rSAL.Fecha_Vencimiento:=(fecha_actual()+30)
+							Escribir(arSAL,rSAL)
+
+						2:// pero si el Codmov es 2 o 3 se considera error y 
+						//se deben producir los correspondientes mensajes de error.\*
+					
+							Esc("No se puede dar de baja un Medicamento que no existe.")
+
+						3:
+							Esc("Error no se puede modificar un Medicamento que no existe.")
+
+
+					LeerMOV
+
+				Fsi
+
+			Fsi
+
+		Fm
+
+		Cerrar(arMAE)
+		Cerrar(arMOV)
+		Cerrar(arVEN)
+		Cerrar(arSAL)
+
+FA
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+Ejercicio 2.2.20
+Se desea generar una secuencia, a partir de la secuencia del problema 2.2.1
+
+
+	Ejercicio 2.2.1
+	/*
+	Se dispone de una secuencia con los datos de los alumnos de la facultad:
+
+	ApellidoyNombre
+	Carrera:('ISI','IEM','IQ')
+	Legajo
+	FechadeNacimiento
+	FechadeIngreso
+	D.N.I
+	Sexo:('M','F')
+	ult_examen_aprobado
+	Nota
+	*/
+
+donde se actualice la fecha de aprobación del último exámen, para ello se cuenta con información del último turno de exámen,
+  según el siguiente detalle:
+
+
+EXAMENES Ordenado por Nro_Legajo
+
+Nro_LegajoCarreraCod_MateriaFecha_ExamenNota
+
+Se debe considerar que no necesariamente todos los alumnos se presentan en cada turno de exámen, 
+y que un alumno puede presentarse a rendir más de una materia en un mismo turno. 
+Supónganse ambas secuencias ordenadas por Legajo.
+///////////////////////////////////////
+CONSIGNA MODIFICADA ( SIN SECUENCIAS DEL PRIMER PARCIAL )
+Se desea generar un archivo nuevo de salida, a partir del problema 2.1.1, 
+donde se actualice la fecha de aprobación del último exámen, 
+para ello se cuenta con información del último turno de exámen.
+En caso de que el maestro sea menor pasar el alumno a la salida.
+En caso de que el movimiento, no encuentre el alumno, emita un mensaje que diga "Error, el alumno no existe"
+
+
+Accion 2.2.20 ES
+
+	Ambiente
+
+	tfecha = reg
+
+		dd 
+		mm 
+		yy
+
+	fr
+
+	tALUMNO = reg 
+
+		Legajo
+		ApellidoyNombre
+		Carrera:('ISI','IEM','IQ')	
+		FechadeNacimiento
+		FechadeIngreso
+		D.N.I
+		Sexo:('M','F')
+		ult_examen_aprobado:tfecha
+		Nota
+
+	fr
+
+	tEXAMENES = reg
+
+		Legajo
+		Carrera
+		Cod_Materia:('AYED','AYGA','MD','AM1','F1','SYO')
+		Fecha_Examen:tfecha
+		Nota
+
+	fr
+
+	arMAE:archivo de tALUMNO Ordenado por Legajo
+	arMOV:archivo de tEXAMENES Ordenado por Legajo
+	arSAL:archivo de tALUMNO
+
+	rMAE,rSAL:tALUMNO
+	rMOV:tEXAMENES
+
+	resfechaex:tfecha
+	resnota:N(1)
+	reslegajo:N(5)
+
+	Subaccion Leer_rMAE ES
+
+		Leer(arMAE,rMAE)
+
+		Si FDA(arMAE) Entonces
+
+			rMAE.Legajo:=HV
+
+		Fsi 
+
+	Fs
+
+	Subaccion Leer_rMOV ES
+
+		Leer(arMOV,rMOV)
+
+		Si FDA(arMOV) Entonces
+
+			rMOV.Legajo:=HV
+
+		Fsi
+
+	Fs
+
+/*como hacer actualizacion x lote 
+Resguarda la clave
+Con un mientras que controle que no se cambie la clave resguardada en el de movimiento
+Y dentro del mientras procesas el movimiento ya sea baja, alta o modificación.
+CONCLUSION: Existe 1 clave del mae para muchas claves del mov, en la que los datos del mov van variando
+ pero no la clave pretest resclave = clave
+*/
+
+Proceso
+
+		AbrirE/(arMAE);	AbrirE/(arMOV);	AbrirS/(arSAL)
+		Leer_rMAE ; Leer_rMOV
+
+		Mientras rMAE.Legajo <> HV o rMOV.Legajo <> HV Hacer
+
+			Si rMAE.Legajo < rMOV.Legajo Entonces
+
+				rSAL:=rMAE
+				Escribir(arSAL,rSAL)
+
+				Leer_rMAE
+
+			Sino
+
+				reslegajo:=rMOV.Legajo // resguardo la clave del mae
+
+				Si rMOV.Legajo = rMAE.Legajo Entonces 
+                        
+					Mientras rMOV.Legajo = resMOV_legajo Hacer // Mientras la clave del registro de mov es igual al resguardo entonces
+				
+					  resfechaex:=rMov.Fecha_Ex
+					  resnota:=rMOV.Nota
+                      Leer_rMOV
+
+					Fm
+
+                   rSAL:=rMAE 
+
+                   rSAL.Ult_Ex_ap:=resfechaex
+                   rSAL.Nota:=resnota
+
+                   Escribir(arSAL, rSAL)
+                   Leer_Mae            
+                                                 
+				Sino // rMAE.legajo > rMOV.legajo
+    
+					Esc("Error, este alumno no existe")
+					Leer_rMOV
+
+				Fsi
+
+
+			Fsi
+
+		Fm
+
+		Cerrar(arMAE);Cerrar(arMOV);Cerrar(arSAL);
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+
+Ejercicio 2.2.21
+
+En un práctico para la Facultad un grupo de alumnos debe implementar una Red Social llamada UTNBook. 
+Para lo cual debe utilizar los siguientes archivos:
+
+AMIGOS Ordenado por Cod_Usuario y Cod_Amigo
+Cod_UsuarioCod_AmigoFecha_AmistadMensaje_Muro
+
+Cada registro indica la fecha desde que los usuarios son amigos y el último mensaje que un amigo ha escrito en el muro del usuario.
+
+NOTIFICACIONES Ordenado por Cod_Usuario y Cod_Amigo
+Cod_UsuarioCod_AmigoCod_MovimientoFecha_AmistadMensaje_Muro
+
+Periódicamente se debe actualizar el archivo Amigos, 
+con el fin de que refleje las amistades que posee cada usuario. 
+En el archivo notificaciones pueden existir tres tipos de acciones: la solicitud de una amistad (Cod_mov = 'A'); 
+la eliminación de una amistad (Cod_mov = 'B'); 
+o la información de un mensaje que un amigo ha escrito en el muro del usuario (Cod_mov = 'M'). 
+Considerar que la eliminación de una amistad implica la baja física de un registro y 
+que hay un solo registro de Notificaciones por cada registro de Amigo. // NO ES X LOTE
+
+//Siempre hay que generar un archivo de salida en actualización, sea cual fuere el tipo
+
+Accion 2.2.21 ES 
+
+	Ambiente
+
+		tuser = reg 
+
+			Cod_Usuario
+			Cod_Amigo
+
+		fr
+
+		tAMIGOS = reg 
+
+			clave:tAMIGOS
+			Fecha_Amistad
+			Mensaje_Muro
+
+		fr
+
+		tNOTIFICACIONES = reg
+
+			clave:tuser
+			Cod_Movimiento
+			Fecha_Amistad
+			Mensaje_Muro
+
+		fr
+
+		arMAE:archivo de tAMIGOS Ordenado por clave
+		arMOV:archivo de tNOTIFICACIONES Ordenado por clave
+		arSAL:archivo de tAMIGOS 
+
+		rMAE:tAMIGOS
+		rMOV:tNOTIFICACIONES
+		rSAL:tAMIGOS
+
+		Subaccion Leer_rMAE ES 
+			Leer(arMAE,rMAE)
+			Si FDA(arMAE) Entonces
+				rMAE.clave:=HV
+			Fsi
+		Fs
+
+		Subaccion Leer_rMOV ES 
+			Leer(arMOV,rMOV)
+			Si FDA(arMOV) Entonces
+				rMOV.clave:=HV
+			Fsi
+		Fs
+
+		Subaccion TRATARIGUALES() ES 
+
+			rSAL:=rMAE
+
+					Segun rMOV.Codmov Hacer 
+
+						'A': // la solicitud de una amistad (Cod_mov = 'A'); 
+
+							Esc("Error, Este usuario ya existe, no se pudo hacer dar de alta"
+							Escribir(arSAL,rMAE)
+
+						'M': // mensaje que un amigo ha escrito en el muro del usuario (Cod_mov = 'M'). 
+							
+							rSAL.Mensaje_Muro:=rMOV.Mensaje_Muro
+							Escribir(arSAL,rSAL)
+
+					Fs
+
+		Fs
+
+		Subaccion NEWMOV() ES 
+
+			Segun rMOV.Codmov Hacer
+
+						'A':
+							rSAL.clave:=rMOV.clave 
+							rSAL.Fecha_Amistad:=rMOV.Fecha_Amistad
+							rSAL.Mensaje_Muro:=rMOV.Mensaje_Muro
+
+						Otros:
+							Escribir('ERROR 404, No se puede dar de baja, 
+								   ni modificar un usuario que no existe.')
+					Fs
+
+		Fsi
+
+	Proceso 
+
+		AbrirE/(arMOV)
+		AbrirS/(arSAL)
+
+		Leer_rMAE
+		Leer_rMOV
+
+		Mientras rMAE.clave <> HV o rMOV.clave <> HV Hacer
+
+			Si rMAE.clave < rMOV.clave entonces
+
+				Escribir(arSAL,rMAE)
+				LeerMAE
+
+			Sino 
+
+				Si rMAE.clave = rMOV.clave Entonces
+
+					TRATARIGUALES()
+
+					LeerMAE
+					LeerMOV
+
+				Sino // rMAE > rMOV  
+
+					NEWMOV()
+					LeerMOV
+
+				Fsi 
+
+			Fsi
+
+		Fm
+
+		Cerrar(arMAE)
+		Cerrar(arMOV)
+		Cerrar(arSAL)
+
+FA
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 2.2.22
+IDEM ejercicio 2.21 pero agregando al enunciado: “Al finalizar el proceso se desea conocer: el usuario que posee más amigos.”
+Accion 2.2.22 ES 
+
+	Ambiente
+
+		tuser = reg 
+
+			Cod_Usuario
+			Cod_Amigo
+
+		fr
+
+		tAMIGOS = reg 
+
+			clave:tAMIGOS
+			Fecha_Amistad
+			Mensaje_Muro
+
+		fr
+
+		tNOTIFICACIONES = reg
+
+			clave:tuser
+			Cod_Movimiento
+			Fecha_Amistad
+			Mensaje_Muro
+
+		fr
+
+		arMAE:archivo de tAMIGOS Ordenado por clave
+		arMOV:archivo de tNOTIFICACIONES Ordenado por clave
+		arSAL:archivo de tAMIGOS 
+
+		rMAE:tAMIGOS
+		rMOV:tNOTIFICACIONES
+		rSAL:tAMIGOS
+
+		//consigna
+		rescodamigo:entero
+		resusuario:entero
+		contmax,max:entero
+		usuariconmasamigos:entero
+
+		Subaccion Leer_rMAE ES 
+			Leer(arMAE,rMAE)
+			Si FDA(arMAE) Entonces
+				rMAE.clave:=HV
+			Fsi
+		Fs
+
+		Subaccion Leer_rMOV ES 
+			Leer(arMOV,rMOV)
+			Si FDA(arMOV) Entonces
+				rMOV.clave:=HV
+			Fsi
+		Fs
+
+		Subaccion TRATARIGUALES() ES 
+
+			rSAL:=rMAE
+
+					Segun rMOV.Codmov Hacer 
+
+						'A': // la solicitud de una amistad (Cod_mov = 'A'); 
+
+							Esc("Error, Este usuario ya existe, no se pudo hacer dar de alta"
+							Escribir(arSAL,rMAE)
+
+						'M': // mensaje que un amigo ha escrito en el muro del usuario (Cod_mov = 'M'). 
+							
+							rSAL.Mensaje_Muro:=rMOV.Mensaje_Muro
+							Escribir(arSAL,rSAL)
+
+					Fs
+
+		Fs
+
+		Subaccion NEWMOV() ES 
+
+			Segun rMOV.Codmov Hacer
+
+						'A':
+							rSAL.clave:=rMOV.clave 
+							rSAL.Fecha_Amistad:=rMOV.Fecha_Amistad
+							rSAL.Mensaje_Muro:=rMOV.Mensaje_Muro
+
+						Otros:
+							Escribir('ERROR 404, No se puede dar de baja, 
+								   ni modificar un usuario que no existe.')
+					Fs
+
+		Fsi
+
+Proceso 
+
+		AbrirE/(arMAE)
+		AbrirE/(arMOV)
+		AbrirS/(arSAL)
+
+		max:=HV
+
+		Leer_rMAE
+		Leer_rMOV
+
+		Mientras rMAE.clave <> HV o rMOV.clave <> HV Hacer
+
+			Si rMAE.clave < rMOV.clave entonces
+
+				Escribir(arSAL,rMAE)
+				LeerMAE
+
+			Sino 
+
+				Si rMAE.clave = rMOV.clave Entonces
+
+					TRATARIGUALES()
+
+					LeerMAE
+					LeerMOV
+
+				Sino // rMAE > rMOV  
+
+					NEWMOV()
+
+					max
+
+					LeerMOV
+
+				Fsi 
+
+			Fsi
+
+		Fm
+
+		Cerrar(arMAE)
+		Cerrar(arMOV)
+		Cerrar(arSAL)
+
+		contmax:=1
+		max:=LV
+
+		AbrirE/(arSAL)
+		Leer(arSAL,rSAL)
+
+		Mientras NFDA(arSAL) Hacer
+
+			resusuario:=rSAL.clave.Cod_Usuario
+
+			Mientras rSAL.clave.Cod_Usuario = resusuario Hacer
+
+				Si rescodamigo <> rSAL.clave.Cod_Amigo Entonces 
+
+					contmax:=contmax+1
+
+				Fsi
+
+				Leer(arSAL,rSAL)
+				rescodamigo:=rSAL.clave.Cod_Amigo
+
+			Fm
+
+			Si contmax > max Entonces
+
+				max:=contmax
+				usuariconmasamigos:=rSAL.clave.Cod_Usuario
+
+			Fsi
+
+			contmax:=0
+
+		Fm
+
+		Esc("El usuario ", usuariconmasamigos ," es el que tiene mas amigos en UTNBOOK, con un total de: ",max," amigos.")
+
+		Cerrar(arSAL)
+
+FA
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 2.2.23
+Una empresa de distribución de energía eléctrica posee un archivo maestro con los siguientes datos de sus clientes
+ (la fecha de última lectura son las mediciones realizadas hasta el mes de mayo del 2014):
+
+CLIENTE Ordenado por Id_Casa
+
+Id_CasaFecha_Ult_LecturaCant_LecturasProm_LecturasTipo_Consumidor
+El campo tipo de consumidor puede ser:
+
+A (cuando el promedio de lectura es menor a 20K)
+B (cuando el promedio de lectura es menor a 40K)
+C (cuando el promedio de lectura es igual o supera los 40K)
+
+Cuenta además con el siguiente archivo con datos de las mediciones realizadas
+ en los dos últimos años (desde junio del 2014 hasta junio del 2016)
+
+Mediciones Ordenado por Id_Casa
+
+Id_CasaFecha_MedicionConsumo
+
+Se pide actualizar el archivo maestro con la información
+ de las lecturas hasta el mes de enero del año 2015 inclusive.
+
+  Los campos que se deben actualizar son: la fecha de ultima lectura,
+   cantidad de lecturas, el promedio y 
+   modificar (en caso de ser necesario) el tipo de consumidor. 
+
+   En caso en que no exista el ID casa (una conexión nueva) se tiene que crear en el maestro y actualizar los otros campos.
+
+Accion 2.2.23 ES
+
+	Ambiente 
+
+		tfecha = reg 
+
+			dd 
+			mm 
+			yy
+
+		fr
+
+		tCLIENTE = reg
+
+			Id_Casa
+			Fecha_Ult_Lectura:tfecha
+			Cant_Lecturas
+			Prom_Lecturas
+			Tipo_Consumidor:('A','B','C')
+
+		fr
+
+		tMediciones = reg
+
+			Id_Casa
+			Fecha_Medicion:tfecha
+			Consumo
+
+		fr
+
+		arMAE,arSAL:archivo de tCLIENTE Ordenado por Id_Casa
+		arMOV:archivo de tMediciones Ordenado por Id_Casa
+
+		rMOV:tMediciones
+		rMAE,rSAL:tCLIENTE
+		fechamax:tfecha
+		ac_consumo:entero
+
+		Subaccion LeerRMAE ES 
+
+			Leer(arMAE,rMAE)
+
+			SI FDA(arMAE) Entonces
+
+				rMAE.Id_Casa:=HV
+
+			Fsi 
+
+		Fs 
+		Subaccion LeerRMOV ES
+
+			Leer(arMOV,rMOV)
+
+			Si FDA(arMOV) Entonces
+
+				rMOV.Id_Casa:=HV
+
+			Fsi
+
+		Fs 
+
+
+	Proceso 
+
+		abrirE/(arMAE);abrirE/(arMOV);abrirS/(arSAL)
+
+		fechamax.dd:=02
+		fechamax.mm:=01
+		fechamax.yy:=2015
+
+		LeerRMAE;LeerRMOV
+
+		Mientras rMAE.Id_Casa <> HV o rMOV.Id_Casa <> HV Hacer
+			
+			Si rMOV.Fecha_Medicion < fechamax Entonces // SE COPIA TAL CUAL DEL MAE A LA SALIDA
+
+				Si rMAE.Id_Casa < rMOV.Id_Casa Entonces
+
+					Escribir(arSAL,rMAE)
+					LeerRMAE
+
+				Sino // 01/01/2015 NOMAS ACTUALIZACION!!!!!!!!
+
+						resclavemov:=rMOV.Id_Casa
+
+						Si rMAE.Id_Casa = rMOV.Id_Casa Entonces
+
+							Mientras rMOV.Id_Casa = resclavemov Hacer
+
+								Si rMOV.Fecha_Medicion < fechamax Entonces 
+									rSAL.Fecha_Ult_Lectura:=rMOV.Fecha_Medicion
+									rSAL.Cant_Lecturas:=rSAL.Cant_Lecturas+1
+									ac_consumo:=ac_consumo+rMOV.consumo
+								Fsi
+
+								LeerRMOV
+
+							Fm
+
+							rSAL.Prom_Lecturas:=ac_consumo DIV rSAL.Cant_Lecturas
+							ac_consumo:=0
+
+							Segun rSAL.Prom_Lecturas Hacer
+
+								< 20000: 
+										rSAL.Tipo_Consumidor:='A'
+								< 40000:
+										rSAL.Tipo_Consumidor:='B'
+								> 40000:
+										rSAL.Tipo_Consumidor:='C'
+							Fs
+
+						rSAL.Id_Casa:=rMOV.Id_Casa
+
+						Escribir(arSAL,rSAL)
+
+						LeerRMAE
+
+						Sino // rMAE> rMOV, movimiento que no existe en el MAESTRO
+
+							rSAL.Id_Casa:=rMOV.Id_Casa
+							rSAL.Fecha_Ult_Lectura:=rMOV.Fecha_Medicion
+							rSAL.Cant_Lecturas:=1
+							rSAL.Prom_Lecturas:=rMOV.consumo 
+							rSAl.Tipo:='A'
+							
+						Fsi
+
+				Fsi
+
+			Sino 
+
+			    Si rMAE.Fecha_Medicion < fechamax Entonces 
+					LeerRMAE
+				Fsi
+				LeerRMOV
+
+			Fsi
+
+		Fm
+
+		Cerrar(arMAE)
+		Cerrar(arMOV);Cerrar(arSAL)
+
+FA
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 2.2.24
+Una obra social lleva el control de los costos que le insume cada afiliado. 
+Considerando como costos, los pagos que la misma debe realizar (en conceptos de honorarios, pagos a farmacias, etc) 
+por los distintos servicios que el afiliado utiliza.
+ Para esto la empresa cuenta con un archivo COSTOS_POR_AFILIADO, 
+ en el cual se registran la cantidad de atenciones y/o servicios que solicita el empleado y 
+ el costo total (en pesos) que la empresa debe pagar por estos. 
+ Este archivo está conformado por registros con el siguiente formato, y está ordenado Cod_Afiliado
+
+COSTOS_POR_AFILIADO Ordenado por Cod_Afiliado
+Cod_AfiliadoFecha_AltaFecha_BajaCant_ServiciosCosto
+
+Cada viernes en la organización, se lleva a cabo un proceso de actualización del archivo COSTOS_POR_AFILIADO.
+ Para poder realizarlo se cuenta con un archivo SERVICIOS_SEMANALES, 
+ ordenado por cod_afiliado y fecha_at, 
+ en el cual se registran los servicios que solicitaron los afiliados durante cada semana. 
+ Cada registro de este archivo presenta el siguiente formato,
+
+SERVICIOS_SEMANALES Ordenado por Cod_Afiliado
+Cod_AfiliadoFecha_AtCod_ServicioCosto
+
+En el archivo SERVICIOS_SEMANALES puede existir más de un registro por cada afiliado. // actualizacion x lote
+
+Para realizar el proceso de actualización se deben tener en cuenta las siguientes consideraciones.
+
+
+
+
+2.2.24
+Si algún Cod_Afiliado de serviciosSemanales(MOVIMIENTOS), no se encuentra en ningún registro del archivo COSTOS_POR_AFILIADO(MAESTRO),
+
+	Si rmae > rmov Entonces
+		utilizo segun Cod_Servicio hacer
+					000:
+
+					001:
+
+ y el primer Cod_Servicio asociado al mismo es igual a 001 entonces se trata de un nuevo afiliado que fue dado de alta. 
+Si Cod_Afiliado de serviciosSemanales es igual al de COSTOS_POR_AFILIADO y 
+
+el Cod_Servicio es igual a 000 se trata de un afiliado que fue dado de baja y 
+se considera como fecha de baja el valor que reside en Fecha_At. Si en cambio, 
+
+el Cod_Servicio tiene algún otro valor este representa un servicio o atención que solicitó el afiliado;
+ por lo tanto deben contabilizarse la cantidad de servicios que solicitó; como así también los costos que estos insumen.
+
+Si algún Cod_Afiliado de COSTOS_POR_AFILIADO no se encuentra en el archivo SERVICIOS_SEMANALES,
+ se trata de un afiliado que no utilizó los servicios en la semana que se realiza la actualización.
+
+Cualquier otro caso distinto a los considerados anteriormente se toma como un error,
+ y deben ser informados por pantalla; indicando claramente el motivo del error.
+
+Accion 2.2.24 ES 
+
+	Ambiente
+
+		tfecha = reg 
+
+			dd
+			mm
+			yy
+
+		fr
+
+		tCOSTOS = registro
+
+			Cod_Afiliado
+			Fecha_Alta:tfecha
+			Fecha_Baja:tfecha
+			Cant_Servicios
+			Costo
+
+		fr
+
+		tSERVICIOS = reg
+
+			Cod_Afiliado
+			Fecha_At:tfecha
+			Cod_Servicio
+			Costo
+
+		fr
+
+		arMAE,arSAL:archivo de tCOSTOS Ordenado por Cod_Afiliado
+		arMOV:archivo de tSERVICIOS Ordenado por Cod_Afiliado
+		rMAE,rSAL:tCOSTOS
+		rMOV:tSERVICIOS
+
+		rescod:entero
+
+		Subaccion LeerMAE ES 
+
+			leer(arMAE,rMAE)
+
+			SI FDA(arMAE) Entonces
+				rMAE.cod_afiliado:=HV
+			Fsi
+
+		Fs
+
+		Subaccion LeerMOV ES 
+
+			Leer(arMOV,rMOV)
+
+			Si FDA(arMOV) Entonces
+				rMOV.cod_afiliado:=HV
+			Fsi
+
+		Fs 
+
+	Proceso
+
+		AbrirE/(arMAE);AbrirE/(arMOV);AbrirS/(arSAL);
+		LeerMAE;LeerMOV;
+
+		Mientras rMAE.cod_afiliado <> HV o rMOV.cod_afiliado <> HV Hacer
+
+			Si rMAE.cod_afiliado < rMOV.cod_afiliado Entonces
+			
+				Escribir(arSAL,rMAE)
+				LeerMAE
+
+			Sino
+
+				rSAL.Cant_Servicios:=0
+				rSAL.costo:=0
+				rescod:=rMOV.cod_afiliado
+
+				Si rMAE.cod_afiliado = rMOV.cod_afiliado y rSAL.Fecha_Baja <> NILL Entonces
+
+					Mientras rescod = rMOV.cod_afiliado Hacer 
+
+						Segun rMOV.Cod_Servicio Hacer 
+
+							000: // la baja logica 
+								rSAL:=rMAE
+								rSAL.Fecha_Baja:=rMOV.Fecha_At
+								Escribir(arSAL,rSAL)
+
+							001:
+								Esc("Error, No se puede dar de alta un afiliado existente.")
+							Otros:
+								Si rSAL.Cant_Servicios = 0 Entonces 
+									rSAL.Cant_Servicios:=rMAE.Cant_Servicios
+									rSAL.Costo:=rMAE.costo
+								Fsi
+
+								rSAL:=rMAE					
+								rSAL.Cant_Servicios:=rSAL.Cant_Servicios+1
+								rSAL.Costo:=rMOV.costo+rSAL.costo
+								
+						Fs
+
+						LeerMOV
+
+					Fm
+
+					LeerMAE
+
+				Sino
+
+					Si rMOV.cod_afiliado = 001 Entonces // doy de alta nuevo afiliado
+						
+						Mientras rMOV.cod_afiliado = rescod Hacer
+
+							rSAL.Cod_Afiliado:=rMOV.Cod_Afiliado // sal
+							rSAL.Fecha_Alta:=fecha_actual() // valor de la maquina
+							rSAL.Fecha_Baja:=NILL
+							rSAL.Cant_Servicios:=rSAL.Cant_Servicios+1
+							rSAL.Costo:=rMOV.costo+rSAL.costo
+
+							LeerMOV
+
+						Fm
+
+						Escribir(arSAL,rSAL)
+
+					Sino // rMAE > rMOV
+
+						Si rMOV.cod_afiliado = 000 Entonces
+							Esc("Error 404, No se puede dar de baja el servicio a un afiliado inexistente.")
+						Sino 
+							Esc("Error, No se puede modificar el servicio del afiliado ya que no existe.")
+						Fsi
+						LeerMOV
+
+					Fsi
+
+				Fsi
+
+			Fsi
+
+		Fm
+
+		Cerrar(arMAE);Cerrar(arMOV);Cerrar(arSAL);
+
+FA
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ejercicio 2.2.25 // one 26/01/2021
+IDEM 2.21 pero suponiendo que hay mas de un registro de notificaciones por cada registro de amigos.
+
+En un práctico para la Facultad un grupo de alumnos debe implementar una Red Social llamada UTNBook.
+ Para lo cual debe utilizar los siguientes archivos:
+
+AMIGOS Ordenado por Cod_Usuario y Cod_Amigo
+Cod_UsuarioCod_AmigoFecha_AmistadMensaje_Muro
+
+Cada registro indica la fecha desde que los usuarios son amigos y el último mensaje que un amigo ha escrito en el muro del usuario.
+
+NOTIFICACIONES Ordenado por Cod_Usuario y Cod_Amigo
+Cod_UsuarioCod_AmigoCod_MovimientoFecha_AmistadMensaje_Muro
+
+Periódicamente se debe actualizar el archivo Amigos, con el fin de que refleje las amistades que posee cada usuario. 
+En el archivo notificaciones pueden existir tres tipos de acciones: la solicitud de una amistad (Cod_mov = 'A'); 
+la eliminación de una amistad (Cod_mov = 'B'); 
+o la información de un mensaje que un amigo ha escrito en el muro del usuario (Cod_mov = 'M'). 
+Considerar que la eliminación de una amistad implica la baja física de un registro.
+
+
+Accion 2.2.25 ES 
+
+	Ambiente
+
+	tfecha = reg
+
+		dd 
+		mm
+		yy
+
+	fr
+
+	tclave = registro
+
+		Cod_Usuario
+		Cod_Amigo
+
+	fr
+
+	tAMIGOS = reg
+
+		clave:tclave
+		Fecha_Amistad:tfecha
+		Mensaje_Muro
+
+	fr
+
+	tNOTIFICACIONES = registro
+
+		clave:tclave
+		Cod_Movimiento
+		Fecha_Amistad:tfecha
+		Mensaje_Muro
+
+	fr
+
+	arSAL,arMAE:archivo de tAMIGOS Ordenado por Cod_Usuario y Cod_Amigo
+	arMOV:archivo de tNOTIFICACIONES Ordenado por Cod_Usuario y Cod_Amigo
+	rMOV:tNOTIFICACIONES
+	rMAE,rSAL:tAMIGOS
+	resclavemov:tclave
+
+	band:logico
+
+	Subaccion LeerMAE ES 
+
+		Leer(arMAE,rMAE)
+
+		Si FDA(arMAE) Entonces
+
+			rMAE.clave:=HV
+
+		Fsi
+
+	Fs	
+
+	Subaccion LeerMOV ES 
+
+		Leer(arMOV,rMOV)
+
+		Si FDA(arMOV) Entonces
+
+			rMOV.clave:=HV
+
+		Fsi
+
+	Fs
+
+	Proceso 
+		AbrirE/(arMAE);
+		AbrirE/(arMOV);
+		Abrirs/(arSAL);
+
+		band:=falso
+		LeerMAE 
+		LeerMOV
+
+		Mientras rMAE.clave <> HV o rMOV.clave <> HV Hacer 
+
+			SI rMAE.clave < rMOV.clave Entonces
+
+				Escribir(arSAL,rMAE)
+				LeerMAE
+
+			SINO
+
+				resclavemov:=rMOV.clave
+				rSAL:=rMAE
+
+				Si rMAE.clave = rMOV.clave Entonces
+
+					Mientras resclavemov = rMOV.clave Hacer
+
+						Segun rMOV.Cod_Movimiento Hacer 
+
+							'A'://la solicitud de una amistad (Cod_mov = 'A'); // ES UNA ALTA
+
+								Esc("Error, El usuario ya existe, por lo que no se pudo mandar la solicitud")
+								// ESTO ES ASI Y LISTO NO HAY OTRA EXPLICACION!
+								// PERDI TIEMPO INTENTANDO SOLUCIONAR BUGS Q NO EXISTIAN EN ESTE PUNTO
+								// DEJAR ASI ESTO XFAVOR, NO PERDER EL TIEMPO
+								band:=falso
+
+							'B':
+
+								band:=verdad
+
+							'M'://la información de un mensaje que un amigo ha escrito en el muro del usuario (Cod_mov = 'M'). 
+								
+								rSAL.Mensaje_muro:=rMOV.Mensaje_muro
+
+						Fs
+
+						LeerMOV
+
+					Fm
+
+					Si band = falso Entonces
+						Escribir(arSAL,rSAL)
+					Fsi
+
+					LeerMAE
+
+					band:=falso
+
+				Sino // rMAE > rMOV
+
+					Mientras resclavemov = rMOV.clave Hacer
+
+						Segun rMOV.Cod_Movimiento Hacer 
+
+							'A': // alta
+
+								rSAL.clave:=rMOV.clave
+								rSAL.Fecha_Amistad:=rMOV.Fecha_Amistad
+								rSAL.Mensaje_Muro:=rMOV.Mensaje_Muro
+
+								band:=falso
+
+							'B':
+								Esc("No se puede dar de baja un amigo inexistente")
+
+								band:=verdad
+							'M':
+								Esc("No se puede modificar un amigo inexistente")
+						Fs
+
+						LeerMOV
+
+					Fm
+
+					Si band = falso Entonces
+						Escribir(arSAL,rSAL)
+					Fsi
+
+				Fsi
+			FSI
+
+		Fm
+
+		Cerrar(arMAE);
+		Cerrar(arMOV);
+		Cerrar(arSAL);
+
+FA
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
